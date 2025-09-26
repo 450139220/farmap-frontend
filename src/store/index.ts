@@ -10,4 +10,17 @@ const useCount = create<CountState>((set) => ({
   increase: () => set((state) => ({ count: state.count + 1 })),
 }));
 
-export { useCount };
+type UserState = {
+  username: string;
+  role: "user" | "admin";
+};
+type UserAction = {
+  login: (username: UserState["username"], role: UserState["role"]) => void;
+};
+const useUser = create<UserState & UserAction>((set) => ({
+  username: "",
+  role: "user",
+  login: (username, role) => set(() => ({ username, role })),
+}));
+
+export { useCount, useUser };

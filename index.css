@@ -1,0 +1,30 @@
+:root {
+  --background-color: #e8eaec;
+  --background-color-radial: #d4d8db;
+  --font-color: #2a3043;
+  --primary: #2e66e1;
+  --success: #58aa65;
+  --warning: #eaa052;
+  --danger: #de5330;
+}
+
+body {
+  font-family: "Noto Sans SC", sans-serif;
+  margin: 0;
+  background: radial-gradient(
+      circle at left top,
+      var(--background-color) 20%,
+      var(--background-color-radial) 100%
+    )
+    no-repeat fixed;
+  color: var(--font-color);
+}
+
+a {
+  text-decoration: none;
+}
+button {
+  border: none;
+  background-color: unset;
+  cursor: pointer;
+}
