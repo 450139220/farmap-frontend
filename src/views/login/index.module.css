@@ -57,6 +57,10 @@
   /* background-color: var(--warning); */
   box-shadow: 0 5px 10px 0 var(--primary-shadow);
 }
+.form__button:disabled {
+  background-color: #777;
+  box-shadow: none;
+}
 
 .background__front,
 .background__back {
@@ -83,6 +87,29 @@
 }
 
 .login__tip {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   color: var(--danger);
+}
+.login__circle {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 5px solid var(--primary);
+  border-top-color: transparent;
+  visibility: hidden;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.login__circle-active {
+  visibility: visible;
 }
