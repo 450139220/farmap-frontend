@@ -22,5 +22,6 @@ const useUser = create<UserState & UserAction>((set) => ({
   role: "user",
   login: (username, role) => set(() => ({ username, role })),
 }));
+// TODO: fetch real user states with requests, and build farm state
 
 export { useCount, useUser };

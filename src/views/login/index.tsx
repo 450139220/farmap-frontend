@@ -4,6 +4,8 @@ import { useNavigate } from "react-router";
 
 import style from "./index.module.css";
 
+import { request } from "@/utils/reqeust";
+
 function Login() {
   // the part of username and password form
   const [username, setUsername] = useState<string>("");
@@ -25,11 +27,19 @@ function Login() {
   const login = useUser().login;
   const navigate = useNavigate();
   // submit this form
-  const submitLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const submitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(username, password);
-    login(username, "user");
-    navigate("/");
+
+    // request for login
+    const res = await request.post("/user/login", {
+      username,
+      password,
+    });
+
+    // set the global states, including user and farm
+    console.log(res);
+    // login(username, "user");
+    // navigate("/");
   };
 
   // TODO: avoid signing repeatedly
