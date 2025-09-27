@@ -81,3 +81,8 @@
   transform: translateX(-50%) translateY(-50%) skewX(-10deg);
   z-index: -2;
 }
+
+.login__tip {
+  text-align: center;
+  color: var(--danger);
+}

@@ -1,18 +1,15 @@
-import { useCount } from "@/store";
-import { Link } from "react-router";
+import { useUser } from "@/store";
 
-function App() {
-  const count = useCount((state) => state.count);
-  const increaseCount = useCount((state) => state.increase);
+function Map() {
+  const farmList = useUser((state) => state.farms);
+  const currentFarmId = useUser((state) => state.currentFarmId);
 
   return (
     <>
       <div>hello:world</div>
-      <div>zustand: {count}</div>
-      <button onClick={increaseCount}>increase count</button>
-      <Link to={"operations"}>operations</Link>
+      <div>current farm: {farmList.find((f) => f.id === currentFarmId)?.name}</div>
     </>
   );
 }
 
-export default App;
+export default Map;

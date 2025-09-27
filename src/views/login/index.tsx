@@ -6,6 +6,16 @@ import style from "./index.module.css";
 
 import { request } from "@/utils/reqeust";
 
+type UserResult = {
+  code: number;
+  data: {
+    farms: FarmState[];
+    status: number;
+    token: string;
+    user: Omit<UserState, "farms" | "username"> & { name: string };
+  };
+  msg: string | null;
+};
 function Login() {
   // the part of username and password form
   const [username, setUsername] = useState<string>("");
@@ -23,6 +33,9 @@ function Login() {
     }
   };
 
+  // validate login status
+  const [responseWrong, setResponseWrong] = useState<"" | "internal" | "other">("");
+
   // set the user state and navigate back to dashboard
   const login = useUser().login;
   const navigate = useNavigate();
@@ -31,15 +44,34 @@ function Login() {
     e.preventDefault();
 
     // request for login
-    const res = await request.post("/user/login", {
-      username,
-      password,
-    });
+    try {
+      const res = await request.post<UserResult, { username: string; password: string }>(
+        "/user/login",
+        {
+          username,
+          password,
+        },
+      );
 
-    // set the global states, including user and farm
-    console.log(res);
-    // login(username, "user");
-    // navigate("/");
+      // set the global states about login
+      const handledData: UserState = {
+        username: res.data.user.name,
+        role: res.data.user.role,
+        farms: res.data.farms,
+        // <currentFarmId> may be undefined if the user don't have any farm
+        currentFarmId: res.data.farms[0]?.id,
+      };
+      login(handledData);
+      navigate("/");
+    } catch (err) {
+      // validate response status and show different informations
+      const status = String(err).split(" ").at(-1);
+      if (status === "500") {
+        setResponseWrong("internal");
+      } else {
+        setResponseWrong("other");
+      }
+    }
   };
 
   // TODO: avoid signing repeatedly
@@ -47,8 +79,6 @@ function Login() {
   const userStateName = useUser((state) => state.username);
   const [isSigned, setIsSigned] = useState<boolean>(false);
   useEffect(() => {
-    console.log(isSigned);
-
     setIsSigned(!!userStateName);
   }, []);
 
@@ -99,6 +129,14 @@ function Login() {
             type="submit">
             登陆
           </button>
+          {
+            <div className={style.login__tip}>
+              {responseWrong &&
+                (responseWrong === "internal"
+                  ? "请检查用户名密码或网络情况。"
+                  : "服务器出错，请练习管理员！")}
+            </div>
+          }
         </form>
       )}
       <div className={style.background}>

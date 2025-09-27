@@ -5,7 +5,7 @@ class Request {
   }
 
   buildNewUrl(path: string): URL {
-    return new URL(this.url + path.slice(1));
+    return new URL(this.url + path);
   }
 
   get<T>(path: string) {
@@ -34,11 +34,15 @@ class Request {
         method: "POST",
         headers: {
           Authorization: `Bearer a`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
       })
-        .then((fetchRes) => fetchRes.json())
-        .then((data: T) => {
+        .then((fetchRes) => {
+          if (!fetchRes.ok) throw new Error(String(fetchRes.status));
+          return fetchRes.json();
+        })
+        .then((data: T & { status: number }) => {
           res(data);
         })
         .catch((err: Error) => {
@@ -48,5 +52,5 @@ class Request {
   }
 }
 
-const SERVICE_URL = "https://map.archivemodel.cn";
+const SERVICE_URL = "https://map.archivemodel.cn/farmap";
 export const request = new Request(SERVICE_URL);
