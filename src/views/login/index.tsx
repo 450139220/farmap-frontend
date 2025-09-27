@@ -41,7 +41,9 @@ function Login() {
   const navigate = useNavigate();
   // submit this form
   const submitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    if (isSigning) return;
     e.preventDefault();
+    setIsSigning(true);
 
     // request for login
     try {
@@ -72,6 +74,8 @@ function Login() {
         setResponseWrong("other");
       }
     }
+
+    setIsSigning(false);
   };
 
   // TODO: avoid signing repeatedly
@@ -81,6 +85,9 @@ function Login() {
   useEffect(() => {
     setIsSigned(!!userStateName);
   }, []);
+
+  // validate if is signing
+  const [isSigning, setIsSigning] = useState<boolean>(false);
 
   return (
     <div className={style.container}>
@@ -126,11 +133,16 @@ function Login() {
           </label>
           <button
             className={style.form__button}
-            type="submit">
+            type="submit"
+            disabled={isSigning}>
             登陆
           </button>
           {
             <div className={style.login__tip}>
+              <div
+                className={`${style.login__circle} ${
+                  isSigning ? style["login__circle-active"] : ""
+                }`}></div>
               {responseWrong &&
                 (responseWrong === "internal"
                   ? "请检查用户名密码或网络情况。"
