@@ -2,10 +2,16 @@
   --background-color: #e8eaec;
   --background-color-radial: #d4d8db;
   --font-color: #2a3043;
+
+  --light-box: #ffffff;
+  --gray-box: #d0d6dd;
+
   --primary: #2e66e1;
   --success: #58aa65;
   --warning: #eaa052;
-  --danger: #de5330;
+  --danger: #de3030;
+
+  --primary-shadow: #849fd7;
 }
 
 body {

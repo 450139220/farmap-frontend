@@ -4,7 +4,7 @@ import style from "./index.module.css";
 import { useUser } from "@/store";
 
 function Layout() {
-  const user = useUser();
+  const username = useUser((state) => state.username);
   const navigate = useNavigate();
 
   // navigate to login page
@@ -35,9 +35,9 @@ function Layout() {
           ))}
         </div>
         <div className={style.login}>
-          {user.username ? (
+          {username ? (
             <span>
-              您好，<span className={style["login-success"]}>{user.username}</span>！
+              您好，<span className={style["login-success"]}>{username}</span>！
             </span>
           ) : (
             <span onClick={toLogin}>

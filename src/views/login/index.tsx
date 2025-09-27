@@ -1,7 +1,21 @@
 import { useUser } from "@/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
+import style from "./index.module.css";
+
+import { request } from "@/utils/reqeust";
+
+type UserResult = {
+  code: number;
+  data: {
+    farms: FarmState[];
+    status: number;
+    token: string;
+    user: Omit<UserState, "farms" | "username"> & { name: string };
+  };
+  msg: string | null;
+};
 function Login() {
   // the part of username and password form
   const [username, setUsername] = useState<string>("");
@@ -19,35 +33,117 @@ function Login() {
     }
   };
 
+  // validate login status
+  const [responseWrong, setResponseWrong] = useState<"" | "internal" | "other">("");
+
   // set the user state and navigate back to dashboard
   const login = useUser().login;
   const navigate = useNavigate();
   // submit this form
-  const submitLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const submitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(username, password);
-    login(username, "user");
-    navigate("/");
+
+    // request for login
+    try {
+      const res = await request.post<UserResult, { username: string; password: string }>(
+        "/user/login",
+        {
+          username,
+          password,
+        },
+      );
+
+      // set the global states about login
+      const handledData: UserState = {
+        username: res.data.user.name,
+        role: res.data.user.role,
+        farms: res.data.farms,
+        // <currentFarmId> may be undefined if the user don't have any farm
+        currentFarmId: res.data.farms[0]?.id,
+      };
+      login(handledData);
+      navigate("/");
+    } catch (err) {
+      // validate response status and show different informations
+      const status = String(err).split(" ").at(-1);
+      if (status === "500") {
+        setResponseWrong("internal");
+      } else {
+        setResponseWrong("other");
+      }
+    }
   };
 
+  // TODO: avoid signing repeatedly
+  // but here doesn't set states permanently or validate token automatically
+  const userStateName = useUser((state) => state.username);
+  const [isSigned, setIsSigned] = useState<boolean>(false);
+  useEffect(() => {
+    setIsSigned(!!userStateName);
+  }, []);
+
   return (
-    <form onSubmit={submitLogin}>
-      <input
-        type="text"
-        value={username}
-        data-type="username"
-        placeholder="请输入用户名..."
-        onChange={changeFormInput}
-      />
-      <input
-        type="password"
-        value={password}
-        data-type="password"
-        placeholder="请输入密码..."
-        onChange={changeFormInput}
-      />
-      <button type="submit">登陆</button>
-    </form>
+    <div className={style.container}>
+      <header>
+        <div className={style.logo}>
+          <img
+            className={style.logo__icon}
+            // src=""
+            alt="logo"
+          />
+          <span>FarMap 数字地图</span>
+        </div>
+      </header>
+      {isSigned ? (
+        <div>{userStateName}，您已登陆，请退出后重新登陆。</div>
+      ) : (
+        <form
+          className={style.form}
+          onSubmit={submitLogin}>
+          <label className={style.form__label}>
+            <span>用户名：</span>
+            <input
+              className={style.form__input}
+              type="text"
+              value={username}
+              maxLength={10}
+              data-type="username"
+              placeholder="请输入用户名..."
+              onChange={changeFormInput}
+            />
+          </label>
+          <label className={style.form__label}>
+            <span>密码：</span>
+            <input
+              className={style.form__input}
+              type="password"
+              value={password}
+              maxLength={20}
+              data-type="password"
+              placeholder="请输入密码..."
+              onChange={changeFormInput}
+            />
+          </label>
+          <button
+            className={style.form__button}
+            type="submit">
+            登陆
+          </button>
+          {
+            <div className={style.login__tip}>
+              {responseWrong &&
+                (responseWrong === "internal"
+                  ? "请检查用户名密码或网络情况。"
+                  : "服务器出错，请练习管理员！")}
+            </div>
+          }
+        </form>
+      )}
+      <div className={style.background}>
+        <div className={style.background__front}></div>
+        <div className={style.background__back}></div>
+      </div>
+    </div>
   );
 }
 
