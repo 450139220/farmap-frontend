@@ -1,6 +1,8 @@
 import { useUser } from "@/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+
+import style from "./index.module.css";
 
 function Login() {
   // the part of username and password form
@@ -30,24 +32,70 @@ function Login() {
     navigate("/");
   };
 
+  // TODO: avoid signing repeatedly
+  // but here doesn't set states permanently or validate token automatically
+  const userStateName = useUser((state) => state.username);
+  const [isSigned, setIsSigned] = useState<boolean>(false);
+  useEffect(() => {
+    console.log(isSigned);
+
+    setIsSigned(!!userStateName);
+  }, []);
+
   return (
-    <form onSubmit={submitLogin}>
-      <input
-        type="text"
-        value={username}
-        data-type="username"
-        placeholder="请输入用户名..."
-        onChange={changeFormInput}
-      />
-      <input
-        type="password"
-        value={password}
-        data-type="password"
-        placeholder="请输入密码..."
-        onChange={changeFormInput}
-      />
-      <button type="submit">登陆</button>
-    </form>
+    <div className={style.container}>
+      <header>
+        <div className={style.logo}>
+          <img
+            className={style.logo__icon}
+            // src=""
+            alt="logo"
+          />
+          <span>FarMap 数字地图</span>
+        </div>
+      </header>
+      {isSigned ? (
+        <div>{userStateName}，您已登陆，请退出后重新登陆。</div>
+      ) : (
+        <form
+          className={style.form}
+          onSubmit={submitLogin}>
+          <label className={style.form__label}>
+            <span>用户名：</span>
+            <input
+              className={style.form__input}
+              type="text"
+              value={username}
+              maxLength={10}
+              data-type="username"
+              placeholder="请输入用户名..."
+              onChange={changeFormInput}
+            />
+          </label>
+          <label className={style.form__label}>
+            <span>密码：</span>
+            <input
+              className={style.form__input}
+              type="password"
+              value={password}
+              maxLength={20}
+              data-type="password"
+              placeholder="请输入密码..."
+              onChange={changeFormInput}
+            />
+          </label>
+          <button
+            className={style.form__button}
+            type="submit">
+            登陆
+          </button>
+        </form>
+      )}
+      <div className={style.background}>
+        <div className={style.background__front}></div>
+        <div className={style.background__back}></div>
+      </div>
+    </div>
   );
 }
 
