@@ -1,0 +1,31 @@
+@import url("../../../index.css");
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.petal__container {
+  flex-shrink: 0;
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+.petal__center {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.petal {
+  transform-origin: 50% 50%;
+  transition: transform 0.3s ease;
+}
+
+/* TODO: layout the introduction text */
+.intro__text {
+  color: var(--light-font);
+}
