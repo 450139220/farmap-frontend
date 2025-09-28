@@ -4,9 +4,10 @@ import { useNavigate } from "react-router";
 
 import style from "./index.module.css";
 
-import { request } from "@/utils/reqeust";
+import { request, handleError } from "@/utils/reqeust";
+import { usePermanentUser, useToken } from "@/utils/permanence";
 
-type UserResult = {
+export type UserResult = {
   code: number;
   data: {
     farms: FarmState[];
@@ -45,6 +46,11 @@ function Login() {
     e.preventDefault();
     setIsSigning(true);
 
+    // set new token after login manually
+    const [_1, setToken] = useToken();
+    // and set the user data permanently
+    const [_2, setPermanenetUser] = usePermanentUser();
+
     // request for login
     try {
       const res = await request.post<UserResult, { username: string; password: string }>(
@@ -63,16 +69,21 @@ function Login() {
         // <currentFarmId> may be undefined if the user don't have any farm
         currentFarmId: res.data.farms[0]?.id,
       };
-      login(handledData);
+      setPermanenetUser(handledData);
+      setToken(res.data.token);
       navigate("/");
     } catch (err) {
       // validate response status and show different informations
-      const status = String(err).split(" ").at(-1);
-      if (status === "500") {
-        setResponseWrong("internal");
-      } else {
-        setResponseWrong("other");
-      }
+      handleError(
+        err,
+        "500",
+        () => {
+          setResponseWrong("internal");
+        },
+        () => {
+          setResponseWrong("other");
+        },
+      );
     }
 
     setIsSigning(false);

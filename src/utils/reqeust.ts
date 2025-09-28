@@ -8,16 +8,19 @@ class Request {
     return new URL(this.url + path);
   }
 
-  get<T>(path: string) {
+  get<T>(path: string, token: string = "") {
     const getUrl = this.buildNewUrl(path);
     return new Promise((res: (value: T) => void, rej: (reason: Error) => void): void => {
       fetch(getUrl, {
         method: "GET",
         headers: {
-          Authorization: `Bearer a`,
+          Authorization: `Bearer ${token}`,
         },
       })
-        .then((fetchRes) => fetchRes.json())
+        .then((fetchRes) => {
+          if (!fetchRes.ok) throw new Error(String(fetchRes.status));
+          return fetchRes.json();
+        })
         .then((data: T) => {
           res(data);
         })
@@ -53,4 +56,15 @@ class Request {
 }
 
 const SERVICE_URL = "https://map.archivemodel.cn/farmap";
+
+function handleError(err: unknown, code: string, equalToCode: () => void, other?: () => void) {
+  const status = String(err).split(" ").at(-1);
+  if (status === code) {
+    equalToCode();
+  } else {
+    if (other) other();
+  }
+}
+
 export const request = new Request(SERVICE_URL);
+export { handleError };

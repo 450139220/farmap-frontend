@@ -7,6 +7,10 @@ import { lazy, Suspense } from "react";
 import RouterLoading from "./RouterLoading";
 
 import Layout from "@/layout";
+import { handleError, request } from "@/utils/reqeust";
+import { usePermanentUser, useToken, validateToken } from "@/utils/permanence";
+import type { UserResult } from "@/views/login";
+import { useUser } from "@/store";
 
 // login page
 const Login = lazy(() => import("@/views/login"));
@@ -65,6 +69,43 @@ const routesWithLayout: RouteObject[] = [
     path: "/",
     Component: Layout,
     children: routes,
+    loader: async () => {
+      const { login } = useUser.getState();
+      const [token, _1] = useToken();
+      const [permanentUser, _2] = usePermanentUser();
+
+      const loginGuest = async () => {
+        try {
+          const res = await request.post<UserResult, { username: string; password: string }>(
+            "/user/login",
+            {
+              username: "guest",
+              password: "mei",
+            },
+          );
+          const guest: UserState = {
+            username: "",
+            role: "user",
+            farms: res.data.farms,
+            currentFarmId: res.data.farms[0].id,
+          };
+          login(guest);
+        } catch {
+          console.log("failed to login guest fake data");
+        }
+      };
+
+      try {
+        // login to real user if the token is valid and return
+        // always login to guest
+        // TODO: simplify the token validation api
+        await validateToken(token);
+        // use the permanent data
+        login(permanentUser!);
+      } catch (err) {
+        loginGuest();
+      }
+    },
   },
   {
     path: "/login",
