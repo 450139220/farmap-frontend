@@ -1,7 +1,9 @@
 :root {
   --background-color: #e8eaec;
   --background-color-radial: #d4d8db;
+
   --font-color: #2a3043;
+  --light-font: #d3d9db;
 
   --light-box: #ffffff;
   --gray-box: #d0d6dd;
