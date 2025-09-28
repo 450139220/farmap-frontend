@@ -1,7 +1,10 @@
 :root {
   --background-color: #e8eaec;
   --background-color-radial: #d4d8db;
+
   --font-color: #2a3043;
+  --gray-font: #434650;
+  --light-font: #8f929a;
 
   --light-box: #ffffff;
   --gray-box: #d0d6dd;

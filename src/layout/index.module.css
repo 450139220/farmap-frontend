@@ -23,11 +23,10 @@ header {
 .links {
   display: flex;
   gap: 1rem;
-  color: var(--font-color);
 }
 .link {
   position: relative;
-  color: var(--font-color);
+  color: var(--gray-font);
   transition: color 0.3s ease;
 }
 .link:hover {
