@@ -1,6 +1,10 @@
 @import url("../../../index.css");
 
 .container {
+  margin: 0 2rem;
+}
+
+.intro__container {
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -54,7 +54,7 @@ function WeatherIntroBox() {
   };
 
   return (
-    <div className={style.container}>
+    <div className={style.intro__container}>
       <div className={style.petal__container}>
         <div className={style.petal__center}></div>
         <svg
