@@ -17,7 +17,9 @@ function Weather() {
         <i className="ri-line-chart-fill"></i>
         &nbsp;&nbsp;积温曲线
       </div>
-      <TemperatureChart />
+      <div className="box">
+        <TemperatureChart />
+      </div>
     </div>
   );
 }

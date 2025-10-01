@@ -1,66 +1,116 @@
-import { useEffect, useRef, useState } from "react";
-
-import { useUser } from "@/store";
-import { useToken } from "@/utils/permanence";
-import { request } from "@/utils/reqeust";
+import * as echarts from "echarts";
 
 import style from "./index.module.css";
+import { useEffect, useRef, useState } from "react";
+import { request } from "@/utils/reqeust";
+import { useToken } from "@/utils/permanence";
+import { useUser } from "@/store";
 
-type AccumulatedTemp = {
+type AccTemp = {
   id: number;
   date: string;
   accTemp: number;
 };
-type YearlyAccTemp = {
-  last: AccumulatedTemp[];
-  thisYear: AccumulatedTemp[];
-};
 type AccTempResult = {
   code: number;
   msg: null;
-  data: YearlyAccTemp;
+  data: {
+    last: AccTemp[];
+    thisYear: AccTemp[];
+  };
 };
-function TemperatureChar() {
+function TemperatureChart() {
+  // inits
   const [token, _] = useToken();
   const farmId = useUser((state) => state.currentFarmId);
   const farmType = useUser((state) => state.farms).find((f) => f.id === farmId)?.type;
 
-  // store the accumulated temperature data
-  const [accTemp, setAccTemp] = useState<YearlyAccTemp>({ last: [], thisYear: [] });
+  // for painting
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [lastAccTemp, setLastAccTemp] = useState<AccTemp[]>([]);
+  const [thisAccTemp, setThisAccTemp] = useState<AccTemp[]>([]);
+
+  // show up while failed to fetch data
+  const [tip, setTip] = useState<boolean>(false);
+
   useEffect(() => {
-    // fetch data
     request
       .get<AccTempResult>(`/weather/accumulated-temperature?farmType=${farmType}`, token)
       .then((data) => {
-        setAccTemp(data.data);
-      });
+        setLastAccTemp(data.data.last);
+        setThisAccTemp(data.data.thisYear);
 
-    // draw canvas
-    if (canvasRef.current) {
-      const chart = new AccTempChart(canvasRef.current);
-      chart.see();
-    }
+        setTip(false);
+      })
+      .catch(() => {
+        setTip(true);
+      });
   }, []);
 
-  class AccTempChart {
-    private canvas: HTMLCanvasElement;
-    private ctx: CanvasRenderingContext2D | null;
-    constructor(canvas: HTMLCanvasElement) {
-      this.canvas = canvas;
-      this.ctx = canvas.getContext("2d");
-    }
-    see() {
-      console.log(this.canvas);
-    }
-  }
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const chart = echarts.init(containerRef.current);
+    chart.setOption({
+      title: {
+        text: "两年积温对照曲线图",
+      },
+      legend: {
+        bottom: 0,
+        data: ["去年曲线", "今年曲线"],
+      },
+      tooltip: {
+        trigger: "axis",
+      },
+      grid: {
+        top: 20,
+        bottom: 20,
+        left: 20,
+        right: 20,
+        containLabel: true,
+      },
+      xAxis: {
+        data: lastAccTemp.map((t) => t.date),
+      },
+      yAxis: {
+        type: "value",
+        min: "dataMin",
+      },
+      series: [
+        {
+          name: "去年曲线",
+          type: "line",
+          data: lastAccTemp.map((t) => t.accTemp),
+          areaStyle: {
+            color: "rgba(0, 123, 255, 0.2)",
+          },
+        },
+        {
+          name: "今年曲线",
+          type: "line",
+          data: thisAccTemp.map((t) => t.accTemp),
+          areaStyle: {
+            color: "rgba(0, 128, 0, 0.2)",
+          },
+        },
+      ],
+    });
+    return () => {
+      chart.dispose();
+    };
+  }, [lastAccTemp, thisAccTemp]);
   return (
-    <canvas
-      ref={canvasRef}
-      className={style.canvas__contaienr}
-      height={300}></canvas>
+    <>
+      {tip ? (
+        <div className={style.tip}>获取数据错误，请检查网络或联系管理员！</div>
+      ) : (
+        <div
+          ref={containerRef}
+          className={style.chart__container}>
+          11
+        </div>
+      )}
+    </>
   );
 }
 
-export default TemperatureChar;
+export default TemperatureChart;

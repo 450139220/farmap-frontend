@@ -20,17 +20,25 @@ function WeatherIntroBox() {
   const [token, _] = useToken();
   const farmId = useUser((state) => state.currentFarmId);
 
+  const [tip, setTip] = useState<boolean>(false);
+
   // store introductions
   const [introList, setIntroList] = useState<WeatherIntro[]>([]);
   useEffect(() => {
-    request.get<WeatherIntroResult>(`/weather/intro?farmId=${farmId}`, token).then((res) => {
-      // this is for reshaping the strange response structure
-      const list: WeatherIntro[] = [];
-      res.data.intro.forEach((i) => {
-        list.push(...i);
+    request
+      .get<WeatherIntroResult>(`/weather/intro?farmId=${farmId}`, token)
+      .then((res) => {
+        // this is for reshaping the strange response structure
+        const list: WeatherIntro[] = [];
+        res.data.intro.forEach((i) => {
+          list.push(...i);
+        });
+        setIntroList(list);
+        setTip(false);
+      })
+      .catch(() => {
+        setTip(true);
       });
-      setIntroList(list);
-    });
   }, []);
 
   // 12 months
@@ -55,60 +63,66 @@ function WeatherIntroBox() {
 
   return (
     <div className={style.intro__container}>
-      <div className={style.petal__container}>
-        <div className={style.petal__center}></div>
-        <svg
-          width={200}
-          height={200}
-          viewBox="0 0 200 200">
-          {months.map((m) => {
-            const angle = (m.id - 1) * 30;
-            const r = 80;
-            const cx = 100;
-            const cy = 100;
+      {tip ? (
+        <div className={style.tip}>获取数据错误，请检查网络或联系管理员！</div>
+      ) : (
+        <>
+          <div className={style.petal__container}>
+            <div className={style.petal__center}></div>
+            <svg
+              width={200}
+              height={200}
+              viewBox="0 0 200 200">
+              {months.map((m) => {
+                const angle = (m.id - 1) * 30;
+                const r = 80;
+                const cx = 100;
+                const cy = 100;
 
-            // calculate petal position and rotation
-            const x = cx + r * Math.sin(((angle - 1) * Math.PI) / 180);
-            const y = cy - r * Math.cos(((angle - 1) * Math.PI) / 180);
-            const lx = cx + r * Math.sin(((angle - 30) * Math.PI) / 180);
-            const ly = cy - r * Math.cos(((angle - 30) * Math.PI) / 180);
+                // calculate petal position and rotation
+                const x = cx + r * Math.sin(((angle - 1) * Math.PI) / 180);
+                const y = cy - r * Math.cos(((angle - 1) * Math.PI) / 180);
+                const lx = cx + r * Math.sin(((angle - 30) * Math.PI) / 180);
+                const ly = cy - r * Math.cos(((angle - 30) * Math.PI) / 180);
 
-            // calculate text position and rotation
-            const textRadius = r * 0.7;
-            const textAngle = angle - 15; // middle angle of the petal sector
-            const textX = cx + textRadius * Math.sin((textAngle * Math.PI) / 180);
-            const textY = cy - textRadius * Math.cos((textAngle * Math.PI) / 180);
-            const rotation = textAngle;
+                // calculate text position and rotation
+                const textRadius = r * 0.7;
+                const textAngle = angle - 15; // middle angle of the petal sector
+                const textX = cx + textRadius * Math.sin((textAngle * Math.PI) / 180);
+                const textY = cy - textRadius * Math.cos((textAngle * Math.PI) / 180);
+                const rotation = textAngle;
 
-            return (
-              <g key={m.id}>
-                <path
-                  d={`M${cx} ${cy} L${lx} ${ly} A${r} ${r} 0 0 1 ${x} ${y} Z`}
-                  fill={colorGroup[m.colorIndex]}
-                  className={style.petal}
-                  style={{ transform: m.id === introIndex ? "scale(1.1)" : "" }}
-                  onClick={() => {
-                    changeintroIndex(m.id);
-                  }}
-                />
-                <text
-                  x={textX}
-                  y={textY}
-                  textAnchor="middle"
-                  fontSize={16}
-                  fill="var(--light-box)"
-                  transform={`rotate(${rotation} ${textX} ${textY})`}
-                  pointerEvents={"none"}>
-                  {m.name}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
-      </div>
-      <div className={style.intro__text}>
-        {introList.length !== 0 && <div>{introList[introIndex].text}</div>}
-      </div>
+                return (
+                  <g key={m.id}>
+                    <path
+                      d={`M${cx} ${cy} L${lx} ${ly} A${r} ${r} 0 0 1 ${x} ${y} Z`}
+                      fill={colorGroup[m.colorIndex]}
+                      className={style.petal}
+                      style={{ transform: m.id === introIndex ? "scale(1.1)" : "" }}
+                      onClick={() => {
+                        changeintroIndex(m.id);
+                      }}
+                    />
+                    <text
+                      x={textX}
+                      y={textY}
+                      textAnchor="middle"
+                      fontSize={16}
+                      fill="var(--light-box)"
+                      transform={`rotate(${rotation} ${textX} ${textY})`}
+                      pointerEvents={"none"}>
+                      {m.name}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+          <div className={style.intro__text}>
+            {introList.length !== 0 && <div>{introList[introIndex].text}</div>}
+          </div>
+        </>
+      )}
     </div>
   );
 }
