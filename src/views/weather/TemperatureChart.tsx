@@ -45,6 +45,10 @@ function TemperatureChart() {
       .catch(() => {
         setTip(true);
       });
+
+    if (window.innerWidth >= 1000) {
+      console.log(123);
+    }
   }, []);
 
   useEffect(() => {
@@ -105,9 +109,7 @@ function TemperatureChart() {
       ) : (
         <div
           ref={containerRef}
-          className={style.chart__container}>
-          11
-        </div>
+          className={style.chart__container}></div>
       )}
     </>
   );
