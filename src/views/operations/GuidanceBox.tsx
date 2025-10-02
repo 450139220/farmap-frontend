@@ -39,7 +39,7 @@ const GuidanceBox = ({
             </div>
           ))}
       </div>
-      <div className={style.line}></div>
+      <div className="line"></div>
     </>
   );
 };

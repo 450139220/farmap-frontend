@@ -71,8 +71,8 @@ const routesWithLayout: RouteObject[] = [
     children: routes,
     loader: async () => {
       const { login } = useUser.getState();
-      const [token, _1] = useToken();
-      const [permanentUser, _2] = usePermanentUser();
+      const [token, setToken] = useToken();
+      const [permanentUser, _] = usePermanentUser();
 
       const loginGuest = async () => {
         try {
@@ -89,6 +89,7 @@ const routesWithLayout: RouteObject[] = [
             farms: res.data.farms,
             currentFarmId: res.data.farms[0].id,
           };
+          setToken(res.data.token);
           login(guest);
         } catch {
           console.log("failed to login guest fake data");

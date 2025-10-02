@@ -16,6 +16,11 @@
   --danger: #de3030;
 
   --primary-shadow: #849fd7;
+
+  --title-font-size: 1.2rem;
+  --title-icon-size: 1.4rem;
+
+  --box-border-radius: 2rem;
 }
 
 body {
@@ -37,4 +42,24 @@ button {
   border: none;
   background-color: unset;
   cursor: pointer;
+}
+
+.box {
+  padding: 1rem 2rem;
+  border-radius: var(--box-border-radius);
+  background-color: var(--gray-box);
+}
+.line {
+  height: 1px;
+  margin: 1rem 2rem;
+  background-color: var(--gray-box);
+}
+
+.title {
+  font-size: var(--title-font-size);
+  color: var(--font-color);
+}
+.title > i {
+  font-size: var(--title-icon-size);
+  color: var(--primary);
 }

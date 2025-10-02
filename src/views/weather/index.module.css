@@ -1,0 +1,85 @@
+@import url("../../../index.css");
+
+.container {
+  margin: 0 2rem;
+}
+
+.intro__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.petal__container {
+  flex-shrink: 0;
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+.petal__center {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.petal {
+  transform-origin: 50% 50%;
+  transition: transform 0.3s ease;
+}
+
+/* TODO: layout the introduction text */
+.intro__text {
+  color: var(--light-font);
+}
+
+.tip {
+  color: var(--danger);
+}
+.chart__container {
+  width: 100%;
+  height: 300px;
+}
+
+.prediction__container {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+.prediction__title {
+  font-size: 1rem;
+  color: var(--font-color);
+}
+.normal__container {
+  /* display: flex; */
+  columns: 2;
+}
+
+@media (min-width: 1000px) {
+  .container {
+    display: flex;
+    gap: 1rem;
+  }
+  .content__left {
+    flex: 0 0 500px;
+  }
+  .content__right {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .chart__container-special {
+    padding: 1rem 2rem;
+    border-radius: var(--box-border-radius);
+    background-color: var(--gray-box);
+    height: 100%;
+  }
+  .chart__container {
+    height: 100%;
+  }
+}
