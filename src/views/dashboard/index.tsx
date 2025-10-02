@@ -1,13 +1,20 @@
 import { useUser } from "@/store";
 
+import MapContainer from "./Map";
+import Slider from "./Slider";
+import InfoWindow from "./InfoWindow";
+import Upload from "./Upload";
+
 function Map() {
   const farmList = useUser((state) => state.farms);
   const currentFarmId = useUser((state) => state.currentFarmId);
 
   return (
     <>
-      <div>hello:world</div>
-      <div>current farm: {farmList.find((f) => f.id === currentFarmId)?.name}</div>
+      <MapContainer />
+      <Slider />
+      <InfoWindow />
+      <Upload />
     </>
   );
 }
