@@ -1,21 +1,34 @@
-import { useUser } from "@/store";
-
 import MapContainer from "./Map";
-import Slider from "./Slider";
 import InfoWindow from "./InfoWindow";
 import Upload from "./Upload";
 
+import style from "./index.module.css";
+import { useEffect, useState } from "react";
+import { useUser } from "@/store";
+import Selector from "./Selector";
+import Slider from "./Slider";
+
 function Map() {
-  const farmList = useUser((state) => state.farms);
+  // farm initial states
   const currentFarmId = useUser((state) => state.currentFarmId);
+  const farms = useUser((state) => state.farms);
+  const currentFarm = farms.find((f) => f.id === currentFarmId);
 
   return (
-    <>
-      <MapContainer />
-      <Slider />
+    <div className={style.container}>
+      <div className="box">
+        <div className={style.selector__container}>
+          <Selector />
+          <Selector />
+          <Selector />
+        </div>
+      </div>
+      <MapContainer farm={currentFarm!} />
+      {/* <Slider /> */}
+
       <InfoWindow />
       <Upload />
-    </>
+    </div>
   );
 }
 

@@ -38,6 +38,7 @@ declare global {
   };
   type UserAction = {
     login: (data: UserState) => void;
+    selectFarm: (id: number) => void;
   };
 }
 
