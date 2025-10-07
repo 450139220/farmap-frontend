@@ -6,7 +6,7 @@ import InfoWindow from "./InfoWindow";
 import Upload from "./Upload";
 
 import style from "./index.module.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "@/store";
 
 export type MapSelectors = {
@@ -20,6 +20,7 @@ export type MapSelectors = {
 function Map() {
   // farm initial states
   const currentFarmId = useUser((state) => state.currentFarmId);
+
   // these two values are also the farm options and selected farm for selector
   const farms = useUser((state) => state.farms);
   const currentFarm = farms.find((f) => f.id === currentFarmId);
@@ -56,8 +57,13 @@ function Map() {
     },
     decimal: true,
     onChangeEnd(leftValue, rightValue) {
-      // TODO: handle map re-renderring here
-      console.log(leftValue, rightValue);
+      setSliderStates((p) => ({
+        ...p,
+        value: {
+          left: leftValue,
+          right: rightValue,
+        },
+      }));
     },
   });
 
@@ -119,7 +125,13 @@ function Map() {
           </div>
         )}
       </div>
-      {currentFarm && <MapContainer farm={currentFarm!} />}
+      {currentFarm && (
+        <MapContainer
+          farm={currentFarm!}
+          selector={{ selectedMode, selectedInfo }}
+          slider={{ left: sliderStates.value.left, right: sliderStates.value.right }}
+        />
+      )}
 
       <InfoWindow />
       <Upload />

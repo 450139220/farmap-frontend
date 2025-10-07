@@ -1,4 +1,4 @@
-import type { CropTypes } from "@/views/dashboard/Map";
+import type { MapSelectors } from "@/views/dashboard";
 
 let map: AMap.Map | null = null;
 function setMap(newMap: AMap.Map) {
@@ -21,16 +21,15 @@ function createMap(farm: FarmState): AMap.Map {
     mapStyle: "amap://styles/whitesmoke",
   });
 }
-// TODO: update this logic
 function createMarkers(
   crops: Crop[],
-  infoMode: CropTypes,
+  infoOptions: MapSelectors["infoOptions"],
   left: number,
   right: number,
 ): AMap.Marker[] {
   return crops.map((c) => {
     const content = `<div class="map__marker" style="background-color: ${calculateColor(
-      c[infoMode],
+      c[infoOptions],
       left,
       right,
     )}"></div>`;
