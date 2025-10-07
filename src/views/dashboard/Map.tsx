@@ -47,7 +47,7 @@ function MapContainer(props: MapProps) {
     const map = useMap();
     if (!map) return;
     paintOnMap(map);
-  }, [props.slider.left, props.slider.right]);
+  }, [props.selector.selectedMode, props.slider.left, props.slider.right]);
 
   function paintOnMap(map: AMap.Map): void {
     if (props.selector.selectedMode === "crop") {
