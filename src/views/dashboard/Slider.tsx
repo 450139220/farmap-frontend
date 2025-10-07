@@ -22,21 +22,27 @@ export type SliderProps = {
     max: number;
   };
   decimal: boolean;
-  onChange: (value: number, type: "left" | "right") => void;
+  onChangeEnd: (leftValue: number, rightValue: number) => void;
 };
 function Slider(props: SliderProps) {
-  // set initial position through props
+  // set initial position and scale through props
+  const scale = props.scale.max - props.scale.min;
   const [position, setPosition] = useState<SliderPrivateProps["position"]>({
     left: ((props.value.left - props.scale.min) / (props.scale.max - props.scale.min)) * 100,
     right: ((props.value.right - props.scale.min) / (props.scale.max - props.scale.min)) * 100,
   });
 
   // move dots for initiation
+  const latestPosition = useRef<SliderPrivateProps["position"]>({ left: 0, right: 0 });
   useEffect(() => {
-    setPosition({
+    const newPosition = {
       left: ((props.value.left - props.scale.min) / (props.scale.max - props.scale.min)) * 100,
       right: ((props.value.right - props.scale.min) / (props.scale.max - props.scale.min)) * 100,
-    });
+    };
+    // set position for locating
+    setPosition(newPosition);
+    // latest position for displaying on dots
+    latestPosition.current = newPosition;
   }, [props.value, props.scale]);
 
   // get references of container and target
@@ -45,29 +51,19 @@ function Slider(props: SliderProps) {
   const rightTarget = useRef<HTMLDivElement | null>(null);
   const currentTarget = useRef<HTMLDivElement | null>(null);
 
-  // init position
-  useEffect(() => {
-    if (!leftTarget.current || !rightTarget.current) return;
-    leftTarget.current.style.left = `${position.left}%`;
-    rightTarget.current.style.left = `${position.right}%`;
-  }, []);
-
   // events
   const isDragging = useRef(false);
   const handlePointerMove = (e: PointerEvent) => {
     if (!isDragging.current || !sliderContainer.current) return;
-
     // get the denominator of calculated left
     const containerRect = sliderContainer.current.getBoundingClientRect();
     const containerLeft = containerRect.left;
     const containerWidth = containerRect.width;
     // get the numerator of calculcated left
     const pointLeft = e.clientX;
-
     // calculate left
     const type = currentTarget.current!.getAttribute("data-type") as "left" | "right";
-    let changing = type;
-    let calculatedLeft =
+    const calculatedLeft =
       type === "left"
         ? Math.max(
             0,
@@ -77,20 +73,23 @@ function Slider(props: SliderProps) {
             position.left,
             Math.min(((pointLeft - containerLeft) / containerWidth) * 100, 100),
           );
-    // set position state
-    setPosition((p) => ({
-      left: changing === "left" ? calculatedLeft : p.left,
-      right: changing === "right" ? calculatedLeft : p.right,
-    }));
-
-    // trigger change event to modify values
-    const scale = props.scale.max - props.scale.min;
-    props.onChange((calculatedLeft / 100) * scale + props.scale.min, type);
+    // set new position
+    const newPosition = {
+      left: type === "left" ? calculatedLeft : position.left,
+      right: type === "right" ? calculatedLeft : position.right,
+    };
+    setPosition(newPosition);
+    // set latest position for using
+    latestPosition.current = newPosition;
   };
   const handlePointerUp = () => {
     currentTarget.current = null;
     isDragging.current = false;
-
+    // trigger change end event to modify outer states
+    const leftValue = (latestPosition.current.left / 100) * scale + props.scale.min;
+    const rightValue = (latestPosition.current.right / 100) * scale + props.scale.min;
+    props.onChangeEnd(leftValue, rightValue);
+    // remove events from window object
     window.removeEventListener("pointermove", handlePointerMove);
     window.removeEventListener("pointerup", handlePointerUp);
   };
@@ -103,8 +102,8 @@ function Slider(props: SliderProps) {
     // adapt z-index
     const type = target.getAttribute("data-type") as "left" | "right";
     upperDot.current = type;
-
     isDragging.current = true;
+    // add events to window object
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("pointerup", handlePointerUp);
   };
@@ -126,14 +125,22 @@ function Slider(props: SliderProps) {
         <div
           className={style.slider__dot}
           data-type="left"
-          data-value={!props.decimal ? Math.floor(props.value.left) : props.value.left.toFixed(2)}
+          data-value={
+            !props.decimal
+              ? Math.floor((latestPosition.current.left / 100) * scale + props.scale.min)
+              : ((latestPosition.current.left / 100) * scale + props.scale.min).toFixed(2)
+          }
           ref={leftTarget}
           style={{ left: `${position.left}%`, zIndex: `${upperDot.current === "left" ? 1 : 0}` }}
           onPointerDown={handlePointerDown}></div>
         <div
           className={style.slider__dot}
           data-type="right"
-          data-value={!props.decimal ? Math.floor(props.value.right) : props.value.right.toFixed(2)}
+          data-value={
+            !props.decimal
+              ? Math.floor((latestPosition.current.right / 100) * scale + props.scale.min)
+              : ((latestPosition.current.right / 100) * scale + props.scale.min).toFixed(2)
+          }
           ref={rightTarget}
           style={{ left: `${position.right}%`, zIndex: `${upperDot.current === "right" ? 1 : 0}` }}
           onPointerDown={handlePointerDown}></div>
