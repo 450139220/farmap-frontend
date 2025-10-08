@@ -18,22 +18,26 @@ function InfoWindow(props: InfoWindowProps) {
     <div className={`box ${style.infowindow__container}`}>
       <div className={style.infowindow__data}>
         <span>作物数据：</span>
-        <div className={style.infowindow__datacontent}>
-          <div>更新日期：{props.date}</div>
-          <div className={style.infowindow__infocontent}>
-            <span>
-              病虫害种类：
-              {props.info.diseases === "none" || !props.info.diseases
-                ? "暂无"
-                : props.info.diseases}
-            </span>
-            <span>病虫害率：{props.info.rate} %</span>
+        {props.id === -1 ? (
+          <div>请选择作物</div>
+        ) : (
+          <div className={style.infowindow__datacontent}>
+            <div>更新日期：{props.date}</div>
+            <div className={style.infowindow__infocontent}>
+              <span>
+                病虫害种类：
+                {props.info.diseases === "none" || !props.info.diseases
+                  ? "暂无"
+                  : props.info.diseases}
+              </span>
+              <span>病虫害率：{props.info.rate} %</span>
+            </div>
+            <div className={style.infowindow__infocontent}>
+              <span>冠层大小：{props.info.size} 米</span>
+              <span>产量数量：{props.info.yield} 颗</span>
+            </div>
           </div>
-          <div className={style.infowindow__infocontent}>
-            <span>冠层大小：{props.info.size} 米</span>
-            <span>产量数量：{props.info.yield} 颗</span>
-          </div>
-        </div>
+        )}
       </div>
       <div className={style.infowindow__img}>
         <div>详细展示：</div>

@@ -138,7 +138,6 @@ function Map() {
 
   return (
     <div className={style.container}>
-      <Slider {...sliderStates} />
       <div className="box">
         {currentFarm && (
           <div className={style.selector__container}>
@@ -175,6 +174,7 @@ function Map() {
           slider={{ left: sliderStates.value.left, right: sliderStates.value.right }}
         />
       )}
+      <Slider {...sliderStates} />
 
       <div className={style.info__upload__container}>
         <InfoWindow {...selectedMarker} />

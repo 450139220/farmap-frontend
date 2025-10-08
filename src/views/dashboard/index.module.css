@@ -112,3 +112,13 @@
 .infowindow__img {
   margin-top: 1rem;
 }
+
+@media (min-width: 1000px) {
+  .info__upload__container {
+    display: flex;
+    gap: 1rem;
+  }
+  .infowindow__container {
+    flex: 0 0 50%;
+  }
+}
