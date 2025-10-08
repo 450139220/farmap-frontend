@@ -12,6 +12,10 @@ const useUser = create<UserState & UserAction>((set) => ({
       farms: data.farms,
       currentFarmId: data.currentFarmId,
     })),
+  selectFarm: (id) =>
+    set(() => ({
+      currentFarmId: id,
+    })),
 }));
 
 export { useUser };

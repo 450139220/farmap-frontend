@@ -30,7 +30,7 @@
   width: 100%;
   height: 500px;
   margin-top: 1rem;
-  border: none;
+  border: 1px solid var(--light-box);
   border-radius: 1rem;
   background-color: var(--gray-box);
 }

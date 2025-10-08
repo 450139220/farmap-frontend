@@ -1,6 +1,6 @@
 :root {
   --background-color: #e8eaec;
-  --background-color-radial: #d4d8db;
+  --background-color-radial: #b8bdc0;
 
   --font-color: #2a3043;
   --gray-font: #434650;
@@ -20,7 +20,7 @@
   --title-font-size: 1.2rem;
   --title-icon-size: 1.4rem;
 
-  --box-border-radius: 2rem;
+  --box-border-radius: 1rem;
 }
 
 body {
@@ -46,6 +46,7 @@ button {
 
 .box {
   padding: 1rem 2rem;
+  border: 1px solid var(--light-box);
   border-radius: var(--box-border-radius);
   background-color: var(--gray-box);
 }
@@ -62,4 +63,10 @@ button {
 .title > i {
   font-size: var(--title-icon-size);
   color: var(--primary);
+}
+
+.map__marker {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
 }

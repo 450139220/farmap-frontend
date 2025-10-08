@@ -72,7 +72,7 @@ const routesWithLayout: RouteObject[] = [
     loader: async () => {
       const { login } = useUser.getState();
       const [token, setToken] = useToken();
-      const [permanentUser, _] = usePermanentUser();
+      const [permanentUser, setPermanentUser] = usePermanentUser();
 
       const loginGuest = async () => {
         try {
@@ -91,6 +91,7 @@ const routesWithLayout: RouteObject[] = [
           };
           setToken(res.data.token);
           login(guest);
+          setPermanentUser(guest);
         } catch {
           console.log("failed to login guest fake data");
         }

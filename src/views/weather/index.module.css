@@ -38,8 +38,11 @@
   color: var(--danger);
 }
 .chart__container {
-  width: 100%;
   height: 300px;
+  padding: 1rem 2rem;
+  border: 1px solid var(--light-box);
+  border-radius: var(--box-border-radius);
+  background-color: var(--gray-box);
 }
 
 .prediction__container {
@@ -74,12 +77,9 @@
     flex-direction: column;
   }
   .chart__container-special {
-    padding: 1rem 2rem;
-    border-radius: var(--box-border-radius);
-    background-color: var(--gray-box);
     height: 100%;
   }
   .chart__container {
-    height: 100%;
+    height: 500px;
   }
 }

@@ -1,7 +1,7 @@
 declare global {
   type Crop = {
     date: string;
-    disease: string;
+    diseases: string;
     id: number;
     latitude: number;
     longitude: number;
@@ -38,6 +38,7 @@ declare global {
   };
   type UserAction = {
     login: (data: UserState) => void;
+    selectFarm: (id: number) => void;
   };
 }
 

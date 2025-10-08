@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@amap/amap-jsapi-loader": "^1.0.1",
+    "@amap/amap-jsapi-types": "^0.0.15",
     "echarts": "^6.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

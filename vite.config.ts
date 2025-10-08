@@ -1,12 +1,15 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import path, { resolve } from "node:path";
+import path from "node:path";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
     open: true,
+    // usable in local area network
+    host: true,
+    port: 5173,
   },
   resolve: {
     alias: {
