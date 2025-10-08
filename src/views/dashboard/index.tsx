@@ -167,13 +167,13 @@ function Map() {
           </div>
         )}
       </div>
-      {currentFarm && (
+      {/* {currentFarm && (
         <MapContainer
           farm={currentFarm!}
           selector={{ selectedMode, selectedInfo }}
           slider={{ left: sliderStates.value.left, right: sliderStates.value.right }}
         />
-      )}
+      )} */}
       <Slider {...sliderStates} />
 
       <div className={style.info__upload__container}>

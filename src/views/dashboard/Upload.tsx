@@ -1,5 +1,6 @@
 import { request } from "@/utils/reqeust";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import style from "./index.module.css";
 
 function Upload() {
   const [files, setFiles] = useState<File[]>([]);
@@ -13,7 +14,11 @@ function Upload() {
     const validFiles = selectedFiles.filter(
       (file) => FILE_TYPES.includes(file.type) && file.size <= FILE_SIZE,
     );
-    setFiles(validFiles);
+    setFiles(files.concat(validFiles));
+  };
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const handleSelectFiles = (): void => {
+    fileInputRef.current?.click();
   };
 
   const uploadFiles = () => {
@@ -27,6 +32,7 @@ function Upload() {
         async (position) => {
           const { latitude, longitude } = position.coords;
           console.log(latitude, longitude);
+          // TODO: upload file here
           const res = await request.post<any>("/", formData);
           console.log(res);
         },
@@ -44,26 +50,56 @@ function Upload() {
     }
   };
   return (
-    <div>
+    <div className={`box ${style.upload__container}`}>
+      <div style={{ color: "var(--light-font)", marginBottom: "1rem" }}>
+        建议上传 3-5 张图片，且每张图片大小不要超过{" "}
+        <span style={{ color: "var(--warning)" }}>5MB</span>。
+      </div>
       <input
+        style={{ display: "none" }}
+        ref={fileInputRef}
         type="file"
         multiple
-        accept=".png,.jpg,.jpeg,.pdf"
+        accept=".png,.jpg,.jpeg"
         onChange={handleFilesChange}
       />
-      <button
-        onClick={uploadFiles}
-        disabled={files.length === 0}>
-        Upload
-      </button>
+      <div className={style.button__container}>
+        <button
+          className={style.select__button}
+          onClick={handleSelectFiles}>
+          选择文件
+        </button>
+        <button
+          className={style.upload__button}
+          onClick={uploadFiles}
+          disabled={files.length === 0}>
+          上传文件并处理
+        </button>
+      </div>
 
-      <ul>
+      {/* 图片预览 */}
+      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "1rem" }}>
         {files.map((file) => (
-          <li key={file.name}>
-            {file.name} ({(file.size / 1024).toFixed(2)} KB)
-          </li>
+          <img
+            key={file.name}
+            src={URL.createObjectURL(file)}
+            alt={file.name}
+            onClick={() => {
+              setFiles(files.filter((f) => f !== file));
+            }}
+            style={{
+              width: "100px",
+              height: "100px",
+              objectFit: "cover",
+            }}
+          />
         ))}
-      </ul>
+      </div>
+      {files.length !== 0 && (
+        <div style={{ color: "var(--light-font)", fontSize: "0.8rem", marginTop: "1rem" }}>
+          点击图片以删除。
+        </div>
+      )}
     </div>
   );
 }
