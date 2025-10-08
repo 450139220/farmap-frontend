@@ -2,12 +2,13 @@ import Selector from "./Selector";
 import MapContainer from "./Map";
 import Slider from "./Slider";
 import type { SliderProps } from "./Slider";
-import InfoWindow from "./InfoWindow";
+import InfoWindow, { type InfoWindowProps } from "./InfoWindow";
 import Upload from "./Upload";
 
 import style from "./index.module.css";
 import { useEffect, useState } from "react";
 import { useUser } from "@/store";
+import { addEventToMarkers, removeEventToMarkers } from "@/utils/map";
 
 export type MapSelectors = {
   // TODO: <farmOptions> type needs to be changed
@@ -93,6 +94,48 @@ function Map() {
     }));
   }
 
+  // content to information window
+  const [selectedMarker, setSelectedMarker] = useState<InfoWindowProps>({
+    id: -1,
+    date: "",
+    url: "",
+    info: {
+      diseases: "",
+      rate: -1,
+      size: -1,
+      yield: -1,
+    },
+  });
+  useEffect(() => {
+    addEventToMarkers(clickMarkerContainer);
+    return () => {
+      removeEventToMarkers(clickMarkerContainer);
+    };
+  }, []);
+
+  function clickMarkerContainer(e: MouseEvent): void {
+    const target = e.target as HTMLDivElement;
+    if (!target) return;
+    const value = Number(target.getAttribute("data-value"));
+    if (!value) return;
+    const crop = currentFarm?.crops.find((c) => c.id === value);
+    if (!crop) return;
+    console.log(crop);
+
+    setSelectedMarker({
+      id: value,
+      date: crop.date,
+      url: crop.url,
+      // TODO: the same as LINE_16
+      info: {
+        diseases: crop.diseases,
+        rate: crop.rate,
+        size: crop.size,
+        yield: crop.yield,
+      },
+    });
+  }
+
   return (
     <div className={style.container}>
       <Slider {...sliderStates} />
@@ -133,8 +176,10 @@ function Map() {
         />
       )}
 
-      <InfoWindow />
-      <Upload />
+      <div className={style.info__upload__container}>
+        <InfoWindow {...selectedMarker} />
+        <Upload />
+      </div>
     </div>
   );
 }

@@ -91,3 +91,24 @@
   text-align: center;
   transform: translateX(-50%);
 }
+
+/* .info__upload__container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+} */
+
+.infowindow__container {
+  color: var(--light-font);
+}
+.infowindow__datacontent {
+  font-size: 0.9rem;
+}
+.infowindow__infocontent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.infowindow__img {
+  margin-top: 1rem;
+}

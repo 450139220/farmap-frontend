@@ -28,11 +28,9 @@ function createMarkers(
   right: number,
 ): AMap.Marker[] {
   return crops.map((c) => {
-    const content = `<div class="map__marker" style="background-color: ${calculateColor(
-      c[infoOptions],
-      left,
-      right,
-    )}"></div>`;
+    const content = `<div class="map__marker" data-value=${
+      c.id
+    } style="background-color: ${calculateColor(c[infoOptions], left, right)}"></div>`;
     const position = new AMap.LngLat(c.longitude, c.latitude);
     return new AMap.Marker({
       position,
@@ -41,10 +39,23 @@ function createMarkers(
   });
 }
 function drawMarkers(map: AMap.Map, markers: AMap.Marker[]): void {
+  // reset
   map.clearMap();
+
   for (const marker of markers) {
     map.add(marker);
   }
+}
+
+function addEventToMarkers(event: (e: MouseEvent) => void): void {
+  const markerContainer = document.querySelector(".amap-markers") as HTMLElement | null;
+  if (!markerContainer) return;
+  markerContainer.addEventListener("click", event);
+}
+function removeEventToMarkers(event: (e: MouseEvent) => void): void {
+  const markerContainer = document.querySelector(".amap-markers") as HTMLElement | null;
+  if (!markerContainer) return;
+  markerContainer.removeEventListener("click", event);
 }
 
 function drawPolygon(map: AMap.Map, locations: FarmState["locations"]): void {
@@ -80,8 +91,11 @@ function drawPolygon(map: AMap.Map, locations: FarmState["locations"]): void {
 
 export { setMap, resetMap, useMap };
 export { createMap };
+
 export { createMarkers, drawMarkers };
 export { drawPolygon };
+
+export { addEventToMarkers, removeEventToMarkers };
 
 // utils
 function calculateColor(currentValue: number, left: number, right: number) {

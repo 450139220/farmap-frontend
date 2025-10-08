@@ -1,7 +1,7 @@
 declare global {
   type Crop = {
     date: string;
-    disease: string;
+    diseases: string;
     id: number;
     latitude: number;
     longitude: number;
