@@ -27,7 +27,7 @@ function Layout() {
             <Sider
                 breakpoint="lg"
                 collapsedWidth="0">
-                <div className={style.logo}>FarMap 农业数字地图</div>
+                <div className={style.logo}>FarMap</div>
                 <Menu
                     theme="dark"
                     mode="inline"
@@ -50,7 +50,7 @@ function Layout() {
                     <div
                         style={{
                             padding: 24,
-                            textAlign: "center",
+                            // textAlign: "center",
                             background: colorBgContainer,
                             borderRadius: borderRadiusLG,
                         }}>

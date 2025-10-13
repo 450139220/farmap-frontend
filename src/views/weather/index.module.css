@@ -1,85 +1,70 @@
 @import url("../../../index.css");
 
-.container {
-  margin: 0 2rem;
+.prediction__container,
+.child__container {
+    flex-direction: column;
+    gap: 1rem;
 }
-
-.intro__container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.petal__container {
-  flex-shrink: 0;
-  position: relative;
-  width: 200px;
-  height: 200px;
-}
-.petal__center {
-  position: absolute;
-  z-index: 1;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-.petal {
-  transform-origin: 50% 50%;
-  transition: transform 0.3s ease;
-}
-
-/* TODO: layout the introduction text */
-.intro__text {
-  color: var(--light-font);
-}
-
-.tip {
-  color: var(--danger);
-}
-.chart__container {
-  height: 300px;
-  padding: 1rem 2rem;
-  border: 1px solid var(--light-box);
-  border-radius: var(--box-border-radius);
-  background-color: var(--gray-box);
-}
-
-.prediction__container {
-  display: flex;
-  flex-direction: column;
-  /* align-items: center; */
-  justify-content: space-between;
-  gap: 1rem;
-  font-size: 0.9rem;
+.prediction__item {
+    flex: 1;
+    padding: 24px;
+    border-radius: 10px;
+    background-color: var(--gray-box);
 }
 .prediction__title {
-  font-size: 1rem;
-  color: var(--font-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
-.normal__container {
-  /* display: flex; */
-  columns: 2;
+.prediction__content {
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+}
+.prediction__content-left,
+.prediction__content-right {
+    color: var(--light-font);
+}
+
+.pheno__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 1rem;
+}
+.petal__container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+}
+.petal__center {
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: white;
+    transform: translate(-50%, -50%);
+}
+.petal {
+    transform-origin: 50% 50%;
+    transition: transform 0.3s ease;
+}
+
+.chart__container {
+    flex: 0;
 }
 
 @media (min-width: 1000px) {
-  .container {
-    display: flex;
-    gap: 1rem;
-  }
-  .content__left {
-    flex: 0 0 500px;
-  }
-  .content__right {
-    flex: 1 1 auto;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-  }
-  .chart__container-special {
-    height: 100%;
-  }
-  .chart__container {
-    height: 500px;
-  }
+    .prediction__container,
+    .child__container {
+        flex-direction: row;
+    }
+
+    .chart__container {
+        flex: 1 0 800px;
+    }
 }

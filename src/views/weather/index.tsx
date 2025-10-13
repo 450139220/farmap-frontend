@@ -4,36 +4,49 @@ import WeatherPrediction from "./WeatherPredcition";
 import WeatherIntroBox from "./WeatherIntroBox";
 import TemperatureChart from "./TemperatureChart";
 
+import { Card, Divider, Flex } from "antd";
+
 function Weather() {
-  return (
-    <div className={style.container}>
-      <div className={style.content__left}>
-        <div className="title">
-          <i className="ri-sun-foggy-fill"></i>&nbsp;&nbsp;天气预报
-        </div>
-        <WeatherPrediction />
-        <div className="line"></div>
-      </div>
+    return (
+        <div className={style.container}>
+            <Card
+                title={
+                    <i
+                        className="ri-sun-foggy-fill"
+                        style={{ color: "var(--primary)" }}>
+                        &nbsp;&nbsp;天气预报
+                    </i>
+                }>
+                <WeatherPrediction />
+            </Card>
 
-      <div className={style.content__right}>
-        <div className="title">
-          <i className="ri-information-2-fill"></i>&nbsp;&nbsp;物候期详情
-        </div>
-        <div className="box">
-          <WeatherIntroBox />
-        </div>
-        <div className="line"></div>
+            <Divider />
 
-        <div className="title">
-          <i className="ri-line-chart-fill"></i>
-          &nbsp;&nbsp;积温曲线
+            <Flex className={style.child__container}>
+                <Card
+                    title={
+                        <i
+                            className="ri-information-2-fill"
+                            style={{ color: "var(--primary)" }}>
+                            &nbsp;&nbsp;物候期详情
+                        </i>
+                    }>
+                    <WeatherIntroBox />
+                </Card>
+                <Card
+                    className={style.chart__container}
+                    title={
+                        <i
+                            className="ri-line-chart-fill"
+                            style={{ color: "var(--primary)" }}>
+                            &nbsp;&nbsp;积温曲线
+                        </i>
+                    }>
+                    <TemperatureChart />
+                </Card>
+            </Flex>
         </div>
-        <div className={style["chart__container-special"]}>
-          <TemperatureChart />
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default Weather;

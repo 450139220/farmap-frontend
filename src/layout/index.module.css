@@ -5,8 +5,10 @@
 }
 
 .logo {
-    padding: 12px 24px;
-    margin: 16px 8px;
+    padding: 12px 0;
+    margin: 16px 24px;
     border-radius: 8px;
     background-color: white;
+    text-align: center;
+    font-weight: bold;
 }
