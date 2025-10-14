@@ -1,0 +1,15 @@
+.container {
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.other__container {
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (min-width: 1000px) {
+    .other__container {
+        flex-direction: row;
+    }
+}
