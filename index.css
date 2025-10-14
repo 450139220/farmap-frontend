@@ -43,3 +43,9 @@ button {
     background-color: unset;
     cursor: pointer;
 }
+
+.map__marker {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}

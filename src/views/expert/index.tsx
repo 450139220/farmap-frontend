@@ -19,7 +19,7 @@ function Expert() {
         });
     }, []);
 
-    const [caseContent, setCaseContent] = useState<CaseContent>({
+    const initialCaseContent: Omit<CaseContent, "onClear"> = {
         userRequestInfo: {
             requestId: "",
             imageUrls: "",
@@ -31,7 +31,12 @@ function Expert() {
             modelVersion: "",
         },
         revisionRecords: [],
-    });
+    };
+    const [caseContent, setCaseContent] =
+        useState<Omit<CaseContent, "onClear">>(initialCaseContent);
+    const onCaseContentClear = (): void => {
+        setCaseContent(initialCaseContent);
+    };
     const getPreview = (requestId: string) => {
         request.get<CaseContentResult>(`/expert/cases/${requestId}`, token).then((res) => {
             setCaseContent(res.data);
@@ -88,7 +93,10 @@ function Expert() {
                                     &nbsp;&nbsp;当前修改作物
                                 </i>
                             }>
-                            <RevisionBox {...caseContent} />
+                            <RevisionBox
+                                {...caseContent}
+                                onClear={onCaseContentClear}
+                            />
                         </Card>
                     </Flex>
                 </Flex>

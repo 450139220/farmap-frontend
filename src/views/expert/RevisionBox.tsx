@@ -1,9 +1,10 @@
 import { Select, Descriptions, type DescriptionsProps, Image } from "antd";
 import RevisionText from "./RevisionText";
+import { useState } from "react";
 
 function RevisionBox(props: CaseContent) {
     // TODO: on change to select a new record
-    console.log(props);
+    console.log(props.revisionRecords);
 
     const descriptionsItems: DescriptionsProps["items"] = [
         {
@@ -38,10 +39,27 @@ function RevisionBox(props: CaseContent) {
             ),
         },
     ];
+
+    const [submitResult, setSubmitResult] = useState<string>("");
+    const onRevisionFormSubmit = (text: string): void => {
+        // display the tips
+        console.log(text);
+
+        setSubmitResult(text);
+        // clear requestId
+        props.onClear();
+        // hide the tips
+        setTimeout(() => {
+            setSubmitResult("");
+        }, 5000);
+    };
     return (
         <>
             {props.userRequestInfo.requestId === "" ? (
-                <div>请选择作物。</div>
+                <>
+                    <div>请选择作物。</div>
+                    {submitResult !== "" && <div>{submitResult}</div>}
+                </>
             ) : (
                 <>
                     <Descriptions
@@ -54,7 +72,11 @@ function RevisionBox(props: CaseContent) {
                             src={props.userRequestInfo.imageUrls.split(",")[0]}
                         />
                     </Image.PreviewGroup>
-                    <RevisionText content={props.initialResultInfo.jsonData} />
+                    <RevisionText
+                        content={props.initialResultInfo.jsonData}
+                        requestId={props.userRequestInfo.requestId}
+                        onSubmit={onRevisionFormSubmit}
+                    />
                 </>
             )}
         </>

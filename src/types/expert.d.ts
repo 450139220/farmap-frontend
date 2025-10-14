@@ -43,6 +43,7 @@ interface CaseContent {
         modelVersion: string;
     };
     revisionRecords: [];
+    onClear: () => void;
 }
 interface CaseContentResult {
     code: number;
