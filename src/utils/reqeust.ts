@@ -53,6 +53,30 @@ class Request {
                 });
         });
     }
+
+    delete<T, U extends object>(path: string, body: U, token: string = "") {
+        const postUrl = this.buildNewUrl(path);
+        return new Promise((res: (value: T) => void, rej: (reason: Error) => void): void => {
+            fetch(postUrl, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body),
+            })
+                .then((fetchRes) => {
+                    if (!fetchRes.ok) throw new Error(String(fetchRes.status));
+                    return fetchRes.json();
+                })
+                .then((data: T & { status: number }) => {
+                    res(data);
+                })
+                .catch((err: Error) => {
+                    rej(err);
+                });
+        });
+    }
 }
 
 const SERVICE_URL = "https://map.archivemodel.cn/farmap";

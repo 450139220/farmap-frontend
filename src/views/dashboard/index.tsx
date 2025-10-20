@@ -4,7 +4,7 @@ import type { SliderProps } from "./Slider";
 import Upload from "./Upload";
 
 import style from "./index.module.css";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useUser } from "@/store";
 import { addEventToMarkers, removeEventToMarkers, useMap } from "@/utils/map";
 
@@ -113,27 +113,32 @@ function Map() {
 
     // content to information window
     const map = useMap();
-    const infoWindow = new AMap.InfoWindow({
-        content: "",
-        anchor: "bottom-center",
-    });
+    // store infoWindow object to cache
+    const infoWindow = useRef<AMap.InfoWindow>(
+        new AMap.InfoWindow({
+            content: "",
+            anchor: "bottom-center",
+        }),
+    );
 
     const [mapReady, setMapReady] = useState<boolean>(false);
     const [selectedImagesUrl, setSelectedImagesUrl] = useState<string[]>([]);
     useEffect(() => {
-        if (!map) return;
+        if (!map && !mapReady) return;
         addEventToMarkers(clickMarkerContainer);
         return () => {
             removeEventToMarkers(clickMarkerContainer);
+            setMapReady(false);
         };
-
-        function clickMarkerContainer(e: MouseEvent): void {
+    }, [mapReady, currentFarm]);
+    const clickMarkerContainer = useCallback(
+        (e: MouseEvent) => {
             const target = e.target as HTMLDivElement;
             if (!target) return;
             const value = Number(target.getAttribute("data-value"));
             if (!value) return;
             const crop = currentFarm?.crops.find((c) => c.id === value);
-            if (!crop) return;
+            if (!crop || !map) return;
 
             const content = [
                 `<div>${currentFarm?.name} 农场作物详情</div>`,
@@ -143,12 +148,13 @@ function Map() {
                 `冠层大小：${crop.size}`,
                 `单株产量：${crop.yield}`,
             ];
-            // TODO: set images url here
+
             setSelectedImagesUrl([crop.url]);
-            infoWindow.setContent(content.join("<br>"));
-            infoWindow.open(map!, new AMap.LngLat(crop.longitude, crop.latitude) as any);
-        }
-    }, [mapReady]);
+            infoWindow.current!.setContent(content.join("<br>"));
+            infoWindow.current!.open(map, new AMap.LngLat(crop.longitude, crop.latitude) as any);
+        },
+        [map, currentFarm],
+    );
 
     return (
         <Flex

@@ -2,7 +2,7 @@ import { Avatar, Button, Layout as LayoutAntd, Menu, Space, theme } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router";
-import { expertRoutes, routes } from "@/routes/routes";
+import { adminRoutes, expertRoutes, routes } from "@/routes/routes";
 import style from "./index.module.css";
 import { useUser } from "@/store";
 import { useEffect } from "react";
@@ -64,7 +64,7 @@ function Layout() {
                 </NavLink>
             ),
         })),
-        admin: routes.map((route) => ({
+        admin: adminRoutes.map((route) => ({
             key: route.path!,
             label: (
                 <NavLink to={route.path!}>

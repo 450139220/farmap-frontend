@@ -65,7 +65,6 @@ const routes: RouteObject[] = [
 ];
 
 const Expert = lazy(() => import("@/views/expert"));
-
 const expertRoutes: RouteObject[] = [
     {
         path: "/expert",
@@ -77,11 +76,25 @@ const expertRoutes: RouteObject[] = [
     },
 ];
 
+const AdminPage = lazy(() => import("@/views/admin"));
+const adminRoutes: RouteObject[] = [
+    {
+        path: "/admin",
+        element: withSuspense(AdminPage),
+        handle: {
+            name: "用户管理",
+            key: 6,
+        },
+    },
+    // show all routes to administrator
+    ...routes,
+];
+
 const routesWithLayout: RouteObject[] = [
     {
         path: "/",
         Component: Layout,
-        children: [...routes, ...expertRoutes],
+        children: [...routes, ...expertRoutes, ...adminRoutes],
         loader: async () => {
             const { login } = useUser.getState();
             const [token, setToken] = useToken();
@@ -129,4 +142,4 @@ const routesWithLayout: RouteObject[] = [
 ];
 
 export default createBrowserRouter(routesWithLayout);
-export { routes, expertRoutes };
+export { routes, expertRoutes, adminRoutes };

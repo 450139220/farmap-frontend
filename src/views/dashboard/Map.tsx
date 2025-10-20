@@ -32,8 +32,11 @@ function MapContainer(props: MapProps) {
     // execute when farm changes
     useEffect(() => {
         // create map and mount
-        const map: AMap.Map = createMap(props.farm);
-        setMap(map);
+        let map: AMap.Map | undefined = useMap();
+        if (!map) {
+            map = createMap(props.farm);
+            setMap(map);
+        }
         // draw markers and polygon
         paintOnMap(map);
         // add event when map is ready
