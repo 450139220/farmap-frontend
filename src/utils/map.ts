@@ -45,7 +45,6 @@ function drawMarkers(map: AMap.Map, markers: AMap.Marker[]): void {
     for (const marker of markers) {
         map.add(marker);
     }
-    console.log(markers);
 }
 
 function addEventToMarkers(event: (e: MouseEvent) => void): void {
