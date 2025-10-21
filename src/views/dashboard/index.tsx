@@ -114,12 +114,14 @@ function Map() {
     // content to information window
     const map = useMap();
     // store infoWindow object to cache
-    const infoWindow = useRef<AMap.InfoWindow>(
-        new AMap.InfoWindow({
+    const infoWindow = useRef<AMap.InfoWindow>(null);
+    useEffect(() => {
+        if (!map) return;
+        infoWindow.current = new AMap.InfoWindow({
             content: "",
             anchor: "bottom-center",
-        }),
-    );
+        });
+    }, [map]);
 
     const [mapReady, setMapReady] = useState<boolean>(false);
     const [selectedImagesUrl, setSelectedImagesUrl] = useState<string[]>([]);
@@ -130,7 +132,7 @@ function Map() {
             removeEventToMarkers(clickMarkerContainer);
             setMapReady(false);
         };
-    }, [mapReady, currentFarm]);
+    }, [map, mapReady, currentFarm]);
     const clickMarkerContainer = useCallback(
         (e: MouseEvent) => {
             const target = e.target as HTMLDivElement;
