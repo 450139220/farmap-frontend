@@ -5,7 +5,7 @@ type FarmPreviewType = {
   name: number;
 };
 
-type UserStoreState = {
+export type UserStoreState = {
   username: string;
   role: "user" | "guest" | "admin" | "expert";
   farms: FarmPreviewType[];

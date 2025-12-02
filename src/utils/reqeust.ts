@@ -1,94 +1,59 @@
+interface RequestHeader {
+  Authorizaiton?: string;
+}
+
 class Request {
-    url: URL;
-    constructor(url: string) {
-        this.url = new URL(url);
-    }
+  host: URL;
+  constructor(url: string) {
+    this.host = new URL(url);
+  }
 
-    buildNewUrl(path: string): URL {
-        return new URL(this.url + path);
-    }
+  static getErrorMsg(e: Error): string {
+    return e.message;
+  }
 
-    get<T>(path: string, token: string = "") {
-        const getUrl = this.buildNewUrl(path);
-        return new Promise((res: (value: T) => void, rej: (reason: Error) => void): void => {
-            fetch(getUrl, {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then((fetchRes) => {
-                    if (!fetchRes.ok) throw new Error(String(fetchRes.status));
-                    return fetchRes.json();
-                })
-                .then((data: T) => {
-                    res(data);
-                })
-                .catch((err: Error) => {
-                    rej(err);
-                });
-        });
-    }
+  private getUrl(path: string): URL {
+    return new URL(this.host + path);
+  }
+  private parseStatusCode(e: Error): string {
+    const code = e.message;
+    if (code === "500") return "服务内部错误，请联系管理员。";
+    if (code === "502") return "后端部署缺失，请联系管理员。";
+    return "未知错误，请检查网络重试或联系管理员。";
+  }
 
-    post<T, U extends object>(path: string, body: U, token: string = "") {
-        const postUrl = this.buildNewUrl(path);
-        return new Promise((res: (value: T) => void, rej: (reason: Error) => void): void => {
-            fetch(postUrl, {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(body),
-            })
-                .then((fetchRes) => {
-                    if (!fetchRes.ok) throw new Error(String(fetchRes.status));
-                    return fetchRes.json();
-                })
-                .then((data: T & { status: number }) => {
-                    res(data);
-                })
-                .catch((err: Error) => {
-                    rej(err);
-                });
-        });
+  async get<T extends object>(path: string): Promise<T> {
+    const url = this.getUrl(path);
+    try {
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(resp.status.toString());
+      return await resp.json();
+    } catch (e) {
+      const msg = this.parseStatusCode(e as Error);
+      throw new Error(msg);
     }
+  }
 
-    delete<T, U extends object>(path: string, body: U, token: string = "") {
-        const postUrl = this.buildNewUrl(path);
-        return new Promise((res: (value: T) => void, rej: (reason: Error) => void): void => {
-            fetch(postUrl, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(body),
-            })
-                .then((fetchRes) => {
-                    if (!fetchRes.ok) throw new Error(String(fetchRes.status));
-                    return fetchRes.json();
-                })
-                .then((data: T & { status: number }) => {
-                    res(data);
-                })
-                .catch((err: Error) => {
-                    rej(err);
-                });
-        });
+  async post<T, U extends object>(path: string, body: U, headers: RequestHeader = {}): Promise<T> {
+    const url = this.getUrl(path);
+    try {
+      const resp = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...headers,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!resp.ok) throw new Error(resp.status.toString());
+      return await resp.json();
+    } catch (e) {
+      const msg = this.parseStatusCode(e as Error);
+      throw new Error(msg);
     }
+  }
 }
 
 const SERVICE_URL = "https://map.archivemodel.cn/farmap";
-
-function handleError(err: unknown, code: string, equalToCode: () => void, other?: () => void) {
-    const status = String(err).split(" ").at(-1);
-    if (status === code) {
-        equalToCode();
-    } else {
-        if (other) other();
-    }
-}
-
-export const request = new Request(SERVICE_URL);
-export { handleError };
+export const req = new Request(SERVICE_URL);
