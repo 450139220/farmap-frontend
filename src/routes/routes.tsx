@@ -1,145 +1,92 @@
-import type { JSX } from "react";
-
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router";
 import type { RouteObject } from "react-router";
-
-import { lazy, Suspense } from "react";
-import RouterLoading from "./RouterLoading";
+import {
+  AlertOutlined,
+  AuditOutlined,
+  CloudOutlined,
+  CompassOutlined,
+  DashboardOutlined,
+  SlidersOutlined,
+} from "@ant-design/icons";
 
 import Layout from "@/layout";
-import { handleError, request } from "@/utils/reqeust";
-import { usePermanentUser, useToken, validateToken } from "@/utils/permanence";
-import type { UserResult } from "@/views/login";
-import { useUser } from "@/store";
 
-// login page
-const Login = lazy(() => import("@/views/login"));
+export const ALL_ROUTES: RouteObject[] = [
+  {
+    index: true,
+    Component: lazy(() => import("@/views/dashboard")),
+    handle: {
+      key: 1,
+      name: "数字地图",
+      Icon: CompassOutlined,
+      roles: ["guest", "user", "admin"],
+    },
+  },
+  {
+    path: "operations",
+    Component: lazy(() => import("@/views/operations")),
+    handle: {
+      key: 2,
+      name: "操作指导",
+      Icon: AlertOutlined,
+      roles: ["guest", "user", "admin"],
+    },
+  },
+  {
+    path: "weather",
+    Component: lazy(() => import("@/views/weather")),
+    handle: {
+      key: 3,
+      name: "天气物候",
+      Icon: CloudOutlined,
+      roles: ["guest", "user", "admin"],
+    },
+  },
+  {
+    path: "statistic",
+    Component: lazy(() => import("@/views/statistic")),
+    handle: {
+      key: 4,
+      name: "统计数据",
+      Icon: SlidersOutlined,
+      roles: ["guest", "user", "admin"],
+    },
+  },
 
-// common pages
-const Dashboard = lazy(() => import("@/views/dashboard"));
-const Operations = lazy(() => import("@/views/operations"));
-const Weather = lazy(() => import("@/views/weather"));
-const Statistic = lazy(() => import("@/views/statistic"));
-
-function withSuspense(Compoennt: React.LazyExoticComponent<() => JSX.Element>): JSX.Element {
-    return (
-        <Suspense fallback={<RouterLoading />}>
-            <Compoennt />
-        </Suspense>
-    );
-}
+  {
+    path: "expert",
+    Component: lazy(() => import("@/views/expert")),
+    handle: {
+      key: 5,
+      name: "专家打标",
+      Icon: AuditOutlined,
+      roles: ["admin", "expert"],
+    },
+  },
+  {
+    path: "admin",
+    Component: lazy(() => import("@/views/admin")),
+    handle: {
+      key: 6,
+      name: "用户管理",
+      Icon: DashboardOutlined,
+      roles: ["admin"],
+    },
+  },
+];
 
 const routes: RouteObject[] = [
-    {
-        path: "/",
-        element: withSuspense(Dashboard),
-        handle: {
-            name: "数字地图",
-            key: 1,
-        },
-    },
-    {
-        path: "/operations",
-        element: withSuspense(Operations),
-        handle: {
-            name: "操作指导",
-            key: 2,
-        },
-    },
-    {
-        path: "/weather",
-        element: withSuspense(Weather),
-        handle: {
-            name: "天气物候",
-            key: 3,
-        },
-    },
-    {
-        path: "/statistic",
-        element: withSuspense(Statistic),
-        handle: {
-            name: "统计数据",
-            key: 4,
-        },
-    },
+  {
+    path: "/",
+    Component: Layout,
+    children: ALL_ROUTES,
+    loader: async () => {},
+  },
+  {
+    path: "/login",
+    Component: lazy(() => import("@/views/login")),
+  },
 ];
 
-const Expert = lazy(() => import("@/views/expert"));
-const expertRoutes: RouteObject[] = [
-    {
-        path: "/expert",
-        element: withSuspense(Expert),
-        handle: {
-            name: "专家打标",
-            key: 5,
-        },
-    },
-];
-
-const AdminPage = lazy(() => import("@/views/admin"));
-const adminRoutes: RouteObject[] = [
-    {
-        path: "/admin",
-        element: withSuspense(AdminPage),
-        handle: {
-            name: "用户管理",
-            key: 6,
-        },
-    },
-    // show all routes to administrator
-    ...routes,
-];
-
-const routesWithLayout: RouteObject[] = [
-    {
-        path: "/",
-        Component: Layout,
-        children: [...routes, ...expertRoutes, ...adminRoutes],
-        loader: async () => {
-            const { login } = useUser.getState();
-            const [token, setToken] = useToken();
-            const [permanentUser, setPermanentUser] = usePermanentUser();
-
-            const loginGuest = async () => {
-                try {
-                    const res = await request.post<
-                        UserResult,
-                        { username: string; password: string }
-                    >("/user/login", {
-                        username: "guest",
-                        password: "mei",
-                    });
-                    const guest: UserState = {
-                        username: "",
-                        role: "guest",
-                        farms: res.data.farms,
-                        currentFarmId: res.data.farms[0].id,
-                    };
-                    setToken(res.data.token);
-                    login(guest);
-                    setPermanentUser(guest);
-                } catch {
-                    console.log("failed to login guest fake data");
-                }
-            };
-
-            try {
-                // login to real user if the token is valid and return
-                // always login to guest
-                // TODO: simplify the token validation api
-                await validateToken(token);
-                // use the permanent data
-                login(permanentUser!);
-            } catch (err) {
-                loginGuest();
-            }
-        },
-    },
-    {
-        path: "/login",
-        element: withSuspense(Login),
-    },
-];
-
-export default createBrowserRouter(routesWithLayout);
-export { routes, expertRoutes, adminRoutes };
+export default createBrowserRouter(routes);

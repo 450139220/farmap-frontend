@@ -80,7 +80,9 @@ export default function AdminPage() {
                         )}
                     />
                     {userErr && (
-                        <div style={{ color: "var(--danger)" }}>用户获取失败，请刷新页面重试。</div>
+                        <div style={{ color: "var(--danger)" }}>
+                            用户获取失败，请刷新页面重试。
+                        </div>
                     )}
                 </Flex>
             </Card>
