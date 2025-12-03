@@ -10,10 +10,10 @@
 ## Components
 - [x] login
 - [x] dashboard
-- [ ] weather
+- [x] weather
     - [ ] TemperatureChart.tsx
-- [ ] operatons
-- [ ] ? statistic
+- [x] operatons
+- [x] ? statistic
 - [ ] expert
 - [ ] * admin
 

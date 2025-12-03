@@ -1,5 +1,5 @@
-import { lazy } from "react";
-import { createBrowserRouter } from "react-router";
+import { Component, lazy, type JSX } from "react";
+import { createBrowserRouter, Navigate } from "react-router";
 import type { RouteObject } from "react-router";
 import {
   AlertOutlined,
@@ -13,11 +13,29 @@ import {
 
 import Layout from "@/layout";
 import { req } from "@/utils/reqeust";
+import { useUserStore } from "@/store/user";
+
+function ProtectedRoute({
+  Component,
+  roles,
+}: {
+  Component: React.ComponentType;
+  roles: string[];
+}): JSX.Element {
+  const role = useUserStore((s) => s.role);
+  if (!roles.includes(role)) return <Navigate to="/403" replace />;
+  return <Component />;
+}
 
 export const ALL_ROUTES: RouteObject[] = [
   {
     index: true,
-    Component: lazy(() => import("@/views/dashboard")),
+    element: (
+      <ProtectedRoute
+        roles={["guest", "user", "admin"]}
+        Component={lazy(() => import("@/views/dashboard"))}
+      />
+    ),
     handle: {
       key: "/",
       name: "数字地图",
@@ -27,7 +45,12 @@ export const ALL_ROUTES: RouteObject[] = [
   },
   {
     path: "operations",
-    Component: lazy(() => import("@/views/operations")),
+    element: (
+      <ProtectedRoute
+        roles={["guest", "user", "admin"]}
+        Component={lazy(() => import("@/views/operations"))}
+      />
+    ),
     handle: {
       key: "/operations",
       name: "操作指导",
@@ -37,7 +60,12 @@ export const ALL_ROUTES: RouteObject[] = [
   },
   {
     path: "weather",
-    Component: lazy(() => import("@/views/weather")),
+    element: (
+      <ProtectedRoute
+        roles={["guest", "user", "admin"]}
+        Component={lazy(() => import("@/views/weather"))}
+      />
+    ),
     handle: {
       key: "/weather",
       name: "天气物候",
@@ -47,7 +75,7 @@ export const ALL_ROUTES: RouteObject[] = [
   },
   {
     path: "call-model",
-    Component: lazy(() => import("@/views/model")),
+    element: <ProtectedRoute roles={["user"]} Component={lazy(() => import("@/views/model"))} />,
     handle: {
       key: "/call-model",
       name: "模型调用",
@@ -67,17 +95,24 @@ export const ALL_ROUTES: RouteObject[] = [
   // },
   {
     path: "monitor",
-    Component: lazy(() => import("@/views/monitor")),
+    element: (
+      <ProtectedRoute roles={["user", "admin"]} Component={lazy(() => import("@/views/monitor"))} />
+    ),
     handle: {
       key: "/monitor",
       name: "监控操作",
       Icon: VideoCameraOutlined,
-      roles: ["user"],
+      roles: ["user", "admin"],
     },
   },
   {
     path: "expert",
-    Component: lazy(() => import("@/views/expert")),
+    element: (
+      <ProtectedRoute
+        roles={["expert", "admin"]}
+        Component={lazy(() => import("@/views/expert"))}
+      />
+    ),
     handle: {
       key: "/expert",
       name: "专家打标",
@@ -87,7 +122,7 @@ export const ALL_ROUTES: RouteObject[] = [
   },
   {
     path: "admin",
-    Component: lazy(() => import("@/views/admin")),
+    element: <ProtectedRoute roles={["admin"]} Component={lazy(() => import("@/views/admin"))} />,
     handle: {
       key: "/admin",
       name: "用户管理",
@@ -117,6 +152,10 @@ const routes: RouteObject[] = [
   {
     path: "/login",
     Component: lazy(() => import("@/views/login")),
+  },
+  {
+    path: "/403",
+    Component: lazy(() => import("@/layout/Forbidden")),
   },
   {
     path: "/*",

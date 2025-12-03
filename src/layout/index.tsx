@@ -21,9 +21,7 @@ export default function Layout() {
   }, []);
 
   const username = useUserStore((s) => s.username);
-  // TODO: update this
-  const role = "user";
-  // const role = useUserStore((s) => s.role);
+  const role = useUserStore((s) => s.role);
 
   const logout = useUserStore((s) => s.logout);
 

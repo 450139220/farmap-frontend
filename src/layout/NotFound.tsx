@@ -1,10 +1,3 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
-
 export default function NotFound() {
-  const navigate = useNavigate();
-  useEffect(() => {
-    navigate("/");
-  }, []);
-  return <div>NotFound</div>;
+  return <div>页面不存在！</div>;
 }
