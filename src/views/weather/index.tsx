@@ -1,52 +1,49 @@
-import style from "./index.module.css";
-
 import WeatherPrediction from "./WeatherPredcition";
 import WeatherIntroBox from "./WeatherIntroBox";
 import TemperatureChart from "./TemperatureChart";
 
-import { Card, Divider, Flex } from "antd";
+import { Card, Flex } from "antd";
+import {
+  CloseCircleOutlined,
+  LineChartOutlined,
+  SunOutlined,
+} from "@ant-design/icons";
 
-function Weather() {
-    return (
-        <div className={style.container}>
-            <Card
-                title={
-                    <i
-                        className="ri-sun-foggy-fill"
-                        style={{ color: "var(--primary)" }}>
-                        &nbsp;&nbsp;天气预报
-                    </i>
-                }>
-                <WeatherPrediction />
-            </Card>
-
-            <Divider />
-
-            <Flex className={style.child__container}>
-                <Card
-                    title={
-                        <i
-                            className="ri-information-2-fill"
-                            style={{ color: "var(--primary)" }}>
-                            &nbsp;&nbsp;物候期详情
-                        </i>
-                    }>
-                    <WeatherIntroBox />
-                </Card>
-                <Card
-                    className={style.chart__container}
-                    title={
-                        <i
-                            className="ri-line-chart-fill"
-                            style={{ color: "var(--primary)" }}>
-                            &nbsp;&nbsp;积温曲线
-                        </i>
-                    }>
-                    <TemperatureChart />
-                </Card>
-            </Flex>
-        </div>
-    );
+export default function Weather() {
+  return (
+    <Flex vertical gap="0.5rem" style={{ height: "100%" }}>
+      <Card
+        title={
+          <>
+            <SunOutlined />
+            &nbsp;&nbsp;天气预报
+          </>
+        }
+        style={{ flex: "1 0 40%" }}>
+        <WeatherPrediction />
+      </Card>
+      <Flex gap="0.5rem" style={{ flexGrow: 1 }}>
+        <Card
+          title={
+            <>
+              <CloseCircleOutlined />
+              &nbsp;&nbsp;物候期详情
+            </>
+          }
+          style={{ flexGrow: 1 }}>
+          <WeatherIntroBox />
+        </Card>
+        <Card
+          title={
+            <>
+              <LineChartOutlined />
+              &nbsp;&nbsp;积温曲线
+            </>
+          }
+          style={{ flexGrow: 1 }}>
+          <TemperatureChart />
+        </Card>
+      </Flex>
+    </Flex>
+  );
 }
-
-export default Weather;

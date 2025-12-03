@@ -6,13 +6,14 @@
 - [x] request
 - [x] permanence
 - [ ] types 
-- [ ] utils/map
+- [x] utils/map
 ## Components
-- [ ] login
-- [ ] dashboard
+- [x] login
+- [x] dashboard
 - [ ] weather
+    - [ ] TemperatureChart.tsx
 - [ ] operatons
-- [ ] ? remove statistic
+- [ ] ? statistic
 - [ ] expert
 - [ ] * admin
 
@@ -23,3 +24,4 @@
 
 # Need Updating Backend Apis
 1. validate token permanence.ts
+2. user login & farm request

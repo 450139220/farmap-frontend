@@ -85,6 +85,7 @@ export default function Layout() {
 
         <Content
           style={{
+            margin: "0.5rem",
             height: "100%",
           }}>
           <Outlet />
