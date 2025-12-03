@@ -9,6 +9,7 @@ import { req, Request } from "@/utils/reqeust";
 import {
   BgColorsOutlined,
   BugOutlined,
+  BulbOutlined,
   GlobalOutlined,
   HourglassOutlined,
   ShopOutlined,
@@ -65,7 +66,7 @@ export default function Operations() {
       <Card
         title={
           <>
-            <GlobalOutlined />
+            <BulbOutlined />
             &nbsp;&nbsp;问专家
           </>
         }

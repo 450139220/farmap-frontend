@@ -10,6 +10,7 @@ import ModeSelect from "./selects/ModeSelect";
 import MapContainer from "./Map";
 import Slider from "./slider/Slider";
 import type { SliderProps } from "./slider/Slider";
+import { GlobalOutlined } from "@ant-design/icons";
 
 export default function Map() {
   // Get farm select informations
@@ -38,7 +39,15 @@ export default function Map() {
   };
 
   return (
-    <Card style={{ height: "100%" }} styles={{ body: { height: "100%" } }}>
+    <Card
+      title={
+        <>
+          <GlobalOutlined />
+          &nbsp;&nbsp;地图详情
+        </>
+      }
+      style={{ height: "100%" }}
+      styles={{ body: { height: "calc(100% - 60px)" } }}>
       <Flex gap="0.5rem" vertical style={{ height: "100%" }}>
         <Flex gap="0.5rem" style={{ width: "100%" }}>
           <FarmSelect

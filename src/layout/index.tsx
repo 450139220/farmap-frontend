@@ -11,8 +11,9 @@ const { Header, Sider, Content } = LayoutAntd;
 
 export default function Layout() {
   // Redirect to login page if token is expired
+  // TODO: update this
   const { isExpired } = useLoaderData();
-  console.log(isExpired);
+  console.log("Token exipred", isExpired);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -20,7 +21,9 @@ export default function Layout() {
   }, []);
 
   const username = useUserStore((s) => s.username);
-  const role = useUserStore((s) => s.role);
+  // TODO: update this
+  const role = "user";
+  // const role = useUserStore((s) => s.role);
 
   const logout = useUserStore((s) => s.logout);
 
@@ -30,14 +33,13 @@ export default function Layout() {
   } = theme.useToken();
   // Router
   type MenuItem = Required<MenuProps>["items"][number];
-  const menuItems: MenuItem[] = ALL_ROUTES.filter((r) =>
-    r.handle.roles.includes(role),
-  ).map((r) => ({
-    key: r.handle.key,
-    label: <NavLink to={r.path!}>{r.handle.name}</NavLink>,
-    icon: <r.handle.Icon />,
-  }));
-  console.log(menuItems);
+  const menuItems: MenuItem[] = ALL_ROUTES.filter((r) => r.handle.roles.includes(role)).map(
+    (r) => ({
+      key: r.handle.key,
+      label: <NavLink to={r.path!}>{r.handle.name}</NavLink>,
+      icon: <r.handle.Icon />,
+    }),
+  );
 
   return (
     <LayoutAntd style={{ height: "100vh" }}>
@@ -54,12 +56,7 @@ export default function Layout() {
           }}>
           FarMap
         </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          items={menuItems}
-        />
+        <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]} items={menuItems} />
       </Sider>
       <LayoutAntd style={{ height: "100%" }}>
         <Header style={{ padding: 0, background: colorBgContainer }}>
@@ -71,11 +68,7 @@ export default function Layout() {
             }}>
             <div>
               <span>您好，{username} 用户！</span>
-              <Avatar
-                size={32}
-                icon={<UserOutlined />}
-                style={{ cursor: "pointer" }}
-              />
+              <Avatar size={32} icon={<UserOutlined />} style={{ cursor: "pointer" }} />
               <Button style={{ marginLeft: "1rem" }} onClick={logout}>
                 退出登陆
               </Button>

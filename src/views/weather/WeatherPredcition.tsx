@@ -41,14 +41,11 @@ function WeatherPrediction() {
   const [isError, setIsError] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch(
-      `https://m25eghjq33.re.qweatherapi.com/v7/weather/3d?location=${location}`,
-      {
-        headers: {
-          "X-QW-Api-Key": API_KEY,
-        },
+    fetch(`https://m25eghjq33.re.qweatherapi.com/v7/weather/3d?location=${location}`, {
+      headers: {
+        "X-QW-Api-Key": API_KEY,
       },
-    )
+    })
       .then((res) => {
         if (!res.ok) throw new Error("failed to fetch qw weather");
         return res.json();
@@ -75,30 +72,23 @@ function WeatherPrediction() {
   return (
     <Flex className={style.prediction__container}>
       {isError ? (
-        <div style={{ color: "#dd0000" }}>
-          无法获取农场定位，请检查网络或联系管理员！
-        </div>
+        <div>无法获取农场定位，请检查网络或联系管理员！</div>
       ) : (
         predictions.map((p) => (
           <div className={style.prediction__item} key={p.fxDate}>
             <div className={style.prediction__title}>
-              <div style={{ color: "var(--font-color)", fontSize: "1.2rem" }}>
-                {p.fxDate}
-              </div>
+              <div style={{ color: "var(--font-color)", fontSize: "1.2rem" }}>{p.fxDate}</div>
               <div>
                 今日最高最低气温预测：
-                <span style={{ color: calcColor(p.tempMin) }}>{p.tempMin}</span>
-                ℃<span>&nbsp;~&nbsp;</span>
-                <span style={{ color: calcColor(p.tempMax) }}>{p.tempMax}</span>
-                ℃
+                <span style={{ color: calcColor(p.tempMin) }}>{p.tempMin}</span>℃
+                <span>&nbsp;~&nbsp;</span>
+                <span style={{ color: calcColor(p.tempMax) }}>{p.tempMax}</span>℃
               </div>
             </div>
             <Divider />
             <div className={style.prediction__content}>
               <div className={style["prediction__content-left"]}>
-                <span style={{ color: "black", fontSize: "1.1rem" }}>
-                  日夜间天气情况：
-                </span>
+                <span style={{ color: "black", fontSize: "1.1rem" }}>日夜间天气情况：</span>
                 <div>
                   日间：<i className={`qi-${p.iconDay}`}></i>&nbsp;&nbsp;
                   {p.textDay}&nbsp;&nbsp;
@@ -111,9 +101,7 @@ function WeatherPrediction() {
                 </div>
               </div>
               <div className={style["prediction__content-right"]}>
-                <span style={{ color: "black", fontSize: "1.1rem" }}>
-                  常规数据：
-                </span>
+                <span style={{ color: "black", fontSize: "1.1rem" }}>常规数据：</span>
                 <div>
                   <div>湿度{p.humidity}% </div>
                   <div>降水量{p.precip}mm</div>

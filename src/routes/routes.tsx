@@ -8,6 +8,7 @@ import {
   CompassOutlined,
   DashboardOutlined,
   SlidersOutlined,
+  VideoCameraOutlined,
 } from "@ant-design/icons";
 
 import Layout from "@/layout";
@@ -18,7 +19,7 @@ export const ALL_ROUTES: RouteObject[] = [
     index: true,
     Component: lazy(() => import("@/views/dashboard")),
     handle: {
-      key: 1,
+      key: "/",
       name: "数字地图",
       Icon: CompassOutlined,
       roles: ["guest", "user", "admin"],
@@ -28,7 +29,7 @@ export const ALL_ROUTES: RouteObject[] = [
     path: "operations",
     Component: lazy(() => import("@/views/operations")),
     handle: {
-      key: 2,
+      key: "/operations",
       name: "操作指导",
       Icon: AlertOutlined,
       roles: ["guest", "user", "admin"],
@@ -38,28 +39,47 @@ export const ALL_ROUTES: RouteObject[] = [
     path: "weather",
     Component: lazy(() => import("@/views/weather")),
     handle: {
-      key: 3,
+      key: "/weather",
       name: "天气物候",
       Icon: CloudOutlined,
       roles: ["guest", "user", "admin"],
     },
   },
   {
-    path: "statistic",
-    Component: lazy(() => import("@/views/statistic")),
+    path: "call-model",
+    Component: lazy(() => import("@/views/model")),
     handle: {
-      key: 4,
-      name: "统计数据",
+      key: "/call-model",
+      name: "模型调用",
       Icon: SlidersOutlined,
-      roles: ["guest", "user", "admin"],
+      roles: ["user"],
     },
   },
-
+  // {
+  //   path: "statistic",
+  //   Component: lazy(() => import("@/views/statistic")),
+  //   handle: {
+  //     key: "/statistic",
+  //     name: "统计数据",
+  //     Icon: SlidersOutlined,
+  //     roles: ["guest", "user", "admin"],
+  //   },
+  // },
+  {
+    path: "monitor",
+    Component: lazy(() => import("@/views/monitor")),
+    handle: {
+      key: "/monitor",
+      name: "监控操作",
+      Icon: VideoCameraOutlined,
+      roles: ["user"],
+    },
+  },
   {
     path: "expert",
     Component: lazy(() => import("@/views/expert")),
     handle: {
-      key: 5,
+      key: "/expert",
       name: "专家打标",
       Icon: AuditOutlined,
       roles: ["admin", "expert"],
@@ -69,7 +89,7 @@ export const ALL_ROUTES: RouteObject[] = [
     path: "admin",
     Component: lazy(() => import("@/views/admin")),
     handle: {
-      key: 6,
+      key: "/admin",
       name: "用户管理",
       Icon: DashboardOutlined,
       roles: ["admin"],
@@ -85,9 +105,7 @@ const routes: RouteObject[] = [
     loader: async () => {
       // TODO: update the response type
       try {
-        const resp = await req.get<{ isExpired: boolean }>(
-          "/user/validate-token",
-        );
+        const resp = await req.get<{ isExpired: boolean }>("/user/validate-token");
         return resp;
       } catch {
         return {

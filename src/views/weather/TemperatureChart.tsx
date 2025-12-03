@@ -33,9 +33,7 @@ function TemperatureChart() {
 
   useEffect(() => {
     req
-      .get<AccTempResult>(
-        `/weather/accumulated-temperature?farmType=${farmType}`,
-      )
+      .get<AccTempResult>(`/weather/accumulated-temperature?farmType=${farmType}`)
       .then((data) => {
         setLastAccTemp(data.data.last);
         setThisAccTemp(data.data.thisYear);
@@ -108,7 +106,7 @@ function TemperatureChart() {
   return (
     <>
       {tip.length !== 0 ? (
-        <div style={{ color: "#dd0000" }}>{tip}</div>
+        <div>{tip}</div>
       ) : (
         <div ref={containerRef} style={{ height: "100%" }}></div>
       )}
