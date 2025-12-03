@@ -75,12 +75,14 @@ export const ALL_ROUTES: RouteObject[] = [
   },
   {
     path: "call-model",
-    element: <ProtectedRoute roles={["user"]} Component={lazy(() => import("@/views/model"))} />,
+    element: (
+      <ProtectedRoute roles={["user", "admin"]} Component={lazy(() => import("@/views/model"))} />
+    ),
     handle: {
       key: "/call-model",
       name: "模型调用",
       Icon: SlidersOutlined,
-      roles: ["user"],
+      roles: ["user", "admin"],
     },
   },
   // {

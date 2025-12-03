@@ -18,7 +18,7 @@ type UserStore = UserStoreState & UserStoreActions;
 
 const initUserStore: UserStoreState = {
   username: "",
-  role: "expert",
+  role: "admin",
   farms: [],
 };
 export const useUserStore = create<UserStore>((set) => ({
