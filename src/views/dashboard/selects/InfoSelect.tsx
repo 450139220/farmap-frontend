@@ -1,4 +1,4 @@
-import { Select } from "antd";
+import { Flex, Select } from "antd";
 
 type InfoType = "yield" | "size" | "disease";
 export type InfoSelectType = {
@@ -15,26 +15,29 @@ export default function InfoSelect(props: Props) {
   const options: InfoSelectType[] = [
     {
       value: "yield",
-      label: "产量分布",
+      label: "作物产量",
     },
     {
       value: "disease",
-      label: "病虫分布",
+      label: "病虫害率",
     },
     {
       value: "size",
-      label: "冠层分布",
+      label: "冠层大小",
     },
   ];
   return (
-    <Select
-      style={{ flexGrow: 1 }}
-      defaultValue={props.value}
-      disabled={props.disabled}
-      options={options}
-      onChange={(info) => {
-        props.onChange(info);
-      }}
-    />
+    <Flex gap="0.5rem" align="center" style={{ flexGrow: 1 }}>
+      <span> | 展示信息</span>
+      <Select
+        style={{ flexGrow: 1 }}
+        defaultValue={props.value}
+        disabled={props.disabled}
+        options={options}
+        onChange={(info) => {
+          props.onChange(info);
+        }}
+      />
+    </Flex>
   );
 }

@@ -1,5 +1,5 @@
 import type { FarmPreviewType } from "@/store/user";
-import { Select } from "antd";
+import { Flex, Select } from "antd";
 import { useMemo } from "react";
 
 export type FarmSelectType = {
@@ -18,13 +18,16 @@ export default function FarmSelect(props: Props) {
     [props.options],
   );
   return (
-    <Select
-      style={{ flexGrow: 1 }}
-      defaultValue={props.value}
-      options={farmOptions}
-      onChange={(id: number) => {
-        props.onChange(id);
-      }}
-    />
+    <Flex gap="0.5rem" align="center" style={{ flexGrow: 1 }}>
+      <span>当前农场</span>
+      <Select
+        style={{ flexGrow: 1 }}
+        defaultValue={props.value}
+        options={farmOptions}
+        onChange={(id: number) => {
+          props.onChange(id);
+        }}
+      />
+    </Flex>
   );
 }

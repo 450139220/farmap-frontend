@@ -1,4 +1,4 @@
-import { Select } from "antd";
+import { Flex, Select } from "antd";
 
 type ModeType = "crop" | "farm";
 export type ModeSelectType = {
@@ -22,13 +22,16 @@ export default function ModeSelect(props: Props) {
     },
   ];
   return (
-    <Select
-      style={{ flexGrow: 1 }}
-      defaultValue={props.value}
-      options={options}
-      onChange={(mode) => {
-        props.onChange(mode);
-      }}
-    />
+    <Flex gap="0.5rem" align="center" style={{ flexGrow: 1 }}>
+      <span> | 地图模式</span>
+      <Select
+        style={{ flexGrow: 1 }}
+        defaultValue={props.value}
+        options={options}
+        onChange={(mode) => {
+          props.onChange(mode);
+        }}
+      />
+    </Flex>
   );
 }
