@@ -5,14 +5,15 @@ import router from "@/routes/routes.tsx";
 import { ConfigProvider } from "antd";
 
 createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-        <ConfigProvider
-            theme={{
-                token: {
-                    fontSize: 18,
-                },
-            }}>
-            <RouterProvider router={router} />
-        </ConfigProvider>
-    </StrictMode>,
+  <StrictMode>
+    <ConfigProvider
+      theme={{
+        token: {
+          fontSize: 18,
+          colorTextHeading: "#2e66e1",
+        },
+      }}>
+      <RouterProvider router={router} />
+    </ConfigProvider>
+  </StrictMode>,
 );

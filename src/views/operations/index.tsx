@@ -3,103 +3,91 @@ import { useEffect, useState } from "react";
 import GuidanceBox from "./GuidanceBox";
 import type { Guidance } from "./GuidanceBox";
 
-import style from "./index.module.css";
-import { request } from "@/utils/reqeust";
-import { useUser } from "@/store";
-
 import { Flex, Card } from "antd";
+import { useFarmStore } from "@/store/farm";
+import { req, Request } from "@/utils/reqeust";
+import {
+  BgColorsOutlined,
+  BugOutlined,
+  GlobalOutlined,
+  HourglassOutlined,
+  ShopOutlined,
+} from "@ant-design/icons";
 
 type GuidanceSet = {
-    body: Guidance[];
-    fertile: Guidance[];
-    park: Guidance[];
-    pest: Guidance[];
+  body: Guidance[];
+  fertile: Guidance[];
+  park: Guidance[];
+  pest: Guidance[];
 };
 
 type GuidanceResult = {
-    code: number;
-    msg: null;
-    data: GuidanceSet;
+  code: number;
+  msg: null;
+  data: GuidanceSet;
 };
-const Operations = () => {
-    const farmId = useUser((state) => state.currentFarmId)!;
-    const farmType = useUser((state) => state.farms).find((f) => f.id === farmId)!.type;
-    const month = new Date().getMonth();
+export default function Operations() {
+  const farmId = useFarmStore((s) => s.id);
+  const farmType = useFarmStore((s) => s.type);
+  const month = new Date().getMonth();
 
-    const [guideList, setGuideList] = useState<GuidanceSet>({
-        body: [],
-        fertile: [],
-        park: [],
-        pest: [],
-    });
-    useEffect(() => {
-        request
-            .get<GuidanceResult>(
-                `/guidance/get?farmId=${farmId}&farmType=${farmType}&month=${month}`,
-            )
-            .then((res) => {
-                setGuideList(res.data);
-            });
-    }, []);
-
-    // validate iframe is working or not
-    const [hasExpert, setHasExpert] = useState(false);
-    return (
-        <Flex className={style.container}>
-            <Flex className={style.box__container}>
-                <GuidanceBox
-                    list={guideList.body}
-                    type="树体管理"
-                    iconClass="ri-tree-fill"
-                />
-                <GuidanceBox
-                    list={guideList.fertile}
-                    type="水肥管理"
-                    iconClass="ri-cloud-fill"
-                />
-                <GuidanceBox
-                    list={guideList.pest}
-                    type="病虫管理"
-                    iconClass="ri-bug-2-fill"
-                />
-                <GuidanceBox
-                    list={guideList.park}
-                    type="清园操作"
-                    iconClass="ri-parking-box-fill"
-                />
-            </Flex>
-            <Card
-                title={
-                    <i
-                        className="ri-user-2-fill"
-                        style={{ color: "var(--primary)" }}>
-                        &nbsp;&nbsp;问专家
-                    </i>
-                }>
-                {!hasExpert && (
-                    <div style={{ color: "var(--danger)" }}>问专家平台出错，请联系管理员！</div>
-                )}
-                <iframe
-                    className={style.expert__iframe}
-                    src="https://chat.archivemodel.cn"
-                    onLoad={(e) => {
-                        const iframe = e.currentTarget;
-                        try {
-                            if (
-                                !iframe.contentDocument ||
-                                iframe.contentDocument.body.innerHTML === ""
-                            ) {
-                                setHasExpert(false);
-                            } else {
-                                setHasExpert(true);
-                            }
-                        } catch {
-                            setHasExpert(false);
-                        }
-                    }}></iframe>
-            </Card>
-        </Flex>
-    );
-};
-
-export default Operations;
+  const [guideList, setGuideList] = useState<GuidanceSet>({
+    body: [],
+    fertile: [],
+    park: [],
+    pest: [],
+  });
+  const getErrorTips = (msg: string): GuidanceSet => ({
+    body: [{ id: 0, text: msg, isFormula: false }],
+    fertile: [{ id: 0, text: msg, isFormula: false }],
+    park: [{ id: 0, text: msg, isFormula: false }],
+    pest: [{ id: 0, text: msg, isFormula: false }],
+  });
+  useEffect(() => {
+    req
+      .get<GuidanceResult>(`/guidance/get?farmId=${farmId}&farmType=${farmType}&month=${month}`)
+      .then((res) => {
+        setGuideList(res.data);
+      })
+      .catch((e) => {
+        const msg = Request.getErrorMsg(e);
+        setGuideList(getErrorTips(" / " + msg));
+      });
+  }, []);
+  return (
+    <Flex style={{ height: "100%" }}>
+      <Flex gap="0.5rem" wrap="wrap" style={{ height: "100%" }}>
+        <GuidanceBox list={guideList.body} type="树体管理" iconClass={HourglassOutlined} />
+        <GuidanceBox list={guideList.fertile} type="水肥管理" iconClass={BgColorsOutlined} />
+        <GuidanceBox list={guideList.pest} type="病虫管理" iconClass={BugOutlined} />
+        <GuidanceBox list={guideList.park} type="清园操作" iconClass={ShopOutlined} />
+      </Flex>
+      <Card
+        title={
+          <>
+            <GlobalOutlined />
+            &nbsp;&nbsp;问专家
+          </>
+        }
+        style={{ flex: "1 0 400px" }}
+        styles={{ body: { padding: 0, height: "calc(100% - 60px)" } }}>
+        <iframe
+          src="https://chat.archivemodel.cn"
+          style={{ border: "none", width: "100%", height: "100%", borderRadius: "0 0 8px 8px" }}
+          onLoad={(e) => {
+            const iframe = e.currentTarget;
+            console.log(iframe);
+            // try {
+            //   if (!iframe.contentDocument || iframe.contentDocument.body.innerHTML === "") {
+            //     setHasExpert(false);
+            //   } else {
+            //     setHasExpert(true);
+            //   }
+            // } catch {
+            //   setHasExpert(false);
+            // }
+          }}></iframe>
+      </Card>
+    </Flex>
+  );
+}
