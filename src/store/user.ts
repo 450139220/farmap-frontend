@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type FarmPreviewType = {
+export type FarmPreviewType = {
   id: number;
   name: number;
 };

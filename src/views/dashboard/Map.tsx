@@ -3,77 +3,59 @@ import "@amap/amap-jsapi-loader";
 
 import { useEffect } from "react";
 
-import style from "./index.module.css";
-import {
-    createMap,
-    createMarkers,
-    drawMarkers,
-    drawPolygon,
-    resetMap,
-    setMap,
-    useMap,
-} from "@/utils/map";
-import type { MapSelectors } from ".";
+// import {
+//     createMap,
+//     createMarkers,
+//     drawMarkers,
+//     drawPolygon,
+//     resetMap,
+//     setMap,
+//     useMap,
+// } from "@/utils/map";
 
-export type MapProps = {
-    farm: FarmState;
-    selector: {
-        selectedMode: MapSelectors["modeOptions"];
-        selectedInfo: MapSelectors["infoOptions"];
-    };
-    slider: {
-        left: number;
-        right: number;
-    };
-    onMapReady?: () => void;
-};
+export type MapProps = {};
 
 function MapContainer(props: MapProps) {
-    // execute when farm changes
-    useEffect(() => {
-        // create map and mount
-        let map: AMap.Map | undefined = useMap();
-        if (!map) {
-            map = createMap(props.farm);
-            setMap(map);
-        }
-        // draw markers and polygon
-        paintOnMap(map);
-        // add event when map is ready
-        props.onMapReady?.();
+  let amap: AMap.Map | null = null;
+  const satellite = new AMap.TileLayer.Satellite();
 
-        // clear storage when unmount
-        return () => {
-            map?.destroy();
-            resetMap();
-        };
-    }, [props.farm]);
-    // execute when slider moves
-    useEffect(() => {
-        const map = useMap();
-        if (!map) return;
-        paintOnMap(map);
-    }, [props.selector.selectedMode, props.slider.left, props.slider.right]);
+  useEffect(() => {
+    amap = new AMap.Map("map-container", {
+      zoom: 12,
+      layers: [satellite],
+      // mapStyle: "amap://styles/darkblue",
+      // mapStyle: "amap://styles/whitesmoke",
+    });
 
-    function paintOnMap(map: AMap.Map): void {
-        if (props.selector.selectedMode === "crop") {
-            const markers = createMarkers(
-                props.farm.crops,
-                props.selector.selectedInfo,
-                props.slider.left,
-                props.slider.right,
-            );
-            drawMarkers(map, markers);
-        } else {
-            drawPolygon(map, props.farm.locations);
-        }
-    }
+    return () => {
+      amap?.destroy();
+    };
+  }, []);
 
-    return (
-        <div
-            id="map-container"
-            className={style.map__container}></div>
-    );
+  // execute when slider moves
+  // useEffect(() => {
+  //   const map = useMap();
+  //   if (!map) return;
+  //   paintOnMap(map);
+  // }, [props.selector.selectedMode, props.slider.left, props.slider.right]);
+
+  // function paintOnMap(map: AMap.Map): void {
+  //   if (props.selector.selectedMode === "crop") {
+  //     const markers = createMarkers(
+  //       props.farm.crops,
+  //       props.selector.selectedInfo,
+  //       props.slider.left,
+  //       props.slider.right,
+  //     );
+  //     drawMarkers(map, markers);
+  //   } else {
+  //     drawPolygon(map, props.farm.locations);
+  //   }
+  // }
+
+  return (
+    <div id="map-container" style={{ flexGrow: 1, borderRadius: 8 }}></div>
+  );
 }
 
 export default MapContainer;

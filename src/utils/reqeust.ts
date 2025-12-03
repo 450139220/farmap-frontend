@@ -2,14 +2,14 @@ interface RequestHeader {
   Authorizaiton?: string;
 }
 
-class Request {
+export class Request {
   host: URL;
   constructor(url: string) {
     this.host = new URL(url);
   }
 
-  static getErrorMsg(e: Error): string {
-    return e.message;
+  static getErrorMsg(e: Error | unknown): string {
+    return (e as Error).message;
   }
 
   private getUrl(path: string): URL {
@@ -33,8 +33,11 @@ class Request {
       throw new Error(msg);
     }
   }
-
-  async post<T, U extends object>(path: string, body: U, headers: RequestHeader = {}): Promise<T> {
+  async post<T extends object, U>(
+    path: string,
+    body: T,
+    headers: RequestHeader = {},
+  ): Promise<U> {
     const url = this.getUrl(path);
     try {
       const resp = await fetch(url, {

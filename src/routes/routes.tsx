@@ -11,6 +11,7 @@ import {
 } from "@ant-design/icons";
 
 import Layout from "@/layout";
+import { req } from "@/utils/reqeust";
 
 export const ALL_ROUTES: RouteObject[] = [
   {
@@ -81,11 +82,27 @@ const routes: RouteObject[] = [
     path: "/",
     Component: Layout,
     children: ALL_ROUTES,
-    loader: async () => {},
+    loader: async () => {
+      // TODO: update the response type
+      try {
+        const resp = await req.get<{ isExpired: boolean }>(
+          "/user/validate-token",
+        );
+        return resp;
+      } catch {
+        return {
+          isExpired: false,
+        };
+      }
+    },
   },
   {
     path: "/login",
     Component: lazy(() => import("@/views/login")),
+  },
+  {
+    path: "/*",
+    Component: lazy(() => import("@/layout/NotFound")),
   },
 ];
 
