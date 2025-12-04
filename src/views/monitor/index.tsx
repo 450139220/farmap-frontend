@@ -1,16 +1,14 @@
-import {
-  BarsOutlined,
-  FundViewOutlined,
-  ThunderboltOutlined,
-} from "@ant-design/icons";
-import { Card, Flex } from "antd";
-import VideoPlayer from "./VideoPlayer";
 import { useEffect, useState } from "react";
-import MonitorList from "./list/MonitorList";
+import { Card, Flex } from "antd";
+import { BarsOutlined, FundViewOutlined, ThunderboltOutlined } from "@ant-design/icons";
+
+import VideoPlayer from "./VideoPlayer";
+import MonitorListView from "./list/MonitorListView";
 
 import { monitorKeys } from "./list/keys";
 import { req } from "@/utils/reqeust";
 import { permanence } from "@/utils/permanence";
+import PredictPic from "./PredictPic";
 const productId = monitorKeys.productId;
 
 interface AccessTokenResponse {
@@ -22,11 +20,11 @@ interface AccessTokenResponse {
 
 export default function index() {
   // Get the user's access token
+  // TODO: use a proxy
   const localAccessToken = permanence.accessToken.useAccessToken();
   const [accessToken, setAccessToken] = useState<string>("");
   useEffect(() => {
-    if (localAccessToken && performance.now() < localAccessToken.expiresAt)
-      return;
+    if (localAccessToken && performance.now() < localAccessToken.expiresAt) return;
     req
       .post<
         typeof monitorKeys,
@@ -41,7 +39,7 @@ export default function index() {
       });
   }, []);
 
-  // Select video
+  // Select video in monitor list
   const [selectedVideo, setSelectedVideo] = useState<string>(""); // this is the request url for video
   const getSelectVideoUrl = (url: string): void => {
     setSelectedVideo(url);
@@ -57,8 +55,9 @@ export default function index() {
               &nbsp;&nbsp;监控列表
             </>
           }
-          style={{ flex: "0 0 300px", overflowY: "hidden" }}>
-          <MonitorList
+          style={{ flex: "0 0 300px" }}
+          styles={{ body: { height: "calc(300px - 100px)" } }}>
+          <MonitorListView
             accessToken={accessToken}
             productId={productId}
             onSelect={getSelectVideoUrl}
@@ -82,7 +81,9 @@ export default function index() {
             &nbsp;&nbsp;在线推理
           </>
         }
-        style={{ flexGrow: 1 }}></Card>
+        style={{ flex: "1 0 40%" }}>
+        <PredictPic />
+      </Card>
     </Flex>
   );
 }

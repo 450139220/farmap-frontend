@@ -20,7 +20,8 @@
 # To
 - [ ] oss for user images input
 - [ ] audio input for experts
-- [ ] monitor => proxy video requests
+- [ ] monitor
+- [ ] proxy video requests
 
 # Need Updating Backend Apis
 1. validate token permanence.ts

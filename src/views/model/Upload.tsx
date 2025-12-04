@@ -2,7 +2,15 @@ import { req } from "@/utils/reqeust";
 import { useState } from "react";
 
 import { Button, Card, Image, Upload as UploadAntd, type UploadFile } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
+
+export const getBase64 = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
 
 function Upload() {
   const [files, setFiles] = useState<File[]>([]);
@@ -34,9 +42,9 @@ function Upload() {
           const { latitude, longitude } = position.coords;
           console.log(latitude, longitude);
           // TODO: upload file to OSS
-          const res = await req.post<any>("/", formData);
+          // const res = await req.post<any>("/", formData);
           // TODO: upload to LLM
-          console.log(res);
+          // console.log(res);
         },
         (error) => {
           console.log("erro", error);
@@ -52,18 +60,10 @@ function Upload() {
     }
   };
 
-  const getBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as File);
     }
-
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
   };
@@ -71,16 +71,17 @@ function Upload() {
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
+      <div style={{ marginTop: 8 }}>上传</div>
     </button>
   );
 
   return (
     <Card
       title={
-        <i className="ri-upload-cloud-fill" style={{ color: "var(--primary)" }}>
+        <>
+          <UploadOutlined />
           &nbsp;&nbsp;上传作物
-        </i>
+        </>
       }
       style={{ flexGrow: 0 }}>
       <div style={{ marginBottom: "1rem" }}>
@@ -91,16 +92,16 @@ function Upload() {
         listType="picture-card"
         onChange={handleChange}
         onPreview={handlePreview}
-        multiple
-        beforeUpload={() => false}>
+        beforeUpload={() => false}
+        multiple>
         {files.length >= 5 ? null : uploadButton}
       </UploadAntd>
       {previewImage && (
         <Image
-          wrapperStyle={{ display: "none" }}
+          styles={{ root: { display: "none" } }}
           preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
+            open: previewOpen,
+            onOpenChange: (visible) => setPreviewOpen(visible),
             afterOpenChange: (visible) => !visible && setPreviewImage(""),
           }}
           src={previewImage}
