@@ -5,6 +5,9 @@ import path from "node:path";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    exclude: ["web-conrol"],
+  },
   server: {
     open: true,
     // usable in local area network
@@ -14,6 +17,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
+      // crypto: "crypto-browserify",
     },
   },
 });

@@ -1,8 +1,10 @@
 import type { FarmPreviewType } from "@/store/user";
+import { permanence } from "@/utils/permanence";
 import { Request, req } from "@/utils/reqeust";
 import { Flex, Form, Layout, Input, Card, Button } from "antd";
 import type { FormProps } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 type UserLoginRequest = {
   username: string;
@@ -26,6 +28,22 @@ const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
 ) => {};
 
 function Login() {
+  // Enter the home page when token is valid
+  const token = permanence.token.useToken();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const resp = req
+      .get<{ isExpired: boolean }>("/validate-token")
+      .then((resp) => {
+        console.log(resp);
+        if (resp.isExpired)
+          throw new Error("Token expired, navigate to home page.");
+      })
+      .catch(() => {
+        navigate("/");
+      });
+  }, []);
+
   // Error message for user
   const [msg, setMsg] = useState<string>("");
 
