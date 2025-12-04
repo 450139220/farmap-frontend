@@ -35,6 +35,22 @@ function setUserStore(user: UserStoreState): void {
   localStorage.setItem("user", userStr);
 }
 
+// Access token for monitors
+interface AccessTokenType {
+  accessToken: string;
+  expiresAt: number;
+}
+function useAccessToken(): AccessTokenType | undefined {
+  const accessToken = localStorage.getItem("accessToken");
+  if (!accessToken) return;
+  return JSON.parse(accessToken);
+}
+function setAccessToken(accessToken: AccessTokenType): void {
+  const token = JSON.stringify(accessToken);
+  localStorage.setItem("accessToken", token);
+}
+
+// Export all performance data
 export const permanence = {
   token: {
     useToken,
@@ -44,5 +60,9 @@ export const permanence = {
   user: {
     useUserStore,
     setUserStore,
+  },
+  accessToken: {
+    useAccessToken,
+    setAccessToken,
   },
 };

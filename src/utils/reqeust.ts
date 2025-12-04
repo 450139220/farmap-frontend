@@ -38,7 +38,8 @@ export class Request {
     body: T,
     headers: RequestHeader = {},
   ): Promise<U> {
-    const url = this.getUrl(path);
+    let url = this.getUrl(path);
+    if (path.startsWith("http")) url = new URL(path);
     try {
       const resp = await fetch(url, {
         method: "POST",
