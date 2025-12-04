@@ -10,7 +10,7 @@ import ModeSelect from "./selects/ModeSelect";
 import MapContainer from "./Map";
 import Slider from "./slider/Slider";
 import type { SliderProps } from "./slider/Slider";
-import { GlobalOutlined } from "@ant-design/icons";
+import { GlobalOutlined, MacCommandOutlined } from "@ant-design/icons";
 
 export default function Map() {
   // Get farm select informations
@@ -39,44 +39,54 @@ export default function Map() {
   };
 
   return (
-    <Card
-      title={
-        <>
-          <GlobalOutlined />
-          &nbsp;&nbsp;地图详情
-        </>
-      }
-      style={{ height: "100%" }}
-      styles={{ body: { height: "calc(100% - 60px)" } }}>
-      <Flex gap="0.5rem" vertical style={{ height: "100%" }}>
-        <Flex gap="0.5rem" style={{ width: "100%" }}>
-          <FarmSelect
-            value={farm}
-            options={farmOptions}
-            onChange={(newId) => {
-              setFarm(newId);
-              // TODO: update farm store here
-            }}
-          />
-          <ModeSelect
-            value={mode}
-            onChange={(newMode) => {
-              setMode(newMode);
-              // TODO: update amap content here
-            }}
-          />
-          <InfoSelect
-            value={info}
-            disabled={mode === "farm"}
-            onChange={(newInfo) => {
-              setInfo(newInfo);
-              // TODO: update amap content here
-            }}
-          />
+    <Flex vertical gap="0.5rem" style={{ height: "100%" }}>
+      <Card
+        title={
+          <>
+            <GlobalOutlined />
+            &nbsp;&nbsp;地图详情
+          </>
+        }
+        style={{ height: "100%" }}
+        styles={{ body: { height: "calc(100% - 60px)" } }}>
+        <Flex gap="0.5rem" vertical style={{ height: "100%" }}>
+          <Flex gap="0.5rem" style={{ width: "100%" }}>
+            <FarmSelect
+              value={farm}
+              options={farmOptions}
+              onChange={(newId) => {
+                setFarm(newId);
+                // TODO: update farm store here
+              }}
+            />
+            <ModeSelect
+              value={mode}
+              onChange={(newMode) => {
+                setMode(newMode);
+                // TODO: update amap content here
+              }}
+            />
+            <InfoSelect
+              value={info}
+              disabled={mode === "farm"}
+              onChange={(newInfo) => {
+                setInfo(newInfo);
+                // TODO: update amap content here
+              }}
+            />
+          </Flex>
+          <MapContainer />
         </Flex>
-        <MapContainer />
+      </Card>
+      <Card
+        title={
+          <>
+            <MacCommandOutlined />
+            &nbsp;&nbsp;调整分布
+          </>
+        }>
         <Slider {...slider} onChangeEnd={sliderChange} />
-      </Flex>
-    </Card>
+      </Card>
+    </Flex>
   );
 }

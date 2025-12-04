@@ -1,4 +1,4 @@
-import { Component, lazy, type JSX } from "react";
+import { lazy, type JSX } from "react";
 import { createBrowserRouter, Navigate } from "react-router";
 import type { RouteObject } from "react-router";
 import {
@@ -76,7 +76,10 @@ export const ALL_ROUTES: RouteObject[] = [
   {
     path: "call-model",
     element: (
-      <ProtectedRoute roles={["user", "admin"]} Component={lazy(() => import("@/views/model"))} />
+      <ProtectedRoute
+        roles={["user", "admin"]}
+        Component={lazy(() => import("@/views/model"))}
+      />
     ),
     handle: {
       key: "/call-model",
@@ -98,7 +101,10 @@ export const ALL_ROUTES: RouteObject[] = [
   {
     path: "monitor",
     element: (
-      <ProtectedRoute roles={["user", "admin"]} Component={lazy(() => import("@/views/monitor"))} />
+      <ProtectedRoute
+        roles={["user", "admin"]}
+        Component={lazy(() => import("@/views/monitor"))}
+      />
     ),
     handle: {
       key: "/monitor",
@@ -124,7 +130,12 @@ export const ALL_ROUTES: RouteObject[] = [
   },
   {
     path: "admin",
-    element: <ProtectedRoute roles={["admin"]} Component={lazy(() => import("@/views/admin"))} />,
+    element: (
+      <ProtectedRoute
+        roles={["admin"]}
+        Component={lazy(() => import("@/views/admin"))}
+      />
+    ),
     handle: {
       key: "/admin",
       name: "用户管理",
@@ -142,7 +153,9 @@ const routes: RouteObject[] = [
     loader: async () => {
       // TODO: update the response type
       try {
-        const resp = await req.get<{ isExpired: boolean }>("/user/validate-token");
+        const resp = await req.get<{ isExpired: boolean }>(
+          "/user/validate-token",
+        );
         return resp;
       } catch {
         return {
