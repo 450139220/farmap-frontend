@@ -33,7 +33,10 @@ function TemperatureChart() {
 
   useEffect(() => {
     req
-      .get<AccTempResult>(`/weather/accumulated-temperature?farmType=${farmType}`)
+      .get<AccTempResult>(
+        `/weather/accumulated-temperature?farmType=${farmType}`,
+        { Authorization: `Bearer ${token}` },
+      )
       .then((data) => {
         setLastAccTemp(data.data.last);
         setThisAccTemp(data.data.thisYear);

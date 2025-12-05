@@ -10,10 +10,10 @@ import {
   BgColorsOutlined,
   BugOutlined,
   BulbOutlined,
-  GlobalOutlined,
   HourglassOutlined,
   ShopOutlined,
 } from "@ant-design/icons";
+import { permanence } from "@/utils/permanence";
 
 type GuidanceSet = {
   body: Guidance[];
@@ -28,6 +28,9 @@ type GuidanceResult = {
   data: GuidanceSet;
 };
 export default function Operations() {
+  // Request token
+  const token = permanence.token.useToken();
+
   const farmId = useFarmStore((s) => s.id);
   const farmType = useFarmStore((s) => s.type);
   const month = new Date().getMonth();
@@ -44,10 +47,19 @@ export default function Operations() {
     park: [{ id: 0, text: msg, isFormula: false }],
     pest: [{ id: 0, text: msg, isFormula: false }],
   });
+
   useEffect(() => {
     req
-      .get<GuidanceResult>(`/guidance/get?farmId=${farmId}&farmType=${farmType}&month=${month}`)
+      .get<GuidanceResult>(
+        `/guidance/get?farmId=${farmId}&farmType=${farmType}&month=${month}`,
+        { Authorization: `Beaer ${token}` },
+      )
       .then((res) => {
+        if (!res.data) {
+          setGuideList(getErrorTips("请求参数出错，请联系管理员"));
+          return;
+        }
+
         setGuideList(res.data);
       })
       .catch((e) => {
@@ -58,10 +70,26 @@ export default function Operations() {
   return (
     <Flex style={{ height: "100%" }}>
       <Flex gap="0.5rem" wrap="wrap" style={{ height: "100%" }}>
-        <GuidanceBox list={guideList.body} type="树体管理" iconClass={HourglassOutlined} />
-        <GuidanceBox list={guideList.fertile} type="水肥管理" iconClass={BgColorsOutlined} />
-        <GuidanceBox list={guideList.pest} type="病虫管理" iconClass={BugOutlined} />
-        <GuidanceBox list={guideList.park} type="清园操作" iconClass={ShopOutlined} />
+        <GuidanceBox
+          list={guideList.body}
+          type="树体管理"
+          iconClass={HourglassOutlined}
+        />
+        <GuidanceBox
+          list={guideList.fertile}
+          type="水肥管理"
+          iconClass={BgColorsOutlined}
+        />
+        <GuidanceBox
+          list={guideList.pest}
+          type="病虫管理"
+          iconClass={BugOutlined}
+        />
+        <GuidanceBox
+          list={guideList.park}
+          type="清园操作"
+          iconClass={ShopOutlined}
+        />
       </Flex>
       <Card
         title={
@@ -74,10 +102,14 @@ export default function Operations() {
         styles={{ body: { padding: 0, height: "calc(100% - 60px)" } }}>
         <iframe
           src="https://chat.archivemodel.cn"
-          style={{ border: "none", width: "100%", height: "100%", borderRadius: "0 0 8px 8px" }}
+          style={{
+            border: "none",
+            width: "100%",
+            height: "100%",
+            borderRadius: "0 0 8px 8px",
+          }}
           onLoad={(e) => {
             const iframe = e.currentTarget;
-            console.log(iframe);
             // try {
             //   if (!iframe.contentDocument || iframe.contentDocument.body.innerHTML === "") {
             //     setHasExpert(false);

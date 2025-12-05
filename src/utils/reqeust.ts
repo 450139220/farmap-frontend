@@ -1,5 +1,5 @@
 interface RequestHeader {
-  Authorizaiton?: string;
+  Authorization?: string;
 }
 
 export class Request {
@@ -22,15 +22,20 @@ export class Request {
     return "未知错误，请检查网络重试或联系管理员。";
   }
 
-  async get<T extends object>(path: string): Promise<T> {
+  async get<T extends object>(
+    path: string,
+    headers: RequestHeader = {},
+  ): Promise<T> {
     let url = this.getUrl(path);
     if (path.startsWith("http")) url = new URL(path);
     try {
-      const resp = await fetch(url);
+      const resp = await fetch(url, {
+        method: "GET",
+        headers: { ...headers },
+      });
       if (!resp.ok) throw new Error(resp.status.toString());
       return await resp.json();
     } catch (e) {
-      console.log(e);
       const msg = this.parseStatusCode(e as Error);
       throw new Error(msg);
     }

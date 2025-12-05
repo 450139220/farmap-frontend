@@ -6,14 +6,13 @@ import { Outlet, NavLink, useNavigate } from "react-router";
 import { useUserStore } from "@/store/user";
 import { ALL_ROUTES } from "@/routes/routes";
 import { useEffect } from "react";
+import { permanence } from "@/utils/permanence";
 
 const { Header, Sider, Content } = LayoutAntd;
 
 export default function Layout() {
   // Redirect to login page if token is expired
-  // TODO: update this
   const { isExpired } = useLoaderData();
-  console.log("Token exipred", isExpired);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -23,7 +22,14 @@ export default function Layout() {
   const username = useUserStore((s) => s.username);
   const role = useUserStore((s) => s.role);
 
+  // Log out
   const logout = useUserStore((s) => s.logout);
+  const setToken = permanence.token.setToken;
+  const handleLogout = () => {
+    logout();
+    setToken("NO_TOKEN_STORED");
+    navigate("/login");
+  };
 
   // Sider
   const {
@@ -31,13 +37,13 @@ export default function Layout() {
   } = theme.useToken();
   // Router
   type MenuItem = Required<MenuProps>["items"][number];
-  const menuItems: MenuItem[] = ALL_ROUTES.filter((r) => r.handle.roles.includes(role)).map(
-    (r) => ({
-      key: r.handle.key,
-      label: <NavLink to={r.path!}>{r.handle.name}</NavLink>,
-      icon: <r.handle.Icon />,
-    }),
-  );
+  const menuItems: MenuItem[] = ALL_ROUTES.filter((r) =>
+    r.handle.roles.includes(role),
+  ).map((r) => ({
+    key: r.handle.key,
+    label: <NavLink to={r.path!}>{r.handle.name}</NavLink>,
+    icon: <r.handle.Icon />,
+  }));
 
   return (
     <LayoutAntd style={{ height: "100vh" }}>
@@ -54,7 +60,12 @@ export default function Layout() {
           }}>
           FarMap
         </div>
-        <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]} items={menuItems} />
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectedKeys={[location.pathname]}
+          items={menuItems}
+        />
       </Sider>
       <LayoutAntd style={{ height: "100%" }}>
         <Header style={{ padding: 0, background: colorBgContainer }}>
@@ -66,8 +77,12 @@ export default function Layout() {
             }}>
             <div>
               <span>您好，{username} 用户！</span>
-              <Avatar size={32} icon={<UserOutlined />} style={{ cursor: "pointer" }} />
-              <Button style={{ marginLeft: "1rem" }} onClick={logout}>
+              <Avatar
+                size={32}
+                icon={<UserOutlined />}
+                style={{ cursor: "pointer" }}
+              />
+              <Button style={{ marginLeft: "1rem" }} onClick={handleLogout}>
                 退出登陆
               </Button>
             </div>

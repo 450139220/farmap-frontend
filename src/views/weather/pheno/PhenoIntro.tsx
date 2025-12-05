@@ -3,6 +3,7 @@ import SeasonWheel from "./SeasenWheel";
 import { useFarmStore } from "@/store/farm";
 import { useEffect, useMemo, useState } from "react";
 import { req, Request } from "@/utils/reqeust";
+import { permanence } from "@/utils/permanence";
 
 interface WeatherIntro {
   id: number;
@@ -17,8 +18,13 @@ type WeatherIntroResult = {
 };
 
 export default function PhenoIntro() {
+  // Request token
+  const token = permanence.token.useToken();
+
   // Season wheel event
-  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
+  const [selectedMonth, setSelectedMonth] = useState<number>(
+    new Date().getMonth(),
+  );
   const onMonthChange = (month: number): void => {
     setSelectedMonth(month);
   };
@@ -29,7 +35,9 @@ export default function PhenoIntro() {
   const [introList, setIntroList] = useState<WeatherIntro[]>([]);
   useEffect(() => {
     req
-      .get<WeatherIntroResult>(`/weather/intro?farmId=${farmId}`)
+      .get<WeatherIntroResult>(`/weather/intro?farmId=${farmId}`, {
+        Authorization: `Bearer ${token}`,
+      })
       .then((res) => {
         // This is for reshaping the strange response structure
         const list: WeatherIntro[] = [];

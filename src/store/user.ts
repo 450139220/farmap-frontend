@@ -7,7 +7,7 @@ export type FarmPreviewType = {
 
 export type UserStoreState = {
   username: string;
-  role: "user" | "guest" | "admin" | "expert";
+  role: "guest" | "user" | "admin" | "expert";
   farms: FarmPreviewType[];
 };
 type UserStoreActions = {
@@ -18,7 +18,7 @@ type UserStore = UserStoreState & UserStoreActions;
 
 const initUserStore: UserStoreState = {
   username: "",
-  role: "user",
+  role: "guest",
   farms: [],
 };
 export const useUserStore = create<UserStore>((set) => ({

@@ -14,6 +14,7 @@ import {
 import Layout from "@/layout";
 import { req } from "@/utils/reqeust";
 import { useUserStore } from "@/store/user";
+import { permanence } from "@/utils/permanence";
 
 function ProtectedRoute({
   Component,
@@ -151,15 +152,19 @@ const routes: RouteObject[] = [
     Component: Layout,
     children: ALL_ROUTES,
     loader: async () => {
-      // TODO: update the response type
+      const token = permanence.token.useToken();
       try {
-        const resp = await req.get<{ isExpired: boolean }>(
+        const resp = await req.get<{ data: { isExpired: boolean } }>(
           "/user/validate-token",
+          {
+            Authorization: `Bearer ${token}`,
+          },
         );
-        return resp;
+
+        return resp.data;
       } catch {
         return {
-          isExpired: false,
+          isExpired: true,
         };
       }
     },

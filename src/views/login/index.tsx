@@ -1,4 +1,8 @@
-import type { FarmPreviewType } from "@/store/user";
+import {
+  useUserStore,
+  type FarmPreviewType,
+  type UserStoreState,
+} from "@/store/user";
 import { permanence } from "@/utils/permanence";
 import { Request, req } from "@/utils/reqeust";
 import { Flex, Form, Layout, Input, Card, Button } from "antd";
@@ -11,9 +15,14 @@ type UserLoginRequest = {
   password: string;
 };
 type UserLoginResult = {
-  username: string;
-  role: string;
-  farms: FarmPreviewType[];
+  data: {
+    user: {
+      name: string;
+      role: UserStoreState["role"];
+    };
+    farms: FarmPreviewType[];
+    token: string;
+  };
 };
 
 const { Header, Content } = Layout;
@@ -29,26 +38,14 @@ const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
 
 function Login() {
   // Enter the home page when token is valid
-  const token = permanence.token.useToken();
+  const setToken = permanence.token.setToken;
+  const login = useUserStore((s) => s.login);
   const navigate = useNavigate();
-  useEffect(() => {
-    const resp = req
-      .get<{ isExpired: boolean }>("/validate-token")
-      .then((resp) => {
-        console.log(resp);
-        if (resp.isExpired)
-          throw new Error("Token expired, navigate to home page.");
-      })
-      .catch(() => {
-        navigate("/");
-      });
-  }, []);
 
   // Error message for user
   const [msg, setMsg] = useState<string>("");
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    console.log("Success:", values);
     try {
       const resp = await req.post<UserLoginRequest, UserLoginResult>(
         "/user/login",
@@ -57,12 +54,20 @@ function Login() {
           password: values.password!,
         },
       );
-      // TODO: store this response to user store
+      // Store this response to user store
+      login({
+        username: resp.data.user.name,
+        role: resp.data.user.role,
+        farms: resp.data.farms,
+      });
+      setToken(resp.data.token);
+      navigate("/");
+
       // Reset error message
       setMsg("");
     } catch (e) {
-      const msg = Request.getErrorMsg(e);
-      setMsg(msg);
+      // const msg = Request.getErrorMsg(e);
+      setMsg("用户或密码错误");
     }
   };
 
