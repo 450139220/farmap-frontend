@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Flex, Form, Input } from "antd";
 import LeftDivider from "./LeftDevider";
 import TextArea from "antd/es/input/TextArea";
 import { analysisResultSections } from "./analysisResultSection";
@@ -34,11 +34,15 @@ export default function RevisionText(props: RevisionTextProps) {
         const revisedJsonStr = JSON.stringify(revisedJsonData);
 
         req
-          .post<{}, { data: string }>(`/expert/cases/${props.requestId}/revise`, {
-            revisedJson: revisedJsonStr,
-            isAgree: 1,
-            revisionNotes: "这是一个修改功能测试",
-          })
+          .post<{}, { data: string }>(
+            `/expert/cases/${props.requestId}/revise`,
+            {
+              revisedJson: revisedJsonStr,
+              isAgree: 1,
+              revisionNotes: "这是一个修改功能测试",
+            },
+            { Authorization: `Bearer ${token}` },
+          )
           .then((res) => {
             props.onSubmit(res.data);
           })
@@ -51,8 +55,14 @@ export default function RevisionText(props: RevisionTextProps) {
         <div key={section.title}>
           <LeftDivider text={section.title} />
           {section.fields.map((field) => (
-            <Form.Item label={field.label} name={field.name} key={field.label}>
-              {field.type === "textarea" ? <TextArea rows={2} /> : <Input />}
+            <Form.Item
+              label={field.label}
+              name={field.name}
+              key={field.label}
+              labelCol={{ flex: "none" }}
+              wrapperCol={{ flex: 1 }}
+              style={{ display: "flex", justifyContent: "space-between" }}>
+              {field.type === "textarea" ? <TextArea rows={3} /> : <Input />}
             </Form.Item>
           ))}
         </div>

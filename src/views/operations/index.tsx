@@ -50,11 +50,13 @@ export default function Operations() {
 
   useEffect(() => {
     req
-      .get<GuidanceResult>(
-        `/guidance/get?farmId=${farmId}&farmType=${farmType}&month=${month}`,
-        { Authorization: `Beaer ${token}` },
-      )
+      .get<GuidanceResult>(`/guidance/get?farmId=${farmId}&farmType=${farmType}&month=${month}`, {
+        Authorization: `Beaer ${token}`,
+      })
       .then((res) => {
+        // TODO: corret the backend interface
+        console.log(res, farmType);
+
         if (!res.data) {
           setGuideList(getErrorTips("请求参数出错，请联系管理员"));
           return;
@@ -70,26 +72,10 @@ export default function Operations() {
   return (
     <Flex style={{ height: "100%" }}>
       <Flex gap="0.5rem" wrap="wrap" style={{ height: "100%" }}>
-        <GuidanceBox
-          list={guideList.body}
-          type="树体管理"
-          iconClass={HourglassOutlined}
-        />
-        <GuidanceBox
-          list={guideList.fertile}
-          type="水肥管理"
-          iconClass={BgColorsOutlined}
-        />
-        <GuidanceBox
-          list={guideList.pest}
-          type="病虫管理"
-          iconClass={BugOutlined}
-        />
-        <GuidanceBox
-          list={guideList.park}
-          type="清园操作"
-          iconClass={ShopOutlined}
-        />
+        <GuidanceBox list={guideList.body} type="树体管理" iconClass={HourglassOutlined} />
+        <GuidanceBox list={guideList.fertile} type="水肥管理" iconClass={BgColorsOutlined} />
+        <GuidanceBox list={guideList.pest} type="病虫管理" iconClass={BugOutlined} />
+        <GuidanceBox list={guideList.park} type="清园操作" iconClass={ShopOutlined} />
       </Flex>
       <Card
         title={

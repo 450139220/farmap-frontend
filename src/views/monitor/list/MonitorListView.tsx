@@ -4,9 +4,9 @@ import { useMemo, useState } from "react";
 import { Divider, Flex } from "antd";
 
 interface VideoRequestResponse {
-  code: number;
-  msg: string;
-  data: { previewUrl: string; playbackUrl: string };
+  data: {
+    data: { previewUrl: string; playbackUrl: string };
+  };
 }
 
 interface Props {
@@ -16,30 +16,22 @@ interface Props {
 export default function MonitorListView(props: Props) {
   // PERF: actually each user has his own monitors
   const [selected, setSelected] = useState<number>(-1);
-  const selectedMonitorName = useMemo(
-    () => monitorList[selected]?.name,
-    [selected],
-  );
-  console.log(props);
+  const selectedMonitorName = useMemo(() => monitorList[selected]?.name, [selected]);
 
-  const handleSelect = async (
-    id: number,
-    deviceSerial: string,
-  ): Promise<void> => {
+  const handleSelect = async (id: number, deviceSerial: string): Promise<void> => {
     try {
       console.log(props.accessToken);
 
-      // TODO: remove all localhost
       const resp = await req.get<VideoRequestResponse>(
         `/monitor/preview?accessToken=${props.accessToken}&deviceSerial=${deviceSerial}`,
       );
 
       // Set preview url to the iframe
-      props.onSelect(resp.data.previewUrl);
+      props.onSelect(resp.data.data.previewUrl);
       setSelected(id);
     } catch {
       props.onSelect("");
-      // setSelected(-1);
+      setSelected(-1);
     }
   };
 

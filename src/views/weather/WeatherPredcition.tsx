@@ -4,6 +4,7 @@ import style from "./index.module.css";
 import { Divider, Flex } from "antd";
 import { useFarmStore } from "@/store/farm";
 
+// PERF: put this key to server
 const API_KEY = "31b6db36c66f461e89c408c864b51da9";
 
 type Prediction = {
@@ -31,13 +32,13 @@ type PredictionResult = {
   updateTime: string;
 };
 function WeatherPrediction() {
-  // inits
+  // Get farm location
   const location = useFarmStore((s) => s.center);
 
-  // store 3 days weathers
+  // Store 3 days weathers
   const [predictions, setPredictions] = useState<Prediction[]>([]);
 
-  // for error
+  // For error tips
   const [isError, setIsError] = useState<boolean>(false);
 
   useEffect(() => {

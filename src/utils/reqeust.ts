@@ -17,15 +17,13 @@ export class Request {
   }
   private parseStatusCode(e: Error): string {
     const code = e.message;
+    if (code === "401") return "请求无权限，检查 token。";
     if (code === "500") return "服务内部错误，请联系管理员。";
     if (code === "502") return "后端部署缺失，请联系管理员。";
     return "未知错误，请检查网络重试或联系管理员。";
   }
 
-  async get<T extends object>(
-    path: string,
-    headers: RequestHeader = {},
-  ): Promise<T> {
+  async get<T extends object>(path: string, headers: RequestHeader = {}): Promise<T> {
     let url = this.getUrl(path);
     if (path.startsWith("http")) url = new URL(path);
     try {
@@ -40,11 +38,7 @@ export class Request {
       throw new Error(msg);
     }
   }
-  async post<T extends object, U>(
-    path: string,
-    body: T,
-    headers: RequestHeader = {},
-  ): Promise<U> {
+  async post<T extends object, U>(path: string, body: T, headers: RequestHeader = {}): Promise<U> {
     let url = this.getUrl(path);
     if (path.startsWith("http")) url = new URL(path);
     try {

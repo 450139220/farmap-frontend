@@ -23,7 +23,8 @@ function ProtectedRoute({
   Component: React.ComponentType;
   roles: string[];
 }): JSX.Element {
-  const role = useUserStore((s) => s.role);
+  const localUserStore = permanence.user.useUserStore()!;
+  const role = localUserStore.role;
   if (!roles.includes(role)) return <Navigate to="/403" replace />;
   return <Component />;
 }
@@ -120,7 +121,7 @@ export const ALL_ROUTES: RouteObject[] = [
       key: "/expert",
       name: "专家打标",
       Icon: AuditOutlined,
-      roles: ["admin", "expert"],
+      roles: ["expert", "admin"],
     },
   },
   {

@@ -53,3 +53,7 @@ button {
 .monitor_predict-file:hover {
   background-color: #eee;
 }
+
+.ant-form-item .ant-row {
+  width: 100%;
+}

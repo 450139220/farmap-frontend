@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, Flex } from "antd";
-import {
-  BarsOutlined,
-  FundViewOutlined,
-  ThunderboltOutlined,
-} from "@ant-design/icons";
+import { BarsOutlined, FundViewOutlined, ThunderboltOutlined } from "@ant-design/icons";
 
 import VideoPlayer from "./VideoPlayer";
 import MonitorListView from "./list/MonitorListView";
@@ -14,8 +10,10 @@ import { permanence } from "@/utils/permanence";
 import PredictPic from "./PredictPic";
 
 interface AccessTokenResponse {
-  accessToken: string;
-  expiresAt: number;
+  data: {
+    accessToken: string;
+    expiresAt: number;
+  };
 }
 
 export default function index() {
@@ -29,13 +27,12 @@ export default function index() {
       return;
     }
 
-    // Request when local token expired
-    // TODO: remove all localhost
+    // Request when local access token expired
     req.get<AccessTokenResponse>("/monitor/get-accesstoken").then((resp) => {
-      setAccessToken(resp.accessToken);
+      setAccessToken(resp.data.accessToken);
       permanence.accessToken.setAccessToken({
-        accessToken: resp.accessToken,
-        expiresAt: resp.expiresAt,
+        accessToken: resp.data.accessToken,
+        expiresAt: resp.data.expiresAt,
       });
     });
   }, []);
@@ -58,10 +55,7 @@ export default function index() {
           }
           style={{ flex: "0 0 300px" }}
           styles={{ body: { height: "calc(300px - 100px)" } }}>
-          <MonitorListView
-            accessToken={accessToken}
-            onSelect={getSelectVideoUrl}
-          />
+          <MonitorListView accessToken={accessToken} onSelect={getSelectVideoUrl} />
         </Card>
         <Card
           title={
