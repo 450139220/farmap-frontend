@@ -1,51 +1,55 @@
 :root {
-    --background-color: #e8eaec;
-    --background-color-radial: #b8bdc0;
+  --background-color: #e8eaec;
+  --background-color-radial: #b8bdc0;
 
-    --font-color: #2a3043;
-    --gray-font: #434650;
-    --light-font: #8f929a;
+  --font-color: #2a3043;
+  --gray-font: #434650;
+  --light-font: #8f929a;
 
-    --light-box: #ffffff;
-    --gray-box: #e4e8ec;
-    --dark-box: #272f43;
+  --light-box: #ffffff;
+  --gray-box: #e4e8ec;
+  --dark-box: #272f43;
 
-    --primary: #2e66e1;
-    --success: #58aa65;
-    --warning: #eaa052;
-    --danger: #de3030;
+  --primary: #2e66e1;
+  --success: #58aa65;
+  --warning: #eaa052;
+  --danger: #de3030;
 
-    --primary-shadow: #849fd7;
+  --primary-shadow: #849fd7;
 
-    --title-font-size: 1.2rem;
-    --title-icon-size: 1.4rem;
+  --title-font-size: 1.2rem;
+  --title-icon-size: 1.4rem;
 
-    --box-border-radius: 1rem;
+  --box-border-radius: 1rem;
 }
 
 body {
-    font-family: "Noto Sans SC", sans-serif;
-    margin: 0;
-    background: radial-gradient(
-            circle at left top,
-            var(--background-color) 20%,
-            var(--background-color-radial) 100%
-        )
-        no-repeat fixed;
-    color: var(--font-color);
+  font-family: "Noto Sans SC", sans-serif;
+  margin: 0;
+  background: radial-gradient(
+      circle at left top,
+      var(--background-color) 20%,
+      var(--background-color-radial) 100%
+    )
+    no-repeat fixed;
+  color: var(--font-color);
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 button {
-    border: none;
-    background-color: unset;
-    cursor: pointer;
+  border: none;
+  background-color: unset;
+  cursor: pointer;
 }
 
 .map__marker {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.monitor_predict-file:hover {
+  background-color: #eee;
 }
