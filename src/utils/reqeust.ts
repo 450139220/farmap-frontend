@@ -23,12 +23,14 @@ export class Request {
   }
 
   async get<T extends object>(path: string): Promise<T> {
-    const url = this.getUrl(path);
+    let url = this.getUrl(path);
+    if (path.startsWith("http")) url = new URL(path);
     try {
       const resp = await fetch(url);
       if (!resp.ok) throw new Error(resp.status.toString());
       return await resp.json();
     } catch (e) {
+      console.log(e);
       const msg = this.parseStatusCode(e as Error);
       throw new Error(msg);
     }
@@ -38,7 +40,8 @@ export class Request {
     body: T,
     headers: RequestHeader = {},
   ): Promise<U> {
-    const url = this.getUrl(path);
+    let url = this.getUrl(path);
+    if (path.startsWith("http")) url = new URL(path);
     try {
       const resp = await fetch(url, {
         method: "POST",

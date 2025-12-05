@@ -14,12 +14,13 @@
     "@amap/amap-jsapi-types": "^0.0.15",
     "@ant-design/icons": "^6.1.0",
     "antd": "^6.0.1",
+    "cos-js-sdk-v5": "^1.10.1",
     "echarts": "^6.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router": "^7.9.2",
-    "zustand": "^5.0.8",
-    "web-control": "^1.0.2"
+    "web-control": "^1.0.2",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
