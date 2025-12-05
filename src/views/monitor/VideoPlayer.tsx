@@ -9,7 +9,11 @@ export default function VideoPlayer(props: Props) {
       ) : (
         <iframe
           src={props.videoUrl}
-          style={{ border: "none", width: "100%", height: "100%" }}></iframe>
+          style={{
+            border: "none",
+            width: "100%",
+            height: "100%",
+          }}></iframe>
       )}
     </>
   );

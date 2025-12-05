@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import { Card, Flex } from "antd";
-import { BarsOutlined, FundViewOutlined, ThunderboltOutlined } from "@ant-design/icons";
+import {
+  BarsOutlined,
+  FundViewOutlined,
+  ThunderboltOutlined,
+} from "@ant-design/icons";
 
 import VideoPlayer from "./VideoPlayer";
 import MonitorListView from "./list/MonitorListView";
 
-import { monitorKeys } from "./list/keys";
 import { req } from "@/utils/reqeust";
 import { permanence } from "@/utils/permanence";
 import PredictPic from "./PredictPic";
-const productId = monitorKeys.productId;
 
 interface AccessTokenResponse {
-  data: {
-    access_token: string;
-    expires_in: number;
-  };
+  accessToken: string;
+  expiresAt: number;
 }
 
 export default function index() {
@@ -24,19 +24,20 @@ export default function index() {
   const localAccessToken = permanence.accessToken.useAccessToken();
   const [accessToken, setAccessToken] = useState<string>("");
   useEffect(() => {
-    if (localAccessToken && performance.now() < localAccessToken.expiresAt) return;
-    req
-      .post<
-        typeof monitorKeys,
-        AccessTokenResponse
-      >("https://open.hikyun.com/artemis/oauth/token/v2", monitorKeys)
-      .then((resp) => {
-        setAccessToken(resp.data.access_token);
-        permanence.accessToken.setAccessToken({
-          accessToken: resp.data.access_token,
-          expiresAt: performance.now() + resp.data.expires_in,
-        });
+    if (localAccessToken && Date.now() < localAccessToken.expiresAt) {
+      setAccessToken(localAccessToken.accessToken);
+      return;
+    }
+
+    // Request when local token expired
+    // TODO: remove all localhost
+    req.get<AccessTokenResponse>("/monitor/get-accesstoken").then((resp) => {
+      setAccessToken(resp.accessToken);
+      permanence.accessToken.setAccessToken({
+        accessToken: resp.accessToken,
+        expiresAt: resp.expiresAt,
       });
+    });
   }, []);
 
   // Select video in monitor list
@@ -59,7 +60,6 @@ export default function index() {
           styles={{ body: { height: "calc(300px - 100px)" } }}>
           <MonitorListView
             accessToken={accessToken}
-            productId={productId}
             onSelect={getSelectVideoUrl}
           />
         </Card>
@@ -70,7 +70,8 @@ export default function index() {
               &nbsp;&nbsp;视频预览
             </>
           }
-          style={{ flex: "1 0 400px" }}>
+          style={{ flex: "1 0 400px" }}
+          styles={{ body: { height: "calc(100% - 60px)" } }}>
           <VideoPlayer videoUrl={selectedVideo} />
         </Card>
       </Flex>

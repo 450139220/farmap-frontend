@@ -3,15 +3,6 @@ import { monitorList } from "./monitorList";
 import { useMemo, useState } from "react";
 import { Divider, Flex } from "antd";
 
-interface VideoRequestRequest {
-  Object: null;
-  productId: string;
-  deviceSerial: string;
-  channelNo: number;
-  videoLevel: number;
-  recordType: number;
-}
-
 interface VideoRequestResponse {
   code: number;
   msg: string;
@@ -20,28 +11,29 @@ interface VideoRequestResponse {
 
 interface Props {
   accessToken: string;
-  productId: string;
   onSelect: (url: string) => void;
 }
 export default function MonitorListView(props: Props) {
-  // PERF: actually we should put the monitors list to the server side
-  // and each user has his own monitors
+  // PERF: actually each user has his own monitors
   const [selected, setSelected] = useState<number>(-1);
-  const selectedMonitorName = useMemo(() => monitorList[selected]?.name, [selected]);
+  const selectedMonitorName = useMemo(
+    () => monitorList[selected]?.name,
+    [selected],
+  );
+  console.log(props);
 
-  const handleSelect = async (id: number, deviceSerial: string): Promise<void> => {
+  const handleSelect = async (
+    id: number,
+    deviceSerial: string,
+  ): Promise<void> => {
     try {
-      const resp = await req.post<VideoRequestRequest, VideoRequestResponse>(
-        `https://open.hikyun.com/artemis/api/eits/v1/global/live/video/web?access_token=${props.accessToken}`,
-        {
-          Object: null,
-          productId: props.productId,
-          deviceSerial: deviceSerial,
-          channelNo: 1,
-          videoLevel: 2,
-          recordType: 1,
-        },
+      console.log(props.accessToken);
+
+      // TODO: remove all localhost
+      const resp = await req.get<VideoRequestResponse>(
+        `/monitor/preview?accessToken=${props.accessToken}&deviceSerial=${deviceSerial}`,
       );
+
       // Set preview url to the iframe
       props.onSelect(resp.data.previewUrl);
       setSelected(id);

@@ -1,5 +1,18 @@
-import { PaperClipOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Divider, Image, Upload, type UploadFile, type UploadProps } from "antd";
+import {
+  CloseOutlined,
+  PaperClipOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
+import {
+  Button,
+  Divider,
+  Flex,
+  Image,
+  Upload,
+  type UploadFile,
+  type UploadProps,
+} from "antd";
 import { useState } from "react";
 import { getBase64 } from "../model/Upload";
 
@@ -13,7 +26,10 @@ export default function PredictPic() {
       .map((f) => f.originFileObj)
       .filter((f) => f && FILE_TYPES.includes(f.type)) as UploadFile[];
     // console.log(files[0] instanceof File);
-    setFileList((prev) => prev.concat(files));
+    setFileList((prev) => [...new Set(prev.concat(files))]);
+  };
+  const removeFile = (target: UploadFile) => {
+    setFileList((prev) => prev.filter((f) => f !== target));
   };
 
   // Upload pictures to server to predict
@@ -46,22 +62,31 @@ export default function PredictPic() {
         beforeUpload={() => false}
         itemRender={(_, file) => {
           return (
-            <div
-              onClick={() => {
-                handlePreview(file);
-              }}>
-              <PaperClipOutlined />
-              &nbsp;&nbsp;
+            <Flex
+              className="monitor_predict-file"
+              align="center"
+              justify="space-between"
+              style={{ marginTop: "0.5rem" }}>
               <span
                 style={{
                   fontSize: "0.9rem",
                   color: "blue",
                   textDecoration: "underline",
                   cursor: "pointer",
+                }}
+                onClick={() => {
+                  handlePreview(file);
                 }}>
+                <PaperClipOutlined />
+                &nbsp;&nbsp;
                 {file.name}
               </span>
-            </div>
+              <CloseOutlined
+                onClick={() => {
+                  removeFile(file);
+                }}
+              />
+            </Flex>
           );
         }}
         style={{ width: "100%" }}>

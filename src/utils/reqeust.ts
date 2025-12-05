@@ -23,7 +23,8 @@ export class Request {
   }
 
   async get<T extends object>(path: string): Promise<T> {
-    const url = this.getUrl(path);
+    let url = this.getUrl(path);
+    if (path.startsWith("http")) url = new URL(path);
     try {
       const resp = await fetch(url);
       if (!resp.ok) throw new Error(resp.status.toString());

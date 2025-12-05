@@ -49,3 +49,7 @@ button {
   height: 8px;
   border-radius: 50%;
 }
+
+.monitor_predict-file:hover {
+  background-color: #eee;
+}
