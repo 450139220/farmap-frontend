@@ -11,11 +11,14 @@ import MapContainer from "./Map";
 import Slider from "./slider/Slider";
 import type { SliderProps } from "./slider/Slider";
 import { GlobalOutlined, MacCommandOutlined } from "@ant-design/icons";
+import { permanence } from "@/utils/permanence";
 
 export default function Map() {
-  // Get farm select informations
-  const farmOptions = useUserStore((s) => s.farms);
-  const [farm, setFarm] = useState<FarmSelectType["value"]>(-1);
+  // Get farm select informations from local user storage
+  const localUserStore = permanence.user.useUserStore()!;
+  const farmOptions = localUserStore.farms;
+  const [farm, setFarm] = useState<FarmSelectType["value"]>(farmOptions[0]?.id ?? -1);
+
   // THe mode & info select states
   const [mode, setMode] = useState<ModeSelectType["value"]>("crop");
   const [info, setInfo] = useState<InfoSelectType["value"]>("yield");

@@ -1,13 +1,9 @@
-import {
-  useUserStore,
-  type FarmPreviewType,
-  type UserStoreState,
-} from "@/store/user";
+import { useUserStore, type FarmPreviewType, type UserStoreState } from "@/store/user";
 import { permanence } from "@/utils/permanence";
 import { Request, req } from "@/utils/reqeust";
 import { Flex, Form, Layout, Input, Card, Button } from "antd";
 import type { FormProps } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 
 type UserLoginRequest = {
@@ -27,40 +23,40 @@ type UserLoginResult = {
 
 const { Header, Content } = Layout;
 
-type FieldType = {
+type LoginType = {
   username?: string;
   password?: string;
 };
 
-const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-  errorInfo,
-) => {};
-
 function Login() {
   // Enter the home page when token is valid
-  const setToken = permanence.token.setToken;
   const login = useUserStore((s) => s.login);
   const navigate = useNavigate();
+
+  // Permanence
+  const setToken = permanence.token.setToken;
+  const setUserStore = permanence.user.setUserStore;
 
   // Error message for user
   const [msg, setMsg] = useState<string>("");
 
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+  const onFinish: FormProps<LoginType>["onFinish"] = async (values) => {
     try {
-      const resp = await req.post<UserLoginRequest, UserLoginResult>(
-        "/user/login",
-        {
-          username: values.username!,
-          password: values.password!,
-        },
-      );
+      const resp = await req.post<UserLoginRequest, UserLoginResult>("/user/login", {
+        username: values.username!,
+        password: values.password!,
+      });
       // Store this response to user store
-      login({
+      const userStore: UserStoreState = {
         username: resp.data.user.name,
         role: resp.data.user.role,
         farms: resp.data.farms,
-      });
+      };
+      login(userStore);
+      // Store in local storage
       setToken(resp.data.token);
+      setUserStore(userStore);
+
       navigate("/");
 
       // Reset error message
@@ -73,8 +69,7 @@ function Login() {
 
   return (
     <Layout style={{ height: "100vh" }}>
-      <Header
-        style={{ color: "#eee", fontSize: "1.8rem", textAlign: "center" }}>
+      <Header style={{ color: "#eee", fontSize: "1.8rem", textAlign: "center" }}>
         <span>FarMap 农业数字地图服务平台</span>
       </Header>
       <Content>
@@ -86,16 +81,15 @@ function Login() {
               wrapperCol={{ span: 16 }}
               style={{ maxWidth: 600 }}
               onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
               autoComplete="off">
-              <Form.Item<FieldType>
+              <Form.Item<LoginType>
                 label="用户名"
                 name="username"
                 rules={[{ required: true, message: "请输入用户名！" }]}>
                 <Input />
               </Form.Item>
 
-              <Form.Item<FieldType>
+              <Form.Item<LoginType>
                 label="密码"
                 name="password"
                 rules={[{ required: true, message: "请输入密码！" }]}>
@@ -108,9 +102,7 @@ function Login() {
                 </Button>
               </Form.Item>
             </Form>
-            {msg.length !== 0 && (
-              <div style={{ textAlign: "center", color: "#dd0000" }}>{msg}</div>
-            )}
+            {msg.length !== 0 && <div style={{ textAlign: "center", color: "#dd0000" }}>{msg}</div>}
           </Card>
         </Flex>
       </Content>

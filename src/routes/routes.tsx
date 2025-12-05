@@ -77,10 +77,7 @@ export const ALL_ROUTES: RouteObject[] = [
   {
     path: "call-model",
     element: (
-      <ProtectedRoute
-        roles={["user", "admin"]}
-        Component={lazy(() => import("@/views/model"))}
-      />
+      <ProtectedRoute roles={["user", "admin"]} Component={lazy(() => import("@/views/model"))} />
     ),
     handle: {
       key: "/call-model",
@@ -102,10 +99,7 @@ export const ALL_ROUTES: RouteObject[] = [
   {
     path: "monitor",
     element: (
-      <ProtectedRoute
-        roles={["user", "admin"]}
-        Component={lazy(() => import("@/views/monitor"))}
-      />
+      <ProtectedRoute roles={["user", "admin"]} Component={lazy(() => import("@/views/monitor"))} />
     ),
     handle: {
       key: "/monitor",
@@ -131,12 +125,7 @@ export const ALL_ROUTES: RouteObject[] = [
   },
   {
     path: "admin",
-    element: (
-      <ProtectedRoute
-        roles={["admin"]}
-        Component={lazy(() => import("@/views/admin"))}
-      />
-    ),
+    element: <ProtectedRoute roles={["admin"]} Component={lazy(() => import("@/views/admin"))} />,
     handle: {
       key: "/admin",
       name: "用户管理",
@@ -152,14 +141,12 @@ const routes: RouteObject[] = [
     Component: Layout,
     children: ALL_ROUTES,
     loader: async () => {
+      // Validate token
       const token = permanence.token.useToken();
       try {
-        const resp = await req.get<{ data: { isExpired: boolean } }>(
-          "/user/validate-token",
-          {
-            Authorization: `Bearer ${token}`,
-          },
-        );
+        const resp = await req.get<{ data: { isExpired: boolean } }>("/user/validate-token", {
+          Authorization: `Bearer ${token}`,
+        });
 
         return resp.data;
       } catch {
