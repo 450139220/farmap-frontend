@@ -27,6 +27,62 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
     }
   }, [jsonString]);
 
+  // CSS for Container Queries
+  // We use pure CSS here to ensure it works regardless of Tailwind configuration for plugins.
+  // The 'pr-root' class establishes the container context.
+  const containerStyles = `
+    .pr-root {
+      container-type: inline-size;
+      width: 100%;
+    }
+
+    /* Header Layout */
+    .pr-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    /* Main Grid Layout */
+    .pr-main-grid {
+      display: grid;
+      grid-template-columns: 1fr; /* Default 1 column */
+      gap: 1.5rem;
+    }
+
+    /* Recommendations Grid Layout */
+    .pr-recs-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    /* Container Query: Tablet-ish width inside container */
+    @container (min-width: 600px) {
+      .pr-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+      
+      .pr-main-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns */
+      }
+      
+      .pr-recs-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Container Query: Desktop-ish width inside container */
+    @container (min-width: 900px) {
+      .pr-main-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns */
+      }
+    }
+  `;
+
   // 1. JSON Parse Error Fallback
   if (!data) {
     return (
@@ -40,10 +96,9 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
   const { plant_validation } = data;
 
   // 2. Logic/Data Error Fallback (Partial Data or Inconsistent)
-  // If analysis_result or validation is missing, we show the validation error/info card.
   if (!data.analysis_result || !data.validation) {
     return (
-      <div className=" mx-auto animate-fade-in w-full">
+      <div className="max-w-2xl mx-auto mt-8 animate-fade-in">
         <div className="bg-white rounded-2xl shadow-sm border border-orange-100 overflow-hidden">
           <div className="bg-orange-50 px-6 py-4 border-b border-orange-100 flex items-center justify-center gap-2">
             <AlertCircle className="text-orange-500" size={24} />
@@ -85,14 +140,13 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
   const validation = data.validation;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-5xl mx-auto space-y-6 animate-fade-in  pr-root">
+      <style>{containerStyles}</style>
+
       {/* Header Section */}
-      <header className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <header className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 pr-header">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="bg-nature-100 text-nature-800 text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wide">
-              AI Diagnosis
-            </span>
             <span className="text-gray-400 text-xs flex items-center gap-1">
               <Microscope size={12} /> 置信度: {plant_validation.confidence.toFixed(2)}
             </span>
@@ -103,7 +157,7 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
           </h1>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 w-full md:w-auto justify-end">
           <div className="text-right">
             <div className="text-sm text-gray-500">综合长势</div>
             <div
@@ -128,7 +182,7 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
       </header>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="pr-main-grid">
         {/* Growth & Structure */}
         <Card title="长势诊断" icon={<Activity className="text-blue-500" />}>
           <DetailRow label="冠层结构" value={result.长势诊断.冠层结构} />
@@ -138,7 +192,7 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
         </Card>
 
         {/* Leaves */}
-        <Card title="叶部状态" icon={<Leaf className="text-nature-600" />}>
+        <Card title="叶部状态" icon={<Leaf className="text-emerald-600" />}>
           <DetailRow label="叶色" value={result.叶部状态诊断.叶色} />
           <DetailRow label="面积" value={result.叶部状态诊断.叶面积大小} />
           <DetailRow
@@ -213,12 +267,12 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
       </div>
 
       {/* Recommendations Section */}
-      <div className="bg-white rounded-2xl shadow-sm border border-nature-100 overflow-hidden">
-        <div className="bg-nature-50 px-6 py-4 border-b border-nature-100 flex items-center gap-2">
-          <ThermometerSun className="text-nature-700" size={20} />
-          <h2 className="font-semibold text-nature-900">综合养护建议</h2>
+      <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 overflow-hidden">
+        <div className="bg-emerald-50 px-6 py-4 border-b border-emerald-100 flex items-center gap-2">
+          <ThermometerSun className="text-emerald-700" size={20} />
+          <h2 className="font-semibold text-emerald-900">综合养护建议</h2>
         </div>
-        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="p-6 pr-recs-grid">
           <RecommendationBlock
             title="施肥建议"
             content={result.综合建议.施肥建议}
@@ -232,7 +286,7 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
           <RecommendationBlock
             title="树势提升"
             content={result.综合建议.树势提升建议}
-            dotColor="bg-nature-500"
+            dotColor="bg-emerald-500"
           />
           <RecommendationBlock
             title="特别注意"

@@ -1,120 +1,43 @@
-import { CloseOutlined, PaperClipOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Divider, Flex, Image, Upload, type UploadFile, type UploadProps } from "antd";
+import { Divider } from "antd";
 import { useState } from "react";
-import { getBase64 } from "../model/Upload";
-
-const FILE_TYPES = ["image/png", "image/jpeg"];
+import Upload from "../model/analyze/Upload";
+import ModelResult from "../model/ModelResult";
+import { Loader2 } from "lucide-react";
 
 export default function PredictPic() {
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState("");
+  const [type, setType] = useState<"normal" | "error">("error");
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newList }) => {
-    const files = newList
-      .map((f) => f.originFileObj)
-      .filter((f) => f && FILE_TYPES.includes(f.type)) as UploadFile[];
-    // console.log(files[0] instanceof File);
-    setFileList((prev) => [...new Set(prev.concat(files))]);
-  };
-  const removeFile = (target: UploadFile) => {
-    setFileList((prev) => prev.filter((f) => f !== target));
-  };
-
-  // Upload pictures to server to predict
-  const handlePredictPic = async () => {
-    // TODO: send files to server
-    setFileList([]);
-  };
-  // Open a image file to preview
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const handlePreview = async (file: UploadFile) => {
-    const blob = new Blob([file as unknown as File], { type: file.type });
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(blob as File);
-    }
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
-  };
-
-  // Prediction result displays
-  const [prediction, setPrediction] = useState<string>("");
   return (
     <>
       <Upload
-        listType="picture"
-        multiple
-        onChange={handleChange}
-        onPreview={handlePreview}
-        fileList={fileList}
-        beforeUpload={() => false}
-        itemRender={(_, file) => {
-          return (
-            <Flex
-              className="monitor_predict-file"
-              align="center"
-              justify="space-between"
-              style={{ marginTop: "0.5rem" }}>
-              <span
-                style={{
-                  fontSize: "0.9rem",
-                  color: "blue",
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  handlePreview(file);
-                }}>
-                <PaperClipOutlined />
-                &nbsp;&nbsp;
-                {file.name}
-              </span>
-              <CloseOutlined
-                onClick={() => {
-                  removeFile(file);
-                }}
-              />
-            </Flex>
-          );
-        }}
-        style={{ width: "100%" }}>
-        <div
-          style={{
-            width: "100%",
-            border: "1px dashed #aaa",
-            borderRadius: 8,
-            padding: "0 1rem",
-            cursor: "pointer",
-            backgroundColor: "#eee",
-          }}>
-          <PlusOutlined />
-          &nbsp;&nbsp;上传
-        </div>
-      </Upload>
-      <Button
-        type="primary"
-        icon={<UploadOutlined />}
-        onClick={handlePredictPic}
-        style={{ width: "100%", marginTop: "1rem" }}>
-        开始推理
-      </Button>
+        onProgress={(curr, status) => {
+          if (status === "error") {
+            setLoading(false);
+            return;
+          }
 
-      {previewImage && (
-        <Image
-          styles={{ root: { display: "none" } }}
-          preview={{
-            open: previewOpen,
-            onOpenChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
-          }}
-          src={previewImage}
-        />
-      )}
+          if (curr < 3) setLoading(true);
+          else setLoading(false);
+        }}
+        onFinish={(res, type) => {
+          setResult(res);
+          setType(type);
+        }}
+      />
 
       <Divider />
 
       <div>
-        <h4 style={{ padding: 0, margin: 0 }}>推理结果</h4>
-        <p>{prediction}</p>
+        <h4 style={{ padding: 0, margin: 0, marginBottom: "1rem" }}>推理结果</h4>
+        <div style={{ maxHeight: 400, overflowY: "scroll" }}>
+          {loading ? (
+            <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
+          ) : (
+            <ModelResult text={result} type={type} />
+          )}
+        </div>
       </div>
     </>
   );

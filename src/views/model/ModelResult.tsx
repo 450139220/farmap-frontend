@@ -1,6 +1,6 @@
 import { TrademarkOutlined } from "@ant-design/icons";
 import { Card } from "antd";
-import { useEffect, useMemo, useState, type JSX } from "react";
+import { useEffect, useState, type JSX } from "react";
 import PlantReport from "./PlantReport";
 
 interface Props {
@@ -21,17 +21,5 @@ export default function ModelResult(props: Props) {
     setText(report);
   }, [props]);
 
-  return (
-    <Card
-      title={
-        <>
-          <TrademarkOutlined />
-          &nbsp;&nbsp;推理结果
-        </>
-      }
-      style={{ flexGrow: 1 }}
-      styles={{ body: { maxHeight: 300, overflowY: "scroll" } }}>
-      {text}
-    </Card>
-  );
+  return <span>{text}</span>;
 }
