@@ -1,24 +1,24 @@
-import { Card, Divider, Flex, List, Typography } from "antd";
+import { Card, Divider, Flex } from "antd";
 
 import { useEffect, useState } from "react";
 import RevisionBox from "./RevisionBox";
-import { permanence } from "@/utils/permanence";
 import { req } from "@/utils/reqeust";
-import { CoffeeOutlined, OrderedListOutlined } from "@ant-design/icons";
+import { CoffeeOutlined, CommentOutlined, OrderedListOutlined } from "@ant-design/icons";
 
-function Expert() {
-  const token = permanence.token.useToken();
+import { permanence } from "@/utils/permanence";
+import DetailPrevew from "./preview//DetailPrevew";
+const token = permanence.token.useToken();
 
-  // expert pending cases
+export default function Expert() {
+  // --- States ---
+
+  // Expert pending cases
   const [pendingCases, setPendingCases] = useState<PendingCase[]>([]);
-  useEffect(() => {
-    req
-      .get<CasesStoreResult>("/expert/pending-cases", { Authorization: `Bearer ${token}` })
-      .then((res) => {
-        setPendingCases(res.data.list);
-      });
-  }, []);
 
+  // Selection & details
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  // PERF: set loading animations
+  const [detailLoading, setDetailLoading] = useState(false);
   const initialCaseContent: Omit<CaseContent, "onClear"> = {
     userRequestInfo: {
       requestId: "",
@@ -32,17 +32,51 @@ function Expert() {
     },
     revisionRecords: [],
   };
-  const [caseContent, setCaseContent] = useState<Omit<CaseContent, "onClear">>(initialCaseContent);
-  const onCaseContentClear = (): void => {
-    setCaseContent(initialCaseContent);
-  };
-  const getPreview = (requestId: string) => {
-    req
-      .get<CaseContentResult>(`/expert/cases/${requestId}`, { Authorization: `Bearer ${token}` })
-      .then((res) => {
-        setCaseContent(res.data);
+  const [detail, setDetail] = useState<Omit<CaseContent, "onClear">>(initialCaseContent);
+  const [revisionPrompts, setRevisionPrompts] = useState("");
+
+  // Submit revision request
+  const [submitting, setSubmitting] = useState(false);
+
+  // --- Effects ---
+
+  // Fetch pending cases list
+  useEffect(() => {
+    fecthList();
+  }, []);
+
+  useEffect(() => {
+    if (selectedRequestId) {
+      fetchCaseDetail(selectedRequestId);
+    }
+  }, [selectedRequestId]);
+
+  // --- Handlers ---
+  async function fecthList() {
+    try {
+      const resp = await req.get<CasesStoreResult>("/expert/pending-cases", {
+        Authorization: `Bearer ${token}`,
       });
-  };
+      setPendingCases(resp.data.list);
+    } catch {
+      console.log("[FARMAP]: failed to fetch expert pending cases.");
+    }
+  }
+
+  async function fetchCaseDetail(id: string) {
+    setDetailLoading(true);
+    try {
+      const resp = await req.get<{ data: CaseContent }>(`/expert/cases/${id}`, {
+        Authorization: token,
+      });
+      console.log(resp.data);
+
+      setDetail(resp.data);
+    } catch {
+    } finally {
+      setDetailLoading(false);
+    }
+  }
 
   return (
     <Flex gap="0.5rem" style={{ height: "100%" }}>
@@ -53,34 +87,35 @@ function Expert() {
             &nbsp;&nbsp;待修改列表
           </>
         }
-        style={{ flex: "0 0 600px", maxWidth: 600 }}
+        style={{ flex: 0, maxWidth: 200 }}
         styles={{ body: { height: "calc(100% - 84px - 0.5rem)" } }}>
         <div style={{ marginBottom: "0.5rem" }}>请点击列表内容以开始校正。</div>
-        <List
-          size="small"
-          bordered
-          style={{ height: "100%", overflowX: "scroll" }}
-          dataSource={pendingCases}
-          renderItem={(item) => (
-            <List.Item
-              style={{
-                whiteSpace: "nowrap",
-                cursor: "pointer",
-                fontSize: "0.7rem",
-              }}
+        <div
+          style={{
+            fontSize: "0.7rem",
+            border: "1px solid #eee",
+            borderRadius: 8,
+            padding: 2,
+            overflowY: "scroll",
+            height: "calc(100% - 1rem)",
+          }}>
+          {pendingCases.map((cs) => (
+            <div
+              key={cs.requestId}
+              style={{ cursor: "pointer" }}
               onClick={() => {
-                getPreview(item.requestId);
+                setSelectedRequestId(cs.requestId);
               }}>
-              <Typography.Text mark>[{item.requestId}]</Typography.Text>
-              <Divider orientation="vertical" />
-              图片数量：{item.imageCount}
-              <Divider orientation="vertical" />
-              修改次数：{item.revisionCount}
-              <Divider orientation="vertical" />
-              上传时间：{item.uploadTime}
-            </List.Item>
-          )}
-        />
+              <p>
+                <span style={{ backgroundColor: "#ffdd00" }}>#{cs.requestId.substring(0, 8)}</span>
+              </p>
+              <div>{cs.uploadTime.substring(0, 10)}</div>
+              <div>{cs.imageCount} 张图片</div>
+              <div>已修改 {cs.revisionCount} 次 </div>
+              <Divider style={{ margin: 5 }} />
+            </div>
+          ))}
+        </div>
       </Card>
       <Flex style={{ flexGrow: 1 }}>
         <Card
@@ -92,11 +127,15 @@ function Expert() {
           }
           style={{ width: "100%" }}
           styles={{ body: { height: "calc(100% - 60px)" } }}>
-          <RevisionBox {...caseContent} onClear={onCaseContentClear} />
+          <DetailPrevew
+            requestId={selectedRequestId}
+            header={detail.userRequestInfo}
+            content={detail.initialResultInfo}
+          />
         </Card>
       </Flex>
     </Flex>
   );
 }
 
-export default Expert;
+// <RevisionBox {...caseContent} onClear={onCaseContentClear} />

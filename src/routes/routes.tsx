@@ -25,7 +25,10 @@ function ProtectedRoute({
 }): JSX.Element {
   const localUserStore = permanence.user.useUserStore()!;
   const role = localUserStore.role;
-  if (!roles.includes(role)) return <Navigate to="/403" replace />;
+  if (!roles.includes(role)) {
+    if (role === "expert") return <Navigate to="/expert" replace />;
+    return <Navigate to="/403" replace />;
+  }
   return <Component />;
 }
 

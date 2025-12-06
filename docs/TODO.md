@@ -1,29 +1,11 @@
 # Refactory Goals
-## Framework
-- [x] routes
-- [x] store
-- [x] layout
-- [x] request
-- [x] permanence
-- [ ] types 
-- [x] utils/map
-## Components
-- [x] login
-- [x] dashboard
-- [x] weather
-    - [ ] TemperatureChart.tsx
-- [x] operatons
-- [x] ? statistic
-- [ ] expert
 - [ ] * admin
 
-# To
-- [x] oss for user images input
-- [ ] audio input for experts
-- [ ] monitor
-- [x] proxy video requests
-- [ ] store farm state to local storage
+## next
+- [ ] parse `jsonData`
+- [ ] implement revision input (manual & audio)
+- [ ] upload revision
+- [ ] * put monitor to map
 
-# Need Updating Backend Apis
-1. validate token permanence.ts
-2. user login & farm request
+# To
+- [ ] audio input for experts
