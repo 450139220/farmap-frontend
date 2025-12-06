@@ -52,8 +52,8 @@ export default function PhenoIntro() {
   const intro = <div>{introList[selectedMonth]?.text}</div>;
 
   return (
-    <Flex justify="center" style={{ height: "100%", maxHeight: 180 }}>
-      <SeasonWheel size={180} onMonthChange={onMonthChange} />
+    <Flex justify="center" style={{ height: "100%", maxHeight: 210 }}>
+      <SeasonWheel size={210} onMonthChange={onMonthChange} />
       <div style={{ overflowY: "scroll" }}>{intro}</div>
     </Flex>
   );

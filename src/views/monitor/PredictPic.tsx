@@ -1,18 +1,5 @@
-import {
-  CloseOutlined,
-  PaperClipOutlined,
-  PlusOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  Divider,
-  Flex,
-  Image,
-  Upload,
-  type UploadFile,
-  type UploadProps,
-} from "antd";
+import { CloseOutlined, PaperClipOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import { Button, Divider, Flex, Image, Upload, type UploadFile, type UploadProps } from "antd";
 import { useState } from "react";
 import { getBase64 } from "../model/Upload";
 
@@ -56,9 +43,9 @@ export default function PredictPic() {
       <Upload
         listType="picture"
         multiple
-        fileList={fileList}
         onChange={handleChange}
         onPreview={handlePreview}
+        fileList={fileList}
         beforeUpload={() => false}
         itemRender={(_, file) => {
           return (

@@ -1,5 +1,6 @@
 interface RequestHeader {
   Authorization?: string;
+  "X-Api-Key"?: string;
 }
 
 export class Request {

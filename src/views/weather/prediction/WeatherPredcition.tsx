@@ -10,6 +10,7 @@ const API_KEY = "31b6db36c66f461e89c408c864b51da9";
 export default function WeatherPrediction() {
   const localFarmStore = permanence.farm.useFarmStore();
   const location = localFarmStore ? localFarmStore.center : useFarmStore((s) => s.center);
+  const farmAddr = localFarmStore ? localFarmStore.address : useFarmStore((s) => s.address);
 
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -60,6 +61,12 @@ export default function WeatherPrediction() {
 
   return (
     <div className="w-full">
+      <h2 className="mb-2">
+        当前地区：
+        <span className="px-2 rounded-xl  bg-gray-100 border border-gray-200 cursor-pointer">
+          {farmAddr}
+        </span>
+      </h2>
       {loading ? (
         <div className="w-full h-40 flex items-center justify-center bg-white rounded-xl border border-slate-100">
           <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />

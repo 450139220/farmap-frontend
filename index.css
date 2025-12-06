@@ -52,7 +52,8 @@ button {
   border-radius: 50%;
 }
 
-.monitor_predict-file:hover {
+.monitor_predict-file:hover,
+.model_predict-file:hover {
   background-color: #eee;
 }
 
