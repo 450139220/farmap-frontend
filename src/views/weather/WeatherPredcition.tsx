@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import style from "./index.module.css";
 import { Divider, Flex } from "antd";
 import { useFarmStore } from "@/store/farm";
+import { permanence } from "@/utils/permanence";
 
 // PERF: put this key to server
 const API_KEY = "31b6db36c66f461e89c408c864b51da9";
@@ -33,7 +34,8 @@ type PredictionResult = {
 };
 function WeatherPrediction() {
   // Get farm location
-  const location = useFarmStore((s) => s.center);
+  const localFarmStore = permanence.farm.useFarmStore();
+  const location = localFarmStore ? localFarmStore.center : useFarmStore((s) => s.center);
 
   // Store 3 days weathers
   const [predictions, setPredictions] = useState<Prediction[]>([]);

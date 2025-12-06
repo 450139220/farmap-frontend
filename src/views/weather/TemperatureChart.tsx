@@ -21,7 +21,9 @@ type AccTempResult = {
 function TemperatureChart() {
   // inits
   const token = permanence.token.useToken();
-  const farmType = useFarmStore((s) => s.type);
+  // Use local farm store if it exists
+  const localFarmStore = permanence.farm.useFarmStore();
+  const farmType = localFarmStore ? localFarmStore.type : useFarmStore((s) => s.type);
 
   // for painting
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -33,10 +35,9 @@ function TemperatureChart() {
 
   useEffect(() => {
     req
-      .get<AccTempResult>(
-        `/weather/accumulated-temperature?farmType=${farmType}`,
-        { Authorization: `Bearer ${token}` },
-      )
+      .get<AccTempResult>(`/weather/accumulated-temperature?farmType=${farmType}`, {
+        Authorization: `Bearer ${token}`,
+      })
       .then((data) => {
         setLastAccTemp(data.data.last);
         setThisAccTemp(data.data.thisYear);

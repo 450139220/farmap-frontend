@@ -1,3 +1,4 @@
+import type { FarmStoreState } from "@/store/farm";
 import type { UserStoreState } from "@/store/user";
 
 // Token operations
@@ -36,6 +37,17 @@ function setAccessToken(accessToken: AccessTokenType): void {
   localStorage.setItem("accessToken", token);
 }
 
+// Farm
+function useFarmStore(): FarmStoreState | undefined {
+  const farm = localStorage.getItem("farm");
+  if (!farm) return;
+  return JSON.parse(farm);
+}
+function setFarmStore(farm: FarmStoreState): void {
+  const farmStr = JSON.stringify(farm);
+  localStorage.setItem("farm", farmStr);
+}
+
 // Export all performance data
 export const permanence = {
   token: {
@@ -45,6 +57,10 @@ export const permanence = {
   user: {
     useUserStore,
     setUserStore,
+  },
+  farm: {
+    useFarmStore,
+    setFarmStore,
   },
   accessToken: {
     useAccessToken,

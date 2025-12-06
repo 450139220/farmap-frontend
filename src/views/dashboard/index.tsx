@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FarmSelectType } from "./selects/FarmSelect";
 import type { ModeSelectType } from "./selects/ModeSelect";
 import type { InfoSelectType } from "./selects/InfoSelect";
 import FarmSelect from "./selects/FarmSelect";
-import { useUserStore } from "@/store/user";
 import { Card, Flex } from "antd";
 import InfoSelect from "./selects/InfoSelect";
 import ModeSelect from "./selects/ModeSelect";
@@ -12,19 +11,64 @@ import Slider from "./slider/Slider";
 import type { SliderProps } from "./slider/Slider";
 import { GlobalOutlined, MacCommandOutlined } from "@ant-design/icons";
 import { permanence } from "@/utils/permanence";
+import { useFarmStore, type Crop, type FarmStoreState } from "@/store/farm";
+import { req } from "@/utils/reqeust";
 
 export default function Map() {
+  // Pass farm status to map
+  const farmCenter = useFarmStore((s) => s.center)
+    .split(",")
+    .map((c) => Number(c)) as [number, number];
+  const farmZoom = useFarmStore((s) => s.zoom);
+  const farmCrops = useFarmStore((s) => s.crops);
+  const farmLocations = useFarmStore((s) => s.locations);
+
   // Get farm select informations from local user storage
   const localUserStore = permanence.user.useUserStore()!;
   const farmOptions = localUserStore.farms;
-  const [farm, setFarm] = useState<FarmSelectType["value"]>(farmOptions[0]?.id ?? -1);
+  const [farm, setSelectFarm] = useState<FarmSelectType["value"]>(farmOptions[0]?.id ?? -1);
+
+  // Fetch the first farm content and store
+  const token = permanence.token.useToken();
+  const setFarmStore = useFarmStore((s) => s.setFarm);
+  const setLocalFarmStore = permanence.farm.setFarmStore;
+  useEffect(() => {
+    req
+      .get<{ data: FarmStoreState }>(`/user/get-farm?farmId=${farm}`, {
+        Authorization: `Bearer ${token}`,
+      })
+      .then((resp) => {
+        setFarmStore(resp.data);
+        // Store to local storage
+        setLocalFarmStore(resp.data);
+      })
+      .catch(() => {
+        // console.log(e);
+      });
+  }, []);
+
+  // Update the selected farm store
+  const changeFarmStore: (newId: number) => void = (newId) => {
+    setSelectFarm(newId);
+    req
+      .get<{ data: FarmStoreState }>(`/user/get-farm?farmId=${newId}`, {
+        Authorization: `Bearer ${token}`,
+      })
+      .then((resp) => {
+        setFarmStore(resp.data);
+        // Store to local storage
+        setLocalFarmStore(resp.data);
+      })
+      .catch(() => {
+        // console.log(e);
+      });
+  };
 
   // THe mode & info select states
   const [mode, setMode] = useState<ModeSelectType["value"]>("crop");
   const [info, setInfo] = useState<InfoSelectType["value"]>("yield");
 
   // Slider
-  // TODO: update slider values & scale with real requested data
   const [slider, setSlider] = useState<Omit<SliderProps, "onChangeEnd">>({
     value: {
       left: 10,
@@ -36,9 +80,33 @@ export default function Map() {
     },
     decimal: false,
   });
+  const crops = useFarmStore((s) => s.crops);
+  useEffect(() => {
+    const values = crops.map((c) => Number(c[info as keyof Crop]));
+    const max = Math.max(...values);
+    const min = Math.min(...values);
+    // Update slider range and values
+    setSlider({
+      value: {
+        left: (max - min) * 0.2 + min,
+        right: (max - min) * 0.8 + min,
+      },
+      scale: {
+        max,
+        min,
+      },
+      decimal: info === "yield" ? false : true,
+    });
+  }, [crops, info]);
+
   const sliderChange: SliderProps["onChangeEnd"] = (left, right) => {
-    // TODO: update map markers here
-    console.log(left, right);
+    setSlider((prev) => ({
+      ...prev,
+      value: {
+        left,
+        right,
+      },
+    }));
   };
 
   return (
@@ -54,14 +122,7 @@ export default function Map() {
         styles={{ body: { height: "calc(100% - 60px)" } }}>
         <Flex gap="0.5rem" vertical style={{ height: "100%" }}>
           <Flex gap="0.5rem" style={{ width: "100%" }}>
-            <FarmSelect
-              value={farm}
-              options={farmOptions}
-              onChange={(newId) => {
-                setFarm(newId);
-                // TODO: update farm store here
-              }}
-            />
+            <FarmSelect value={farm} options={farmOptions} onChange={changeFarmStore} />
             <ModeSelect
               value={mode}
               onChange={(newMode) => {
@@ -78,7 +139,15 @@ export default function Map() {
               }}
             />
           </Flex>
-          <MapContainer />
+          <MapContainer
+            center={farmCenter}
+            zoom={farmZoom}
+            crops={farmCrops}
+            farmLocations={farmLocations}
+            infoKey={info}
+            modeKey={mode}
+            slider={slider}
+          />
         </Flex>
       </Card>
       <Card

@@ -22,15 +22,16 @@ export default function PhenoIntro() {
   const token = permanence.token.useToken();
 
   // Season wheel event
-  const [selectedMonth, setSelectedMonth] = useState<number>(
-    new Date().getMonth(),
-  );
+  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
   const onMonthChange = (month: number): void => {
     setSelectedMonth(month);
   };
 
   // Introductions
-  const farmId = useFarmStore((s) => s.id);
+  // Use local farm store if it exists
+  const localFarmStore = permanence.farm.useFarmStore();
+  const farmId = localFarmStore ? localFarmStore.id : useFarmStore((s) => s.id);
+
   // Store introductions
   const [introList, setIntroList] = useState<WeatherIntro[]>([]);
   useEffect(() => {
@@ -48,18 +49,12 @@ export default function PhenoIntro() {
       })
       .catch(() => {});
   }, []);
-
-  // Update introduction text when selected month changes
-  const introText = useMemo(
-    () => introList[selectedMonth]?.text ?? "服务出错，暂未获得物候期信息。",
-    [selectedMonth],
-  );
-  const intro = <div>{introText}</div>;
+  const intro = <div>{introList[selectedMonth]?.text}</div>;
 
   return (
-    <Flex>
-      <SeasonWheel onMonthChange={onMonthChange} />
-      <div>{intro}</div>
+    <Flex justify="center" style={{ height: "100%", maxHeight: 180 }}>
+      <SeasonWheel size={180} onMonthChange={onMonthChange} />
+      <div style={{ overflowY: "scroll" }}>{intro}</div>
     </Flex>
   );
 }

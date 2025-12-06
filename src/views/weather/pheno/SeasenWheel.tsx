@@ -92,7 +92,7 @@ const getSeasonName = (monthIndex: number): string => {
   return "秋";
 };
 
-export default function SeasonWheel({ idleTimeoutSeconds = 5, onMonthChange, size = 300 }: Props) {
+export default function SeasonWheel({ idleTimeoutSeconds = 10, onMonthChange, size = 300 }: Props) {
   const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cx = size / 2;

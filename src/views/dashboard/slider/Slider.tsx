@@ -28,14 +28,8 @@ function Slider(props: SliderProps) {
   // set initial position and scale through props
   const scale = props.scale.max - props.scale.min;
   const [position, setPosition] = useState<SliderPrivateProps["position"]>({
-    left:
-      ((props.value.left - props.scale.min) /
-        (props.scale.max - props.scale.min)) *
-      100,
-    right:
-      ((props.value.right - props.scale.min) /
-        (props.scale.max - props.scale.min)) *
-      100,
+    left: ((props.value.left - props.scale.min) / (props.scale.max - props.scale.min)) * 100,
+    right: ((props.value.right - props.scale.min) / (props.scale.max - props.scale.min)) * 100,
   });
 
   // move dots for initiation
@@ -45,14 +39,8 @@ function Slider(props: SliderProps) {
   });
   useEffect(() => {
     const newPosition = {
-      left:
-        ((props.value.left - props.scale.min) /
-          (props.scale.max - props.scale.min)) *
-        100,
-      right:
-        ((props.value.right - props.scale.min) /
-          (props.scale.max - props.scale.min)) *
-        100,
+      left: ((props.value.left - props.scale.min) / (props.scale.max - props.scale.min)) * 100,
+      right: ((props.value.right - props.scale.min) / (props.scale.max - props.scale.min)) * 100,
     };
     // set position for locating
     setPosition(newPosition);
@@ -77,17 +65,12 @@ function Slider(props: SliderProps) {
     // get the numerator of calculcated left
     const pointLeft = e.clientX;
     // calculate left
-    const type = currentTarget.current!.getAttribute("data-type") as
-      | "left"
-      | "right";
+    const type = currentTarget.current!.getAttribute("data-type") as "left" | "right";
     const calculatedLeft =
       type === "left"
         ? Math.max(
             0,
-            Math.min(
-              ((pointLeft - containerLeft) / containerWidth) * 100,
-              position.right,
-            ),
+            Math.min(((pointLeft - containerLeft) / containerWidth) * 100, position.right),
           )
         : Math.max(
             position.left,
@@ -106,10 +89,8 @@ function Slider(props: SliderProps) {
     currentTarget.current = null;
     isDragging.current = false;
     // trigger change end event to modify outer states
-    const leftValue =
-      (latestPosition.current.left / 100) * scale + props.scale.min;
-    const rightValue =
-      (latestPosition.current.right / 100) * scale + props.scale.min;
+    const leftValue = (latestPosition.current.left / 100) * scale + props.scale.min;
+    const rightValue = (latestPosition.current.right / 100) * scale + props.scale.min;
     props.onChangeEnd(leftValue, rightValue);
     // remove events from window object
     window.removeEventListener("pointermove", handlePointerMove);
@@ -145,16 +126,11 @@ function Slider(props: SliderProps) {
         <div
           className={style.slider__dot}
           data-type="left"
-          data-value={
+          data-value={((v) => (Number.isNaN(v) ? 0 : v))(
             !props.decimal
-              ? Math.floor(
-                  (latestPosition.current.left / 100) * scale + props.scale.min,
-                )
-              : (
-                  (latestPosition.current.left / 100) * scale +
-                  props.scale.min
-                ).toFixed(2)
-          }
+              ? Math.floor((latestPosition.current.left / 100) * scale + props.scale.min)
+              : ((latestPosition.current.left / 100) * scale + props.scale.min).toFixed(2),
+          )}
           ref={leftTarget}
           style={{
             left: `${position.left}%`,
@@ -164,17 +140,11 @@ function Slider(props: SliderProps) {
         <div
           className={style.slider__dot}
           data-type="right"
-          data-value={
+          data-value={((v) => (Number.isNaN(v) ? 0 : v))(
             !props.decimal
-              ? Math.floor(
-                  (latestPosition.current.right / 100) * scale +
-                    props.scale.min,
-                )
-              : (
-                  (latestPosition.current.right / 100) * scale +
-                  props.scale.min
-                ).toFixed(2)
-          }
+              ? Math.floor((latestPosition.current.right / 100) * scale + props.scale.min)
+              : ((latestPosition.current.right / 100) * scale + props.scale.min).toFixed(2),
+          )}
           ref={rightTarget}
           style={{
             left: `${position.right}%`,

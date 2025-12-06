@@ -1,6 +1,6 @@
 import { Flex, Select } from "antd";
 
-type InfoType = "yield" | "size" | "disease";
+type InfoType = "yield" | "size" | "rate";
 export type InfoSelectType = {
   value: InfoType;
   label: string;
@@ -18,7 +18,7 @@ export default function InfoSelect(props: Props) {
       label: "作物产量",
     },
     {
-      value: "disease",
+      value: "rate",
       label: "病虫害率",
     },
     {

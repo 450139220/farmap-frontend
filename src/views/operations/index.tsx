@@ -31,9 +31,10 @@ export default function Operations() {
   // Request token
   const token = permanence.token.useToken();
 
-  // TODO: 无法确定农场类型是因为 farmId 不存在
-  const farmId = useFarmStore((s) => s.id);
-  const farmType = useFarmStore((s) => s.type);
+  // Use local farm store if it exists
+  const localFarmStore = permanence.farm.useFarmStore();
+  const farmId = localFarmStore ? localFarmStore.id : useFarmStore((s) => s.id);
+  const farmType = localFarmStore ? localFarmStore.type : useFarmStore((s) => s.type);
   const month = new Date().getMonth();
 
   const [guideList, setGuideList] = useState<GuidanceSet>({
@@ -55,9 +56,6 @@ export default function Operations() {
         Authorization: `Beaer ${token}`,
       })
       .then((res) => {
-        // TODO: corret the backend interface
-        console.log(res, farmType);
-
         if (!res.data) {
           setGuideList(getErrorTips("请求参数出错，请联系管理员"));
           return;
@@ -71,13 +69,21 @@ export default function Operations() {
       });
   }, []);
   return (
-    <Flex style={{ height: "100%" }}>
-      <Flex gap="0.5rem" wrap="wrap" style={{ height: "100%" }}>
+    <Flex gap="0.5rem" style={{ height: "100%" }}>
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "grid",
+          gridTemplateRows: "1fr 1fr",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "0.5rem",
+        }}>
         <GuidanceBox list={guideList.body} type="树体管理" iconClass={HourglassOutlined} />
         <GuidanceBox list={guideList.fertile} type="水肥管理" iconClass={BgColorsOutlined} />
         <GuidanceBox list={guideList.pest} type="病虫管理" iconClass={BugOutlined} />
         <GuidanceBox list={guideList.park} type="清园操作" iconClass={ShopOutlined} />
-      </Flex>
+      </div>
       <Card
         title={
           <>

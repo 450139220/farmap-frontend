@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type Crop = {
+export type Crop = {
   date: string;
   diseases: string;
   id: number;
@@ -17,7 +17,7 @@ type Location = {
   longitude: number;
 };
 
-type FarmStoreState = {
+export type FarmStoreState = {
   address: string;
   center: string;
   zoom: number;

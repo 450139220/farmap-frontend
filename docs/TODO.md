@@ -18,10 +18,11 @@
 - [ ] * admin
 
 # To
-- [ ] oss for user images input
+- [x] oss for user images input
 - [ ] audio input for experts
 - [ ] monitor
-- [ ] proxy video requests
+- [x] proxy video requests
+- [ ] store farm state to local storage
 
 # Need Updating Backend Apis
 1. validate token permanence.ts
