@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --background-color: #e8eaec;
   --background-color-radial: #b8bdc0;

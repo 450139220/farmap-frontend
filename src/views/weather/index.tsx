@@ -1,4 +1,4 @@
-import WeatherPrediction from "./WeatherPredcition";
+import WeatherPrediction from "./prediction/WeatherPredcition";
 import TemperatureChart from "./TemperatureChart";
 
 import { Card, Flex } from "antd";
