@@ -31,6 +31,7 @@ export default function Operations() {
   // Request token
   const token = permanence.token.useToken();
 
+  // TODO: 无法确定农场类型是因为 farmId 不存在
   const farmId = useFarmStore((s) => s.id);
   const farmType = useFarmStore((s) => s.type);
   const month = new Date().getMonth();
