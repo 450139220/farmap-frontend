@@ -10,9 +10,12 @@ export default function Image(props: Props) {
   return (
     <Flex vertical style={{ flexGrow: 1, maxWidth: "45%" }}>
       <Carousel arrows infinite>
-        {images.map((img) => img !== "" && <ImageAntd width="90%" alt="作物图像" src={img} />)}
+        {images.map(
+          (img) =>
+            img !== "" && <ImageAntd width="70%" alt="作物图像" src={img} />,
+        )}
       </Carousel>
-      <div style={{ width: "90%" }}>
+      <div style={{ width: "70%" }}>
         <Divider />
       </div>
       <div>
