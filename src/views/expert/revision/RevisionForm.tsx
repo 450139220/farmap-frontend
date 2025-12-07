@@ -1,5 +1,10 @@
 import React from "react";
-import type { PlantData, AnalysisResult, PlantValidation, ValidationSummary } from "@/types/expert";
+import type {
+  PlantData,
+  AnalysisResult,
+  PlantValidation,
+  ValidationSummary,
+} from "@/types/expert";
 import { Activity, Search } from "lucide-react";
 import { Divider, Flex } from "antd";
 
@@ -12,7 +17,11 @@ interface EditableFieldProps {
   label?: string;
 }
 
-const EditableField: React.FC<EditableFieldProps> = ({ value, onChange, label }) => {
+const EditableField: React.FC<EditableFieldProps> = ({
+  value,
+  onChange,
+  label,
+}) => {
   const isString = typeof value === "string";
   const isNumber = typeof value === "number";
   const isBoolean = typeof value === "boolean";
@@ -30,7 +39,7 @@ const EditableField: React.FC<EditableFieldProps> = ({ value, onChange, label })
           />
           <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600 transition-colors"></div>
           {label && (
-            <span className="ml-3 text-xs text-gray-600 group-hover:text-gray-800 transition-colors select-none">
+            <span className="ml-3 text-sm text-gray-600 group-hover:text-gray-800 transition-colors select-none">
               {label}
             </span>
           )}
@@ -46,7 +55,7 @@ const EditableField: React.FC<EditableFieldProps> = ({ value, onChange, label })
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
+        <label className="block text-sm font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
           {label}
         </label>
       )}
@@ -55,14 +64,16 @@ const EditableField: React.FC<EditableFieldProps> = ({ value, onChange, label })
           value={value}
           onChange={(e) => onChange(e.target.value)}
           rows={Math.max(2, Math.ceil(strVal.length / 35))}
-          className="w-full px-2 text-xs text-gray-800 border border-gray-200 rounded-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all bg-white hover:border-gray-300 "
+          className="w-full px-2 text-sm text-gray-800 border border-gray-200 rounded-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all bg-white hover:border-gray-300 "
         />
       ) : (
         <input
           type={isNumber ? "number" : "text"}
           value={value}
-          onChange={(e) => onChange(isNumber ? parseFloat(e.target.value) : e.target.value)}
-          className="w-full px-2 text-xs text-gray-800 border border-gray-200 rounded-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all bg-white hover:border-gray-300 "
+          onChange={(e) =>
+            onChange(isNumber ? parseFloat(e.target.value) : e.target.value)
+          }
+          className="w-full px-2 text-sm text-gray-800 border border-gray-200 rounded-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all bg-white hover:border-gray-300 "
         />
       )}
     </div>
@@ -77,7 +88,9 @@ interface SectionProps<T> {
   onUpdate: (path: (string | number)[], value: any) => void;
 }
 
-const PlantValidationSection: React.FC<{ data: PlantValidation }> = ({ data }) => {
+const PlantValidationSection: React.FC<{ data: PlantValidation }> = ({
+  data,
+}) => {
   return (
     <div>
       <label className="text-sm font-bold uppercase tracking-wide">
@@ -86,10 +99,14 @@ const PlantValidationSection: React.FC<{ data: PlantValidation }> = ({ data }) =
           <h3>识别置信度</h3>
         </div>
       </label>
-      <p className="text-gray-800 mt-1 font-mono text-xs">置信度：{data.confidence}</p>
-      <p className="text-gray-800 mt-1 font-mono text-xs">图片情况：{data.message}</p>
+      <p className="text-gray-800 mt-1 font-mono text-sm">
+        置信度：{data.confidence}
+      </p>
+      <p className="text-gray-800 mt-1 font-mono text-sm">
+        图片情况：{data.message}
+      </p>
       {/*
-      <p className="text-gray-800 mt-1 font-mono text-xs">详情：{data.details}</p>
+      <p className="text-gray-800 mt-1 font-mono text-sm">详情：{data.details}</p>
         */}
     </div>
   );
@@ -110,7 +127,9 @@ const PropertyGroup: React.FC<{
   if (typeof data !== "object" || data === null) {
     return (
       <div>
-        <h4 className="text-xs font-bold text-gray-700 mb-3 border-t border-gray-200">{label}</h4>
+        <h4 className="text-sm font-bold text-gray-700 mb-3 border-t border-gray-200">
+          {label}
+        </h4>
         <EditableField value={data} onChange={(val) => onUpdate(path, val)} />
       </div>
     );
@@ -118,13 +137,20 @@ const PropertyGroup: React.FC<{
 
   // If data is an object, render its keys
   return (
-    <div className="pt-2 text-xs">
-      <h4 className="font-bold text-gray-700 mb-3 border-t border-gray-200">{label}</h4>
+    <div className="pt-2 text-sm">
+      <h4 className="font-bold text-gray-700 mb-3 border-t border-gray-200">
+        {label}
+      </h4>
       <div className="grid grid-cols-1 gap-4">
         {Object.entries(data).map(([key, val]) => (
           <div key={key}>
-            <label className="block font-medium text-gray-500 mb-1.5">{key}</label>
-            <EditableField value={val} onChange={(newVal) => onUpdate([...path, key], newVal)} />
+            <label className="block font-medium text-gray-500 mb-1.5">
+              {key}
+            </label>
+            <EditableField
+              value={val}
+              onChange={(newVal) => onUpdate([...path, key], newVal)}
+            />
           </div>
         ))}
       </div>
@@ -132,7 +158,11 @@ const PropertyGroup: React.FC<{
   );
 };
 
-const AnalysisResultSection = ({ data, path, onUpdate }: SectionProps<AnalysisResult>) => {
+const AnalysisResultSection = ({
+  data,
+  path,
+  onUpdate,
+}: SectionProps<AnalysisResult>) => {
   // We can iterate over keys because we know the structure, but we want to present them nicely.
   // We'll use a grid layout for the cards.
 
@@ -145,7 +175,7 @@ const AnalysisResultSection = ({ data, path, onUpdate }: SectionProps<AnalysisRe
         </div>
       </label>
 
-      <div className="flex gap-2 flex-col overflow-y-scroll h-full">
+      <div className="flex gap-2 flex-col h-full">
         {/* Iterate through fixed keys to ensure we render everything in the object */}
         {Object.entries(data).map(([key, value]) => (
           <PropertyGroup
@@ -163,7 +193,9 @@ const AnalysisResultSection = ({ data, path, onUpdate }: SectionProps<AnalysisRe
 
 // --- Sub-Component: Validation Summary Section ---
 
-const ValidationSummarySection: React.FC<{ data: ValidationSummary | undefined }> = ({ data }) => {
+const ValidationSummarySection: React.FC<{
+  data: ValidationSummary | undefined;
+}> = ({ data }) => {
   if (!data) return null;
   return (
     <div>
@@ -173,11 +205,17 @@ const ValidationSummarySection: React.FC<{ data: ValidationSummary | undefined }
           <h3>图像验证</h3>
         </div>
       </label>
-      <p className="text-gray-800 mt-1 font-mono text-xs">置信度：{data.plant_type}</p>
-      <p className="text-gray-800 mt-1 font-mono text-xs">图片情况：{data.count}</p>
-      <p className="text-gray-800 mt-1 font-mono text-xs">图片情况：{data.quality}</p>
+      <p className="text-gray-800 mt-1 font-mono text-sm">
+        置信度：{data.plant_type}
+      </p>
+      <p className="text-gray-800 mt-1 font-mono text-sm">
+        图片情况：{data.count}
+      </p>
+      <p className="text-gray-800 mt-1 font-mono text-sm">
+        图片情况：{data.quality}
+      </p>
       {/*
-      <p className="text-gray-800 mt-1 font-mono text-xs">详情：{data.details}</p>
+      <p className="text-gray-800 mt-1 font-mono text-sm">详情：{data.details}</p>
         */}
     </div>
   );
@@ -203,7 +241,10 @@ const CheckCircleIcon = (props: any) => (
 
 // --- Main Form Component ---
 
-export const RevisionForm: React.FC<SectionProps<PlantData>> = ({ data, onUpdate }) => {
+export const RevisionForm: React.FC<SectionProps<PlantData>> = ({
+  data,
+  onUpdate,
+}) => {
   return (
     <Flex vertical style={{ height: "100%" }}>
       <div

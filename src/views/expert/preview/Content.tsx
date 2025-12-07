@@ -5,7 +5,12 @@ import { AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 import { Button, Divider } from "antd";
 import { RevisionForm } from "../revision/RevisionForm";
 
-export default function PlantAnalysisEditor({ jsonData, onSubmit }: PlantAnalysisEditorProps) {
+export default function PlantAnalysisEditor({
+  jsonData,
+  submitLoading,
+  submitResult,
+  onSubmit,
+}: PlantAnalysisEditorProps) {
   const [parsedData, setParsedData] = useState<PlantData | null>(null);
   const [parseError, setParseError] = useState<string | null>(null);
   const [isConsistencyError, setIsConsistencyError] = useState(false);
@@ -28,12 +33,15 @@ export default function PlantAnalysisEditor({ jsonData, onSubmit }: PlantAnalysi
     }
   }, [jsonData]);
 
-  const handleFieldUpdate = useCallback((path: (string | number)[], value: any) => {
-    setParsedData((prev) => {
-      if (!prev) return prev;
-      return setNestedValue(prev, path, value);
-    });
-  }, []);
+  const handleFieldUpdate = useCallback(
+    (path: (string | number)[], value: any) => {
+      setParsedData((prev) => {
+        if (!prev) return prev;
+        return setNestedValue(prev, path, value);
+      });
+    },
+    [],
+  );
 
   const handleSubmit = () => {
     if (parsedData) {
@@ -63,17 +71,25 @@ export default function PlantAnalysisEditor({ jsonData, onSubmit }: PlantAnalysi
         </div>
         <Divider style={{ margin: 5 }} />
         <div>
-          <label className="text-xs font-bold text-red-600 uppercase tracking-wide">错误信息</label>
-          <p className="text-gray-800 mt-1 font-medium">{plant_validation.message}</p>
+          <label className="text-sm font-bold text-red-600 uppercase tracking-wide">
+            错误信息
+          </label>
+          <p className="text-gray-800 mt-1 font-medium">
+            {plant_validation.message}
+          </p>
         </div>
         <div>
-          <label className="text-xs font-bold text-red-600 uppercase tracking-wide">
+          <label className="text-sm font-bold text-red-600 uppercase tracking-wide">
             识别置信度
           </label>
-          <p className="text-gray-800 mt-1 font-mono">{plant_validation.confidence ?? 0}</p>
+          <p className="text-gray-800 mt-1 font-mono">
+            {plant_validation.confidence ?? 0}
+          </p>
         </div>
         <div>
-          <label className="text-xs font-bold text-red-600 uppercase tracking-wide">详细内容</label>
+          <label className="text-sm font-bold text-red-600 uppercase tracking-wide">
+            详细内容
+          </label>
           <p className="text-gray-800 mt-1">{plant_validation.details}</p>
         </div>
       </div>
@@ -82,22 +98,33 @@ export default function PlantAnalysisEditor({ jsonData, onSubmit }: PlantAnalysi
 
   // --- Scenario: Success (Editable) ---
   return (
-    <div style={{ overflowY: "scroll" }}>
+    <div style={{ overflowY: "scroll", overflowX: "hidden" }}>
       <div className="flex items-center gap-3 text-emerald-600">
         <CheckCircle2 className="w-6 h-6" />
         <h2 className="text-lg font-bold">识别结果</h2>
       </div>
       <Divider style={{ margin: 5 }} />
       <div style={{}}>
-        <RevisionForm data={parsedData} path={[]} onUpdate={handleFieldUpdate} />
+        <RevisionForm
+          data={parsedData}
+          path={[]}
+          onUpdate={handleFieldUpdate}
+        />
       </div>
       <Button
         type="primary"
+        disabled={submitLoading}
+        style={{ marginTop: 10 }}
         onClick={() => {
           handleSubmit();
         }}>
         提交修改
       </Button>
+      {submitResult.length > 0 && (
+        <span className="text-blue-600" style={{ marginLeft: 10 }}>
+          {submitResult}
+        </span>
+      )}
     </div>
   );
 }

@@ -149,5 +149,7 @@ export interface PlantData {
 
 export interface PlantAnalysisEditorProps {
   jsonData: string;
+  submitLoading: boolean;
+  submitResult: string;
   onSubmit: (newJsonString: string) => void;
 }

@@ -6,6 +6,7 @@ import { CoffeeOutlined, OrderedListOutlined } from "@ant-design/icons";
 
 import { permanence } from "@/utils/permanence";
 import DetailPrevew from "./preview//DetailPrevew";
+import type { CaseContent } from "@/types/expert";
 const token = permanence.token.useToken();
 
 export default function Expert() {
@@ -15,7 +16,9 @@ export default function Expert() {
   const [pendingCases, setPendingCases] = useState<PendingCase[]>([]);
 
   // Selection & details
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
+    null,
+  );
   // PERF: set loading animations
   const [detailLoading, setDetailLoading] = useState(false);
   const initialCaseContent: Omit<CaseContent, "onClear"> = {
@@ -31,7 +34,8 @@ export default function Expert() {
     },
     revisionRecords: [],
   };
-  const [detail, setDetail] = useState<Omit<CaseContent, "onClear">>(initialCaseContent);
+  const [detail, setDetail] =
+    useState<Omit<CaseContent, "onClear">>(initialCaseContent);
   const [revisionPrompts, setRevisionPrompts] = useState("");
 
   // Submit revision request
@@ -69,7 +73,6 @@ export default function Expert() {
         Authorization: token,
       });
       console.log(resp.data);
-
       setDetail(resp.data);
     } catch {
     } finally {
@@ -91,10 +94,11 @@ export default function Expert() {
         <div style={{ marginBottom: "0.5rem" }}>请点击列表内容以开始校正。</div>
         <div
           style={{
-            fontSize: "0.7rem",
+            fontSize: "0.8rem",
             border: "1px solid #eee",
             borderRadius: 8,
             padding: 2,
+            overflowX: "hidden",
             overflowY: "scroll",
             height: "calc(100% - 1rem)",
           }}>
@@ -106,7 +110,9 @@ export default function Expert() {
                 setSelectedRequestId(cs.requestId);
               }}>
               <p>
-                <span style={{ backgroundColor: "#ffdd00" }}>#{cs.requestId.substring(0, 8)}</span>
+                <span style={{ backgroundColor: "#ffdd00" }}>
+                  #{cs.requestId.substring(0, 8)}
+                </span>
               </p>
               <div>{cs.uploadTime.substring(0, 10)}</div>
               <div>{cs.imageCount} 张图片</div>
@@ -128,6 +134,7 @@ export default function Expert() {
           styles={{ body: { height: "calc(100% - 60px)" } }}>
           <DetailPrevew
             requestId={selectedRequestId}
+            loading={detailLoading}
             header={detail.userRequestInfo}
             content={detail.initialResultInfo}
           />
@@ -136,5 +143,3 @@ export default function Expert() {
     </Flex>
   );
 }
-
-// <RevisionBox {...caseContent} onClear={onCaseContentClear} />
