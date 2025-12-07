@@ -16,8 +16,11 @@ interface Props {
   header: CaseContent["userRequestInfo"];
   content: CaseContent["initialResultInfo"];
   loading: boolean;
+  onSubmitSuccess: () => void;
 }
 export default function DetailPrevew(props: Props) {
+  const [showPromptInput, setShowPromptInput] = useState(false);
+
   const [submistLoading, setSubmitLoading] = useState(false);
   const [submitResult, setSubmitResult] = useState("");
 
@@ -112,23 +115,29 @@ export default function DetailPrevew(props: Props) {
                       },
                       { Authorization: `Bearer ${token}` },
                     );
-
                     setSubmitResult(resp.data);
+                    // Fetch pending cases again
+                    props.onSubmitSuccess();
                   } catch {
                     setSubmitResult("提交修改出错");
                   } finally {
                     setSubmitLoading(false);
                   }
                 }}
-              />
-              <PromptInput
-                prompt={revisionPrompt}
-                onSubmit={onAudioRevise}
-                onChange={(newPrompt) => {
-                  setRevisionPrompt(newPrompt);
+                onParseEnd={(status) => {
+                  setShowPromptInput(status);
                 }}
-                loading={jsonDataModifyLoading}
               />
+              {showPromptInput && (
+                <PromptInput
+                  prompt={revisionPrompt}
+                  onSubmit={onAudioRevise}
+                  onChange={(newPrompt) => {
+                    setRevisionPrompt(newPrompt);
+                  }}
+                  loading={jsonDataModifyLoading}
+                />
+              )}
             </Flex>
           </Flex>
         </Flex>

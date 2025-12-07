@@ -10,6 +10,7 @@ export default function Content({
   submitLoading,
   submitResult,
   onSubmit,
+  onParseEnd,
 }: PlantAnalysisEditorProps) {
   const [parsedData, setParsedData] = useState<PlantData | null>(null);
   const [parseError, setParseError] = useState<string | null>(null);
@@ -24,12 +25,15 @@ export default function Content({
       // Check for consistency/validity
       if (parsed.plant_validation?.consistent === false) {
         setIsConsistencyError(true);
+        onParseEnd(false);
       } else {
         setIsConsistencyError(false);
+        onParseEnd(true);
       }
     } catch (e) {
       setParseError("Invalid JSON string provided.");
       setParsedData(null);
+      onParseEnd(false);
     }
   }, [jsonData]);
 
@@ -58,7 +62,9 @@ export default function Content({
     );
   }
 
-  if (!parsedData) return null;
+  if (!parsedData) {
+    return null;
+  }
 
   // --- Scenario: Validation Failure (Read Only) ---
   if (isConsistencyError) {

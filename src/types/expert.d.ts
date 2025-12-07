@@ -152,4 +152,5 @@ export interface PlantAnalysisEditorProps {
   submitLoading: boolean;
   submitResult: string;
   onSubmit: (newJsonString: string) => void;
+  onParseEnd: (status: boolean) => void;
 }

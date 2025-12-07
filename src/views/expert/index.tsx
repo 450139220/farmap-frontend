@@ -6,7 +6,12 @@ import { CoffeeOutlined, OrderedListOutlined } from "@ant-design/icons";
 
 import { permanence } from "@/utils/permanence";
 import DetailPrevew from "./preview//DetailPrevew";
-import type { CaseContent } from "@/types/expert";
+import type {
+  CaseContent,
+  CasesStoreResult,
+  PendingCase,
+} from "@/types/expert";
+import { Loader2 } from "lucide-react";
 const token = permanence.token.useToken();
 
 export default function Expert() {
@@ -14,6 +19,7 @@ export default function Expert() {
 
   // Expert pending cases
   const [pendingCases, setPendingCases] = useState<PendingCase[]>([]);
+  const [listLoading, setListLoading] = useState(false);
 
   // Selection & details
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
@@ -36,14 +42,14 @@ export default function Expert() {
   const [detail, setDetail] =
     useState<Omit<CaseContent, "onClear">>(initialCaseContent);
 
-  // Submit revision request
-  const [submitting, setSubmitting] = useState(false);
-
   // --- Effects ---
 
   // Fetch pending cases list
   useEffect(() => {
-    fecthList();
+    setListLoading(true);
+    fecthList().finally(() => {
+      setListLoading(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -99,24 +105,28 @@ export default function Expert() {
             overflowY: "scroll",
             height: "calc(100% - 1rem)",
           }}>
-          {pendingCases.map((cs) => (
-            <div
-              key={cs.requestId}
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setSelectedRequestId(cs.requestId);
-              }}>
-              <p>
-                <span style={{ backgroundColor: "#ffdd00" }}>
-                  #{cs.requestId.substring(0, 8)}
-                </span>
-              </p>
-              <div>{cs.uploadTime.substring(0, 10)}</div>
-              <div>{cs.imageCount} 张图片</div>
-              <div>已修改 {cs.revisionCount} 次 </div>
-              <Divider style={{ margin: 5 }} />
-            </div>
-          ))}
+          {listLoading ? (
+            <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
+          ) : (
+            pendingCases.map((cs) => (
+              <div
+                key={cs.requestId}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  setSelectedRequestId(cs.requestId);
+                }}>
+                <p>
+                  <span style={{ backgroundColor: "#ffdd00" }}>
+                    #{cs.requestId.substring(0, 8)}
+                  </span>
+                </p>
+                <div>{cs.uploadTime.substring(0, 10)}</div>
+                <div>{cs.imageCount} 张图片</div>
+                <div>已修改 {cs.revisionCount} 次 </div>
+                <Divider style={{ margin: 5 }} />
+              </div>
+            ))
+          )}
         </div>
       </Card>
       <Flex style={{ flexGrow: 1 }}>
@@ -134,6 +144,16 @@ export default function Expert() {
             loading={detailLoading}
             header={detail.userRequestInfo}
             content={detail.initialResultInfo}
+            onSubmitSuccess={() => {
+              try {
+                setListLoading(true);
+                fecthList();
+                setSelectedRequestId(null);
+              } catch {
+              } finally {
+                setListLoading(false);
+              }
+            }}
           />
         </Card>
       </Flex>
