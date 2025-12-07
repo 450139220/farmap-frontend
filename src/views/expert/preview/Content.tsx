@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import type { PlantAnalysisEditorProps, PlantData } from "@/types/expert";
 import { setNestedValue } from "@/utils/function";
 import { AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
-import { Divider } from "antd";
+import { Button, Divider } from "antd";
 import { RevisionForm } from "../revision/RevisionForm";
 
 export default function PlantAnalysisEditor({ jsonData, onSubmit }: PlantAnalysisEditorProps) {
@@ -91,6 +91,13 @@ export default function PlantAnalysisEditor({ jsonData, onSubmit }: PlantAnalysi
       <div style={{}}>
         <RevisionForm data={parsedData} path={[]} onUpdate={handleFieldUpdate} />
       </div>
+      <Button
+        type="primary"
+        onClick={() => {
+          handleSubmit();
+        }}>
+        提交修改
+      </Button>
     </div>
   );
 }

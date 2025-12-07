@@ -21,7 +21,13 @@ export default function DetailPrevew(props: Props) {
           <Flex vertical style={{ flexGrow: 1, maxWidth: "50%", height: "100%" }}>
             <Header requestId={props.header.requestId} modelVersion={props.content.modelVersion} />
             <Flex vertical style={{ height: "calc(100% - 130px)" }}>
-              <PlantAnalysisEditor jsonData={props.content.jsonData} />
+              <PlantAnalysisEditor
+                jsonData={props.content.jsonData}
+                onSubmit={(j) => {
+                  // TODO: send request to revise record
+                  console.log(j);
+                }}
+              />
               <PromptInput />
             </Flex>
           </Flex>
