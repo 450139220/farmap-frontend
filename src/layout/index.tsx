@@ -20,8 +20,8 @@ export default function Layout() {
   }, []);
 
   // Use local storage if the token is valid
-  const username = localUserStore!.username;
-  const role = localUserStore!.role;
+  const username = localUserStore?.username;
+  const role = localUserStore?.role;
 
   // Log out
   const logout = useUserStore((s) => s.logout);
@@ -38,13 +38,13 @@ export default function Layout() {
   } = theme.useToken();
   // Router
   type MenuItem = Required<MenuProps>["items"][number];
-  const menuItems: MenuItem[] = ALL_ROUTES.filter((r) => r.handle.roles.includes(role)).map(
-    (r) => ({
-      key: r.handle.key,
-      label: <NavLink to={r.path!}>{r.handle.name}</NavLink>,
-      icon: <r.handle.Icon />,
-    }),
-  );
+  const menuItems: MenuItem[] = ALL_ROUTES.filter((r) =>
+    r.handle.roles.includes(role),
+  ).map((r) => ({
+    key: r.handle.key,
+    label: <NavLink to={r.path!}>{r.handle.name}</NavLink>,
+    icon: <r.handle.Icon />,
+  }));
 
   return (
     <LayoutAntd style={{ height: "100vh" }}>
@@ -61,7 +61,12 @@ export default function Layout() {
           }}>
           FarMap
         </div>
-        <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]} items={menuItems} />
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectedKeys={[location.pathname]}
+          items={menuItems}
+        />
       </Sider>
       <LayoutAntd style={{ height: "100%" }}>
         <Header style={{ padding: 0, background: colorBgContainer }}>
@@ -73,7 +78,11 @@ export default function Layout() {
             }}>
             <div>
               <span>您好，{username} 用户！</span>
-              <Avatar size={32} icon={<UserOutlined />} style={{ cursor: "pointer" }} />
+              <Avatar
+                size={32}
+                icon={<UserOutlined />}
+                style={{ cursor: "pointer" }}
+              />
               <Button style={{ marginLeft: "1rem" }} onClick={handleLogout}>
                 退出登陆
               </Button>

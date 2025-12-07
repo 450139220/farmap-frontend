@@ -13,6 +13,7 @@ import { GlobalOutlined, MacCommandOutlined } from "@ant-design/icons";
 import { permanence } from "@/utils/permanence";
 import { useFarmStore, type Crop, type FarmStoreState } from "@/store/farm";
 import { req } from "@/utils/reqeust";
+import { useUserStore } from "@/store/user";
 
 export default function Map() {
   // Pass farm status to map
@@ -25,8 +26,10 @@ export default function Map() {
 
   // Get farm select informations from local user storage
   const localUserStore = permanence.user.useUserStore()!;
-  const farmOptions = localUserStore.farms;
-  const [farm, setSelectFarm] = useState<FarmSelectType["value"]>(farmOptions[0]?.id ?? -1);
+  const farmOptions = localUserStore?.farms ?? useUserStore((s) => s.farms);
+  const [farm, setSelectFarm] = useState<FarmSelectType["value"]>(
+    farmOptions[0]?.id ?? -1,
+  );
 
   // Fetch the first farm content and store
   const token = permanence.token.useToken();
@@ -122,7 +125,11 @@ export default function Map() {
         styles={{ body: { height: "calc(100% - 60px)" } }}>
         <Flex gap="0.5rem" vertical style={{ height: "100%" }}>
           <Flex gap="0.5rem" style={{ width: "100%" }}>
-            <FarmSelect value={farm} options={farmOptions} onChange={changeFarmStore} />
+            <FarmSelect
+              value={farm}
+              options={farmOptions}
+              onChange={changeFarmStore}
+            />
             <ModeSelect
               value={mode}
               onChange={(newMode) => {
