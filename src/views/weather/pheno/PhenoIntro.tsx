@@ -1,8 +1,8 @@
 import { Flex } from "antd";
 import SeasonWheel from "./SeasenWheel";
 import { useFarmStore } from "@/store/farm";
-import { useEffect, useMemo, useState } from "react";
-import { req, Request } from "@/utils/reqeust";
+import { useEffect, useState } from "react";
+import { req } from "@/utils/reqeust";
 import { permanence } from "@/utils/permanence";
 
 interface WeatherIntro {
@@ -22,7 +22,9 @@ export default function PhenoIntro() {
   const token = permanence.token.useToken();
 
   // Season wheel event
-  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
+  const [selectedMonth, setSelectedMonth] = useState<number>(
+    new Date().getMonth(),
+  );
   const onMonthChange = (month: number): void => {
     setSelectedMonth(month);
   };
