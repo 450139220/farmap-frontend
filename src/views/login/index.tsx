@@ -1,6 +1,10 @@
-import { useUserStore, type FarmPreviewType, type UserStoreState } from "@/store/user";
+import {
+  useUserStore,
+  type FarmPreviewType,
+  type UserStoreState,
+} from "@/store/user";
 import { permanence } from "@/utils/permanence";
-import { Request, req } from "@/utils/reqeust";
+import { req } from "@/utils/reqeust";
 import { Flex, Form, Layout, Input, Card, Button } from "antd";
 import type { FormProps } from "antd";
 import { useState } from "react";
@@ -42,10 +46,13 @@ function Login() {
 
   const onFinish: FormProps<LoginType>["onFinish"] = async (values) => {
     try {
-      const resp = await req.post<UserLoginRequest, UserLoginResult>("/user/login", {
-        username: values.username!,
-        password: values.password!,
-      });
+      const resp = await req.post<UserLoginRequest, UserLoginResult>(
+        "/user/login",
+        {
+          username: values.username!,
+          password: values.password!,
+        },
+      );
       // Store this response to user store
       const userStore: UserStoreState = {
         username: resp.data.user.name,
@@ -69,7 +76,8 @@ function Login() {
 
   return (
     <Layout style={{ height: "100vh" }}>
-      <Header style={{ color: "#eee", fontSize: "1.8rem", textAlign: "center" }}>
+      <Header
+        style={{ color: "#eee", fontSize: "1.8rem", textAlign: "center" }}>
         <span>FarMap 农业数字地图服务平台</span>
       </Header>
       <Content>
@@ -102,7 +110,9 @@ function Login() {
                 </Button>
               </Form.Item>
             </Form>
-            {msg.length !== 0 && <div style={{ textAlign: "center", color: "#dd0000" }}>{msg}</div>}
+            {msg.length !== 0 && (
+              <div style={{ textAlign: "center", color: "#dd0000" }}>{msg}</div>
+            )}
           </Card>
         </Flex>
       </Content>

@@ -4,6 +4,16 @@ import { Loader2 } from "lucide-react";
 import { useRef } from "react";
 const { Search } = Input;
 
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+
+  var SpeechRecognition: any;
+  var webkitSpeechRecognition: any;
+}
+
 interface Props {
   prompt: string;
   onChange: (newPrompt: string) => void;
@@ -11,14 +21,14 @@ interface Props {
   loading: boolean;
 }
 
-const hasSR = window.SpeechRecognition || window.webkitSpeechRecoginition;
+const hasSR = window.SpeechRecognition || window.webkitSpeechRecognition;
 export default function PromptInput(props: Props) {
   // Create speech recognition ref
   const recognitionRef = useRef<any>(null);
   const isRecordingRef = useRef(false);
   if (!recognitionRef.current) {
     const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecoginition;
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     const r = new SpeechRecognition();
     r.lang = "zh-CN";
     r.continuous = true;

@@ -12,8 +12,8 @@ import { monitorList } from "../monitor/list/monitorList";
 import VideoPlayer from "../monitor/VideoPlayer";
 import { permanence } from "@/utils/permanence";
 import { req } from "@/utils/reqeust";
-import { Card, Flex } from "antd";
-import { CloseCircleOutlined, CloseOutlined } from "@ant-design/icons";
+import { Card } from "antd";
+import { CloseCircleOutlined } from "@ant-design/icons";
 
 export type MapProps = {
   center: [number, number];

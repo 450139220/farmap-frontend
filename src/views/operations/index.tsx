@@ -101,8 +101,8 @@ export default function Operations() {
             height: "100%",
             borderRadius: "0 0 8px 8px",
           }}
-          onLoad={(e) => {
-            const iframe = e.currentTarget;
+          onLoad={() => {
+            // const iframe = e.currentTarget;
             // try {
             //   if (!iframe.contentDocument || iframe.contentDocument.body.innerHTML === "") {
             //     setHasExpert(false);
