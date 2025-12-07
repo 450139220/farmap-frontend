@@ -1,9 +1,8 @@
 import { Card, Divider, Flex } from "antd";
 
 import { useEffect, useState } from "react";
-import RevisionBox from "./RevisionBox";
 import { req } from "@/utils/reqeust";
-import { CoffeeOutlined, CommentOutlined, OrderedListOutlined } from "@ant-design/icons";
+import { CoffeeOutlined, OrderedListOutlined } from "@ant-design/icons";
 
 import { permanence } from "@/utils/permanence";
 import DetailPrevew from "./preview//DetailPrevew";
