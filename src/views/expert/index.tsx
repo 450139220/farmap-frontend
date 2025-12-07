@@ -19,7 +19,6 @@ export default function Expert() {
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
     null,
   );
-  // PERF: set loading animations
   const [detailLoading, setDetailLoading] = useState(false);
   const initialCaseContent: Omit<CaseContent, "onClear"> = {
     userRequestInfo: {
@@ -36,7 +35,6 @@ export default function Expert() {
   };
   const [detail, setDetail] =
     useState<Omit<CaseContent, "onClear">>(initialCaseContent);
-  const [revisionPrompts, setRevisionPrompts] = useState("");
 
   // Submit revision request
   const [submitting, setSubmitting] = useState(false);
@@ -72,7 +70,6 @@ export default function Expert() {
       const resp = await req.get<{ data: CaseContent }>(`/expert/cases/${id}`, {
         Authorization: token,
       });
-      console.log(resp.data);
       setDetail(resp.data);
     } catch {
     } finally {

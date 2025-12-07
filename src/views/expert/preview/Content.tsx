@@ -5,7 +5,7 @@ import { AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 import { Button, Divider } from "antd";
 import { RevisionForm } from "../revision/RevisionForm";
 
-export default function PlantAnalysisEditor({
+export default function Content({
   jsonData,
   submitLoading,
   submitResult,
@@ -120,7 +120,7 @@ export default function PlantAnalysisEditor({
         }}>
         提交修改
       </Button>
-      {submitResult.length > 0 && (
+      {submitResult && submitResult.length > 0 && (
         <span className="text-blue-600" style={{ marginLeft: 10 }}>
           {submitResult}
         </span>

@@ -1,13 +1,13 @@
-import { Flex } from "antd";
+import { Flex, message } from "antd";
 import Header from "./Header";
 import Image from "./Image";
 import PromptInput from "../revision/PromptInput";
-import PlantAnalysisEditor from "./Content";
 import type { CaseContent } from "@/types/expert";
 import { Loader2 } from "lucide-react";
 import { req } from "@/utils/reqeust";
 import { permanence } from "@/utils/permanence";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Content from "./Content";
 
 const token = permanence.token.useToken();
 
@@ -21,8 +21,48 @@ export default function DetailPrevew(props: Props) {
   const [submistLoading, setSubmitLoading] = useState(false);
   const [submitResult, setSubmitResult] = useState("");
 
+  // Revise json data
+  const [jsonData, setJsonData] = useState(props.content.jsonData);
+  useEffect(() => {
+    setJsonData(props.content.jsonData);
+  }, [props.content.jsonData]);
+
+  // Show message
+  const [messageApi, contextHolder] = message.useMessage();
+  const showMessage = (msg: string) => {
+    messageApi.error(msg);
+  };
+
+  const [revisionPrompt, setRevisionPrompt] = useState("");
+  const [jsonDataModifyLoading, setJsonDataModifyLoading] = useState(false);
+  const onAudioRevise = async () => {
+    try {
+      setJsonDataModifyLoading(true);
+      const resp = await req.post<
+        { jsonData: string; modificationText: string },
+        { data: CaseContent }
+      >(
+        "/ai-json/modify",
+        {
+          jsonData: jsonData,
+          modificationText: revisionPrompt,
+        },
+        {
+          Authorization: `Bearer ${token}`,
+        },
+      );
+      setJsonData(JSON.stringify(resp.data));
+      setRevisionPrompt("");
+    } catch {
+      showMessage("修改内容失败，请重试。");
+    } finally {
+      setJsonDataModifyLoading(false);
+    }
+  };
+
   return (
     <>
+      {contextHolder}
       {!props.requestId || props.loading ? (
         <>
           {props.loading ? (
@@ -44,9 +84,12 @@ export default function DetailPrevew(props: Props) {
               requestId={props.header.requestId}
               modelVersion={props.content.modelVersion}
             />
-            <Flex vertical style={{ height: "calc(100% - 130px)" }}>
-              <PlantAnalysisEditor
-                jsonData={props.content.jsonData}
+            <Flex
+              vertical
+              justify="space-between"
+              style={{ height: "calc(100% - 50px)" }}>
+              <Content
+                jsonData={jsonData}
                 submitLoading={submistLoading}
                 submitResult={submitResult}
                 onSubmit={async (j) => {
@@ -78,7 +121,14 @@ export default function DetailPrevew(props: Props) {
                   }
                 }}
               />
-              <PromptInput />
+              <PromptInput
+                prompt={revisionPrompt}
+                onSubmit={onAudioRevise}
+                onChange={(newPrompt) => {
+                  setRevisionPrompt(newPrompt);
+                }}
+                loading={jsonDataModifyLoading}
+              />
             </Flex>
           </Flex>
         </Flex>
