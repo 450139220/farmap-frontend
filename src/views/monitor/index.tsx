@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { Card, Flex } from "antd";
-import { BarsOutlined, FundViewOutlined, ThunderboltOutlined } from "@ant-design/icons";
+import {
+  BarsOutlined,
+  FundViewOutlined,
+  ThunderboltOutlined,
+} from "@ant-design/icons";
 
 import VideoPlayer from "./VideoPlayer";
 import MonitorListView from "./list/MonitorListView";
@@ -18,7 +22,6 @@ interface AccessTokenResponse {
 
 export default function index() {
   // Get the user's access token
-  // TODO: use a proxy
   const localAccessToken = permanence.accessToken.useAccessToken();
   const [accessToken, setAccessToken] = useState<string>("");
   useEffect(() => {
@@ -55,7 +58,10 @@ export default function index() {
           }
           style={{ flex: "0 0 300px" }}
           styles={{ body: { height: "calc(300px - 100px)" } }}>
-          <MonitorListView accessToken={accessToken} onSelect={getSelectVideoUrl} />
+          <MonitorListView
+            accessToken={accessToken}
+            onSelect={getSelectVideoUrl}
+          />
         </Card>
         <Card
           title={
@@ -76,7 +82,8 @@ export default function index() {
             &nbsp;&nbsp;在线推理
           </>
         }
-        style={{ flex: "1 0 40%" }}>
+        style={{ flex: "1 0 40%" }}
+        styles={{ body: { height: "calc(100% - 60px)" } }}>
         <PredictPic />
       </Card>
     </Flex>

@@ -1,5 +1,6 @@
 interface Props {
   videoUrl: string;
+  style?: React.CSSProperties;
 }
 export default function VideoPlayer(props: Props) {
   return (
@@ -13,6 +14,7 @@ export default function VideoPlayer(props: Props) {
             border: "none",
             width: "100%",
             height: "100%",
+            ...props.style,
           }}></iframe>
       )}
     </>

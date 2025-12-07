@@ -134,7 +134,6 @@ export default function Map() {
               value={mode}
               onChange={(newMode) => {
                 setMode(newMode);
-                // TODO: update amap content here
               }}
             />
             <InfoSelect
@@ -142,7 +141,6 @@ export default function Map() {
               disabled={mode === "farm"}
               onChange={(newInfo) => {
                 setInfo(newInfo);
-                // TODO: update amap content here
               }}
             />
           </Flex>

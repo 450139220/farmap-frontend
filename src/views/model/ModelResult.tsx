@@ -1,5 +1,3 @@
-import { TrademarkOutlined } from "@ant-design/icons";
-import { Card } from "antd";
 import { useEffect, useState, type JSX } from "react";
 import PlantReport from "./PlantReport";
 
@@ -21,5 +19,5 @@ export default function ModelResult(props: Props) {
     setText(report);
   }, [props]);
 
-  return <span>{text}</span>;
+  return <>{text}</>;
 }

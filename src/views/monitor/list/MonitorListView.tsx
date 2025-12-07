@@ -16,12 +16,16 @@ interface Props {
 export default function MonitorListView(props: Props) {
   // PERF: actually each user has his own monitors
   const [selected, setSelected] = useState<number>(-1);
-  const selectedMonitorName = useMemo(() => monitorList[selected]?.name, [selected]);
+  const selectedMonitorName = useMemo(
+    () => monitorList[selected]?.name,
+    [selected],
+  );
 
-  const handleSelect = async (id: number, deviceSerial: string): Promise<void> => {
+  const handleSelect = async (
+    id: number,
+    deviceSerial: string,
+  ): Promise<void> => {
     try {
-      console.log(props.accessToken);
-
       const resp = await req.get<VideoRequestResponse>(
         `/monitor/preview?accessToken=${props.accessToken}&deviceSerial=${deviceSerial}`,
       );
@@ -39,24 +43,33 @@ export default function MonitorListView(props: Props) {
     <div style={{ height: "100%" }}>
       <Flex gap="0.5rem">
         <h4 style={{ padding: 0, margin: 0 }}>当前选中摄像头</h4>
-        <span>{selectedMonitorName ?? "暂未选择"}</span>
+        <span
+          style={{
+            backgroundColor: "#eee",
+            padding: "0 5px",
+            borderRadius: 8,
+          }}>
+          {selectedMonitorName ?? "暂未选择"}
+        </span>
       </Flex>
       <Divider />
       <section
         style={{
           height: "calc(100% - 40px)",
           overflowY: "scroll",
-          border: "1px solid gray",
+          border: "1px solid #bbb",
+          borderRadius: 4,
+          paddingLeft: 10,
         }}>
         <ul style={{ padding: 0, margin: 0, listStyle: "none" }}>
-          {monitorList.map((li) => (
+          {monitorList.map((li, idx) => (
             <li
               style={{ color: selected === li.id ? "red" : "gray" }}
               key={li.id}
               onClick={() => {
                 handleSelect(li.id, li.serial);
               }}>
-              {li.name}
+              {idx + 1}. {li.name}
             </li>
           ))}
         </ul>

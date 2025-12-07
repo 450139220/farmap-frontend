@@ -102,7 +102,9 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
         <div className="bg-white rounded-2xl shadow-sm border border-orange-100 overflow-hidden">
           <div className="bg-orange-50 px-6 py-4 border-b border-orange-100 flex items-center justify-center gap-2">
             <AlertCircle className="text-orange-500" size={24} />
-            <h2 className="font-semibold text-orange-800 text-lg">无法完成详细分析</h2>
+            <h2 className="font-semibold text-orange-800 text-lg">
+              无法完成详细分析
+            </h2>
           </div>
 
           <div className="p-8 text-center">
@@ -128,7 +130,9 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
           </div>
 
           <div className="bg-gray-50 px-6 py-3 border-t border-gray-100 text-center">
-            <p className="text-xs text-gray-400">请尝试重新拍摄清晰、完整的植物照片后再次上传。</p>
+            <p className="text-xs text-gray-400">
+              请尝试重新拍摄清晰、完整的植物照片后再次上传。
+            </p>
           </div>
         </div>
       </div>
@@ -140,7 +144,9 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
   const validation = data.validation;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-fade-in  pr-root">
+    <div
+      className="max-w-5xl mx-auto space-y-6 animate-fade-in  pr-root"
+      style={{ height: "100%" }}>
       <style>{containerStyles}</style>
 
       {/* Header Section */}
@@ -148,12 +154,15 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-gray-400 text-xs flex items-center gap-1">
-              <Microscope size={12} /> 置信度: {plant_validation.confidence.toFixed(2)}
+              <Microscope size={12} /> 置信度:{" "}
+              {plant_validation.confidence.toFixed(2)}
             </span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
             {result.树种识别.种类}
-            <span className="text-lg font-normal text-gray-500">({result.当前生长阶段})</span>
+            <span className="text-lg font-normal text-gray-500">
+              ({result.当前生长阶段})
+            </span>
           </h1>
         </div>
 
@@ -182,7 +191,7 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
       </header>
 
       {/* Main Grid */}
-      <div className="pr-main-grid">
+      <div className="flex gap-2 flex-col">
         {/* Growth & Structure */}
         <Card title="长势诊断" icon={<Activity className="text-blue-500" />}>
           <DetailRow label="冠层结构" value={result.长势诊断.冠层结构} />
@@ -210,16 +219,31 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
           <DetailRow label="挂果量" value={result.果实状态诊断.挂果量} />
           <DetailRow label="大小" value={result.果实状态诊断.果实大小} />
           <DetailRow label="色泽" value={result.果实状态诊断.果实色泽} />
-          <DetailRow label="异常比例" value={result.果实状态诊断.异常果实比例} />
+          <DetailRow
+            label="异常比例"
+            value={result.果实状态诊断.异常果实比例}
+          />
         </Card>
 
         {/* Nutrition */}
         <Card title="营养状况" icon={<Droplet className="text-cyan-500" />}>
           <div className="space-y-3">
-            <NutrientBadge label="氮 (N)" status={result.营养状况诊断.氮素状态} />
-            <NutrientBadge label="磷 (P)" status={result.营养状况诊断.磷素状态} />
-            <NutrientBadge label="钾 (K)" status={result.营养状况诊断.钾素状态} />
-            <NutrientBadge label="微量元素" status={result.营养状况诊断.中微量元素} />
+            <NutrientBadge
+              label="氮 (N)"
+              status={result.营养状况诊断.氮素状态}
+            />
+            <NutrientBadge
+              label="磷 (P)"
+              status={result.营养状况诊断.磷素状态}
+            />
+            <NutrientBadge
+              label="钾 (K)"
+              status={result.营养状况诊断.钾素状态}
+            />
+            <NutrientBadge
+              label="微量元素"
+              status={result.营养状况诊断.中微量元素}
+            />
           </div>
         </Card>
 
@@ -227,18 +251,24 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
         <Card title="病虫害诊断" icon={<Bug className="text-red-500" />}>
           <div className="bg-red-50 border border-red-100 rounded-lg p-3 mb-3">
             <div className="flex justify-between items-start">
-              <span className="text-red-800 font-medium">{result.病虫害诊断.疑似病害}</span>
+              <span className="text-red-800 font-medium">
+                {result.病虫害诊断.疑似病害}
+              </span>
               <span className="text-xs bg-red-200 text-red-800 px-1.5 py-0.5 rounded">
                 {result.病虫害诊断.病害严重度}
               </span>
             </div>
-            <p className="text-xs text-red-600 mt-1">{result.病虫害诊断.病斑描述}</p>
+            <p className="text-xs text-red-600 mt-1">
+              {result.病虫害诊断.病斑描述}
+            </p>
           </div>
           <DetailRow label="虫害迹象" value={result.病虫害诊断.虫害迹象} />
         </Card>
 
         {/* Ratio Assessment */}
-        <Card title="果叶比评估" icon={<ClipboardCheck className="text-purple-500" />}>
+        <Card
+          title="果叶比评估"
+          icon={<ClipboardCheck className="text-purple-500" />}>
           <div className="flex justify-between items-center mb-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-gray-800">
@@ -254,7 +284,10 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
               <div className="text-xs text-gray-400">预估果实</div>
             </div>
           </div>
-          <DetailRow label="当前比率" value={result.果叶比与树体评估.果叶比估计} />
+          <DetailRow
+            label="当前比率"
+            value={result.果叶比与树体评估.果叶比估计}
+          />
           <div
             className={`mt-2 text-sm p-2 rounded ${
               result.果叶比与树体评估.是否合理.includes("合理")
@@ -264,35 +297,35 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
             {result.果叶比与树体评估.是否合理}
           </div>
         </Card>
-      </div>
 
-      {/* Recommendations Section */}
-      <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 overflow-hidden">
-        <div className="bg-emerald-50 px-6 py-4 border-b border-emerald-100 flex items-center gap-2">
-          <ThermometerSun className="text-emerald-700" size={20} />
-          <h2 className="font-semibold text-emerald-900">综合养护建议</h2>
-        </div>
-        <div className="p-6 pr-recs-grid">
-          <RecommendationBlock
-            title="施肥建议"
-            content={result.综合建议.施肥建议}
-            dotColor="bg-blue-400"
-          />
-          <RecommendationBlock
-            title="病害处理"
-            content={result.综合建议.病害处理建议}
-            dotColor="bg-red-400"
-          />
-          <RecommendationBlock
-            title="树势提升"
-            content={result.综合建议.树势提升建议}
-            dotColor="bg-emerald-500"
-          />
-          <RecommendationBlock
-            title="特别注意"
-            content={result.综合建议.补充说明}
-            dotColor="bg-amber-400"
-          />
+        {/* Recommendations Section */}
+        <div className="bg-white rounded-2xl shadow-sm border border-emerald-100">
+          <div className="bg-emerald-50 px-6 py-4 border-b border-emerald-100 flex items-center gap-2">
+            <ThermometerSun className="text-emerald-700" size={20} />
+            <h2 className="font-semibold text-emerald-900">综合养护建议</h2>
+          </div>
+          <div className="p-6 pr-recs-grid">
+            <RecommendationBlock
+              title="施肥建议"
+              content={result.综合建议.施肥建议}
+              dotColor="bg-blue-400"
+            />
+            <RecommendationBlock
+              title="病害处理"
+              content={result.综合建议.病害处理建议}
+              dotColor="bg-red-400"
+            />
+            <RecommendationBlock
+              title="树势提升"
+              content={result.综合建议.树势提升建议}
+              dotColor="bg-emerald-500"
+            />
+            <RecommendationBlock
+              title="特别注意"
+              content={result.综合建议.补充说明}
+              dotColor="bg-amber-400"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -301,11 +334,11 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
 
 // --- Subcomponents for Clean Layout ---
 
-const Card: React.FC<{ title: string; icon: React.ReactNode; children: React.ReactNode }> = ({
-  title,
-  icon,
-  children,
-}) => (
+const Card: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ title, icon, children }) => (
   <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow duration-200">
     <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-50">
       {icon}
@@ -315,21 +348,26 @@ const Card: React.FC<{ title: string; icon: React.ReactNode; children: React.Rea
   </div>
 );
 
-const DetailRow: React.FC<{ label: string; value: string; warning?: boolean }> = ({
-  label,
-  value,
-  warning,
-}) => (
+const DetailRow: React.FC<{
+  label: string;
+  value: string;
+  warning?: boolean;
+}> = ({ label, value, warning }) => (
   <div className="flex flex-col sm:flex-row sm:justify-between text-sm gap-1 sm:gap-4">
     <span className="text-gray-500 min-w-fit">{label}</span>
-    <span className={`text-right ${warning ? "text-amber-600 font-medium" : "text-gray-700"}`}>
+    <span
+      className={`text-right ${warning ? "text-amber-600 font-medium" : "text-gray-700"}`}>
       {value}
     </span>
   </div>
 );
 
-const NutrientBadge: React.FC<{ label: string; status: string }> = ({ label, status }) => {
-  const isDeficient = status.includes("缺") || status.includes("少") || status.includes("失绿");
+const NutrientBadge: React.FC<{ label: string; status: string }> = ({
+  label,
+  status,
+}) => {
+  const isDeficient =
+    status.includes("缺") || status.includes("少") || status.includes("失绿");
   return (
     <div className="flex justify-between items-start text-sm">
       <span className="text-gray-600 font-medium">{label}</span>
@@ -341,11 +379,11 @@ const NutrientBadge: React.FC<{ label: string; status: string }> = ({ label, sta
   );
 };
 
-const RecommendationBlock: React.FC<{ title: string; content: string; dotColor: string }> = ({
-  title,
-  content,
-  dotColor,
-}) => (
+const RecommendationBlock: React.FC<{
+  title: string;
+  content: string;
+  dotColor: string;
+}> = ({ title, content, dotColor }) => (
   <div className="flex gap-3">
     <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${dotColor}`}></div>
     <div>

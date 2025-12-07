@@ -1,6 +1,6 @@
 import { Flex, Select } from "antd";
 
-type ModeType = "crop" | "farm";
+type ModeType = "crop" | "farm" | "monitor";
 export type ModeSelectType = {
   value: ModeType;
   label: string;
@@ -19,6 +19,10 @@ export default function ModeSelect(props: Props) {
     {
       value: "farm",
       label: "园区总览",
+    },
+    {
+      value: "monitor",
+      label: "监控预览",
     },
   ];
   return (

@@ -3,11 +3,17 @@
 import "@amap/amap-jsapi-types";
 import "@amap/amap-jsapi-loader";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { FarmStoreState } from "@/store/farm";
 import { getPercentageColor } from "./utils/color";
 import type { SliderProps } from "./slider/Slider";
 import type { ModeSelectType } from "./selects/ModeSelect";
+import { monitorList } from "../monitor/list/monitorList";
+import VideoPlayer from "../monitor/VideoPlayer";
+import { permanence } from "@/utils/permanence";
+import { req } from "@/utils/reqeust";
+import { Card, Flex } from "antd";
+import { CloseCircleOutlined, CloseOutlined } from "@ant-design/icons";
 
 export type MapProps = {
   center: [number, number];
@@ -46,7 +52,11 @@ export default function MapContainer(props: MapProps) {
       crops.forEach((c) => {
         // Calculate color of markers
         const color = getPercentageColor(
-          (((c[props.infoKey as keyof FarmStoreState["crops"][number]] as number) - min) / range) *
+          (((c[
+            props.infoKey as keyof FarmStoreState["crops"][number]
+          ] as number) -
+            min) /
+            range) *
             100,
         );
         const content = `<div style="background-color: ${color}; width: 7px; height: 7px; border-radius: 50%"></div>`;
@@ -66,7 +76,9 @@ export default function MapContainer(props: MapProps) {
     (amap: AMap.Map) => {
       amap.clearMap();
 
-      const pathArr = [[props.farmLocations.map((l) => [l.longitude, l.latitude])]];
+      const pathArr = [
+        [props.farmLocations.map((l) => [l.longitude, l.latitude])],
+      ];
       const polygon = new (AMap.Polygon as any)({
         path: pathArr,
         fillColor: "#ccebc5", //多边形填充颜色
@@ -96,6 +108,32 @@ export default function MapContainer(props: MapProps) {
     [props.modeKey, props.farmLocations],
   );
 
+  // Monitors
+  const [videoUrl, setVideoUrl] = useState("");
+  const drawMonitor = (amap: AMap.Map) => {
+    amap.clearMap();
+    // PERF: request for monitor list
+    monitorList.forEach((m) => {
+      const content = `<div style="background-color: blue; width: 10px; height: 10px; border-radius: 50%"></div>`;
+      const position = new AMap.LngLat(Number(m.longitude), Number(m.latitude));
+      console.log(position);
+      const marker = new AMap.Marker({
+        content,
+        position,
+      });
+      marker.on("click", () => {
+        handleSelect(m.serial);
+      });
+
+      amap.add(marker);
+    });
+    amap.setCenter([
+      Number(monitorList[0].longitude),
+      Number(monitorList[0].latitude),
+    ]);
+    amap.setZoom(10);
+  };
+
   useEffect(() => {
     if (!amap) return;
 
@@ -103,10 +141,85 @@ export default function MapContainer(props: MapProps) {
       drawPolygon(amap);
     } else if (props.modeKey === "crop") {
       drawMarkers(amap, props.crops);
+    } else if (props.modeKey === "monitor") {
+      drawMonitor(amap);
     }
 
     // Trigger when farm sitches
   }, [props.crops, props.slider.value, props.slider.scale, props.modeKey]);
 
-  return <div id="map-container" style={{ flexGrow: 1, borderRadius: 8 }}></div>;
+  // Get the user's access token
+  const localAccessToken = permanence.accessToken.useAccessToken();
+  const [accessToken, setAccessToken] = useState<string>("");
+  useEffect(() => {
+    if (localAccessToken && Date.now() < localAccessToken.expiresAt) {
+      setAccessToken(localAccessToken.accessToken);
+      return;
+    }
+
+    // Request when local access token expired
+    req
+      .get<{
+        data: {
+          accessToken: string;
+          expiresAt: number;
+        };
+      }>("/monitor/get-accesstoken")
+      .then((resp) => {
+        setAccessToken(resp.data.accessToken);
+        permanence.accessToken.setAccessToken({
+          accessToken: resp.data.accessToken,
+          expiresAt: resp.data.expiresAt,
+        });
+      });
+  }, []);
+
+  const handleSelect = useCallback(
+    async (deviceSerial: string): Promise<void> => {
+      try {
+        const resp = await req.get<{
+          data: {
+            data: { previewUrl: string; playbackUrl: string };
+          };
+        }>(
+          `/monitor/preview?accessToken=${accessToken}&deviceSerial=${deviceSerial}`,
+        );
+        // Set preview url to the iframe
+        setVideoUrl(resp.data.data.previewUrl);
+      } catch {
+        setVideoUrl("");
+      }
+    },
+    [accessToken],
+  );
+
+  return (
+    <>
+      <div id="map-container" style={{ flexGrow: 1, borderRadius: 8 }}></div>
+      {videoUrl.length > 0 && (
+        <Card
+          title={
+            <>
+              <span>监控预览</span>
+              <CloseCircleOutlined
+                style={{ color: "#dd0000", marginLeft: 5 }}
+                onClick={() => {
+                  setVideoUrl("");
+                }}
+              />
+            </>
+          }
+          style={{
+            position: "fixed",
+            width: 500,
+            height: 400,
+            left: 230,
+            top: 190,
+          }}
+          styles={{ body: { height: "calc(100% - 60px)" } }}>
+          <VideoPlayer videoUrl={videoUrl} style={{}} />
+        </Card>
+      )}
+    </>
+  );
 }
