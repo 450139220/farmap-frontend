@@ -193,6 +193,7 @@ export default function MapContainer(props: MapProps) {
     [accessToken],
   );
 
+  // PERF: make the monitor panel draggable
   return (
     <>
       <div id="map-container" style={{ flexGrow: 1, borderRadius: 8 }}></div>
