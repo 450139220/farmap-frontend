@@ -18,7 +18,7 @@ export default function Weather() {
         style={{ flex: "1 0 30%" }}>
         <WeatherPrediction />
       </Card>
-      <Flex gap="0.5rem" style={{ flexGrow: 1 }}>
+      <Flex gap="0.5rem" style={{ flexGrow: 1 }} className="resp-weather__charts">
         <Card
           title={
             <>
@@ -37,8 +37,9 @@ export default function Weather() {
               &nbsp;&nbsp;积温曲线
             </>
           }
-          style={{ flexGrow: 1, minWidth: 600 }}
-          styles={{ body: { height: "calc(100% - 60px)" } }}>
+          style={{ flexGrow: 1 }}
+          styles={{ body: { height: "calc(100% - 60px)" } }}
+          className="resp-weather__charts-temp">
           <TemperatureChart />
         </Card>
       </Flex>

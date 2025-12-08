@@ -78,19 +78,11 @@ export default function DetailPrevew(props: Props) {
           )}
         </>
       ) : (
-        <Flex gap="0.5rem" style={{ height: "100%" }}>
+        <Flex gap="0.5rem" style={{ height: "100%" }} className="resp-expert__detail">
           <Image urls={props.header.imageUrls} />
-          <Flex
-            vertical
-            style={{ flexGrow: 1, maxWidth: "50%", height: "100%" }}>
-            <Header
-              requestId={props.header.requestId}
-              modelVersion={props.content.modelVersion}
-            />
-            <Flex
-              vertical
-              justify="space-between"
-              style={{ height: "calc(100% - 50px)" }}>
+          <Flex vertical style={{ flexGrow: 1, height: "100%" }}>
+            <Header requestId={props.header.requestId} modelVersion={props.content.modelVersion} />
+            <Flex vertical justify="space-between" style={{ height: "calc(100% - 50px)" }}>
               <Content
                 jsonData={jsonData}
                 submitLoading={submistLoading}

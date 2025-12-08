@@ -135,7 +135,7 @@ export default function Map() {
         style={{ height: "100%" }}
         styles={{ body: { height: "calc(100% - 60px)" } }}>
         <Flex gap="0.5rem" vertical style={{ height: "100%" }}>
-          <Flex gap="0.5rem" style={{ width: "100%" }}>
+          <Flex gap="0.5rem" style={{ width: "100%" }} className="resp-dashboard__selects">
             <FarmSelect
               value={farm}
               options={farmOptions}

@@ -22,9 +22,7 @@ export default function PhenoIntro() {
   const token = permanence.token.useToken();
 
   // Season wheel event
-  const [selectedMonth, setSelectedMonth] = useState<number>(
-    new Date().getMonth(),
-  );
+  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
   const onMonthChange = (month: number): void => {
     setSelectedMonth(month);
   };
@@ -54,9 +52,9 @@ export default function PhenoIntro() {
   const intro = <div>{introList[selectedMonth]?.text}</div>;
 
   return (
-    <Flex justify="center" style={{ height: "100%", maxHeight: 210 }}>
+    <Flex justify="center" style={{ height: "100%" }} className="resp-weather__charts-pheno">
       <SeasonWheel size={210} onMonthChange={onMonthChange} />
-      <div style={{ overflowY: "scroll" }}>{intro}</div>
+      <div className="resp-weather__charts-pheno-text">{intro}</div>
     </Flex>
   );
 }

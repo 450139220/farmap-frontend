@@ -16,7 +16,7 @@ export default function CallModel(props: Props) {
   const [stepStatus, setStepStatus] = useState<StepsProps["status"]>("process");
 
   return (
-    <Flex gap="0.5rem" style={{ flexGrow: 0 }}>
+    <Flex gap="0.5rem" style={{ flexGrow: 0 }} className="resp-model__upload">
       <Card
         title={
           <>

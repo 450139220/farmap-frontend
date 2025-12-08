@@ -77,7 +77,7 @@ export default function WeatherPrediction() {
           <span className="text-xs text-red-500">无法加载气象数据</span>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-3 w-full">
+        <div className="grid grid-cols-3 gap-3 w-full resp-weather__prediction">
           {predictions.map((p) => (
             <WeatherCard key={p.fxDate} data={p} />
           ))}

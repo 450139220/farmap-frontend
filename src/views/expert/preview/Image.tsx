@@ -12,21 +12,22 @@ export default function Image(props: Props) {
   const [imageWidth, setImageWidth] = useState(0);
   useEffect(() => {
     if (!containerRef.current) return;
-    const width = containerRef.current.getBoundingClientRect().width;
-    setImageWidth(width * 0.7);
+    const width =
+      window.innerWidth < 1000
+        ? window.innerWidth - 64
+        : containerRef.current.getBoundingClientRect().width;
+    setImageWidth(width);
   }, []);
 
   return (
-    <Flex vertical style={{ flexGrow: 1, maxWidth: "45%", width: "100%" }} ref={containerRef}>
+    <Flex vertical style={{ flexGrow: 1, width: "100%" }} ref={containerRef}>
       <Carousel arrows infinite={false} style={{ width: imageWidth }}>
         {images.map(
           (img) => img !== "" && <ImageAntd alt="作物图像" width={imageWidth} src={img} />,
         )}
       </Carousel>
-      <div style={{ width: "70%" }}>
-        <Divider />
-      </div>
-      <div>
+      <Divider />
+      <div style={{ width: "100%" }}>
         <span style={{ color: "#dd0000" }}>*&nbsp;&nbsp;</span>作物记录图像
         <Divider orientation="vertical" />
         <span>点击可预览大图</span>

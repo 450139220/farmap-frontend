@@ -69,16 +69,14 @@ export default function Operations() {
       });
   }, []);
   return (
-    <Flex gap="0.5rem" style={{ height: "100%" }}>
+    <Flex gap="0.5rem" className="resp-operations__content">
       <div
         style={{
-          width: "100%",
           height: "100%",
           display: "grid",
-          gridTemplateRows: "1fr 1fr",
-          gridTemplateColumns: "1fr 1fr",
           gap: "0.5rem",
-        }}>
+        }}
+        className="resp-operations__content-guidance">
         <GuidanceBox list={guideList.body} type="树体管理" iconClass={HourglassOutlined} />
         <GuidanceBox list={guideList.fertile} type="水肥管理" iconClass={BgColorsOutlined} />
         <GuidanceBox list={guideList.pest} type="病虫管理" iconClass={BugOutlined} />
@@ -92,7 +90,8 @@ export default function Operations() {
           </>
         }
         style={{ flex: "1 0 400px" }}
-        styles={{ body: { padding: 0, height: "calc(100% - 60px)" } }}>
+        styles={{ body: { padding: 0, height: "calc(100% - 60px)" } }}
+        className="resp-operations__content-professor">
         <iframe
           src="https://chat.archivemodel.cn"
           style={{

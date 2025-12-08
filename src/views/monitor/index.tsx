@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, Flex } from "antd";
-import {
-  BarsOutlined,
-  FundViewOutlined,
-  ThunderboltOutlined,
-} from "@ant-design/icons";
+import { BarsOutlined, FundViewOutlined, ThunderboltOutlined } from "@ant-design/icons";
 
 import VideoPlayer from "./VideoPlayer";
 import MonitorListView from "./list/MonitorListView";
@@ -47,7 +43,7 @@ export default function index() {
   };
 
   return (
-    <Flex gap="0.5rem" style={{ height: "100%" }}>
+    <Flex gap="0.5rem" style={{ height: "100%" }} className="resp-monitor__container">
       <Flex gap="0.5rem" vertical style={{ flexGrow: 1 }}>
         <Card
           title={
@@ -58,10 +54,7 @@ export default function index() {
           }
           style={{ flex: "0 0 300px" }}
           styles={{ body: { height: "calc(300px - 100px)" } }}>
-          <MonitorListView
-            accessToken={accessToken}
-            onSelect={getSelectVideoUrl}
-          />
+          <MonitorListView accessToken={accessToken} onSelect={getSelectVideoUrl} />
         </Card>
         <Card
           title={

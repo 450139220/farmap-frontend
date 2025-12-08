@@ -47,8 +47,8 @@ export default function Layout() {
   );
 
   return (
-    <LayoutAntd style={{ height: "100vh" }}>
-      <Sider breakpoint="lg" collapsedWidth="0">
+    <LayoutAntd className="resp-layout">
+      <Sider breakpoint="lg" collapsedWidth="0" className="resp-layout_slider">
         <div
           style={{
             backgroundColor: "#eee",

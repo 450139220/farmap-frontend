@@ -183,7 +183,7 @@ export default function MapContainer(props: MapProps) {
   // PERF: make the monitor panel draggable
   return (
     <>
-      <div id="map-container" style={{ flexGrow: 1, borderRadius: 8 }}></div>
+      <div id="map-container" style={{ flexGrow: 1, borderRadius: 8, minHeight: 300 }}></div>
       {videoUrl.length > 0 && (
         <Card
           title={
@@ -200,12 +200,9 @@ export default function MapContainer(props: MapProps) {
           style={{
             zIndex: 1000,
             position: "fixed",
-            width: 500,
-            height: 400,
-            left: 230,
-            top: 190,
           }}
-          styles={{ body: { height: "calc(100% - 60px)" } }}>
+          styles={{ body: { height: "calc(100% - 60px)" } }}
+          className="resp-dashborad__monitor-preview">
           <VideoPlayer videoUrl={videoUrl} style={{}} />
         </Card>
       )}

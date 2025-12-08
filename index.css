@@ -60,3 +60,134 @@ button {
 .ant-form-item .ant-row {
   width: 100%;
 }
+
+/* Responsive layout */
+/* Responsive layout */
+/* Responsive layout */
+.resp-layout {
+  height: 100vh;
+}
+
+.resp-dashborad__monitor-preview {
+  width: 500px;
+  height: 400px;
+  left: 230px;
+  top: 190px;
+}
+
+.resp-operations__content {
+  height: 100%;
+}
+.resp-operations__content-guidance {
+  grid-template-columns: repeat(2, calc(50% - 0.25rem));
+  grid-template-rows: repeat(2, calc(50% - 0.25rem));
+}
+.resp-operations__guidance-text {
+  overflow-y: scroll;
+}
+
+.resp-weather__charts-pheno {
+  max-height: 210px;
+}
+.resp-weather__charts-pheno-text {
+  overflow-y: scroll;
+}
+.resp-weather__charts-temp {
+  min-width: 600px;
+}
+
+.resp-expert__container-list {
+  max-width: 300px;
+}
+.resp-expert__container-list-cardbody {
+  height: calc(100% - 84px - 0.5rem);
+}
+.resp-expert__container-list-item {
+  flex-direction: column;
+}
+.resp-expert__revision-record {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+@media (max-width: 1000px) {
+  .resp-layout {
+    height: 100%;
+  }
+
+  .resp-layout_slider {
+    height: 100vh;
+    position: fixed;
+    z-index: 1000;
+  }
+
+  .resp-dashboard__selects {
+    flex-direction: column;
+  }
+  .resp-dashborad__monitor-preview {
+    height: 50%;
+    left: 0.5rem;
+    top: 70px;
+  }
+
+  .resp-operations__content {
+    height: unset;
+    flex-direction: column;
+  }
+  .resp-operations__content-guidance {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+  .resp-operations__guidance-text {
+    overflow-y: unset;
+  }
+
+  .resp-weather__prediction {
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: 1fr;
+  }
+  .resp-weather__charts {
+    flex-direction: column;
+  }
+  .resp-weather__charts-pheno {
+    max-height: unset;
+    flex-direction: column;
+    align-items: center;
+  }
+  .resp-weather__charts-pheno-text {
+    overflow-y: unset;
+  }
+  .resp-weather__charts-temp {
+    height: 300px;
+    min-width: unset;
+  }
+
+  .resp-model__upload {
+    flex-direction: column;
+  }
+
+  .resp-monitor__container {
+    flex-direction: column;
+  }
+
+  .resp-expert__container {
+    flex-direction: column;
+  }
+
+  .resp-expert__container-list {
+    max-width: unset;
+  }
+  .resp-expert__container-list-cardbody {
+    height: 300px;
+  }
+  .resp-expert__container-list-item {
+    flex-direction: row;
+  }
+  .resp-expert__detail {
+    flex-direction: column;
+  }
+  .resp-expert__revision-record {
+    overflow-x: unset;
+    overflow-y: unset;
+  }
+}

@@ -6,11 +6,7 @@ import { CoffeeOutlined, OrderedListOutlined } from "@ant-design/icons";
 
 import { permanence } from "@/utils/permanence";
 import DetailPrevew from "./preview//DetailPrevew";
-import type {
-  CaseContent,
-  CasesStoreResult,
-  PendingCase,
-} from "@/types/expert";
+import type { CaseContent, CasesStoreResult, PendingCase } from "@/types/expert";
 import { Loader2 } from "lucide-react";
 const token = permanence.token.useToken();
 
@@ -22,9 +18,7 @@ export default function Expert() {
   const [listLoading, setListLoading] = useState(false);
 
   // Selection & details
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
-    null,
-  );
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const initialCaseContent: Omit<CaseContent, "onClear"> = {
     userRequestInfo: {
@@ -39,8 +33,7 @@ export default function Expert() {
     },
     revisionRecords: [],
   };
-  const [detail, setDetail] =
-    useState<Omit<CaseContent, "onClear">>(initialCaseContent);
+  const [detail, setDetail] = useState<Omit<CaseContent, "onClear">>(initialCaseContent);
 
   // --- Effects ---
 
@@ -84,7 +77,7 @@ export default function Expert() {
   }
 
   return (
-    <Flex gap="0.5rem" style={{ height: "100%" }}>
+    <Flex gap="0.5rem" style={{ height: "100%" }} className="resp-expert__container">
       <Card
         title={
           <>
@@ -92,39 +85,43 @@ export default function Expert() {
             &nbsp;&nbsp;待修改列表
           </>
         }
-        style={{ flex: 0, maxWidth: 200 }}
-        styles={{ body: { height: "calc(100% - 84px - 0.5rem)" } }}>
+        style={{ flex: 0 }}
+        className="resp-expert__container-list"
+        classNames={{ body: "resp-expert__container-list-cardbody" }}>
         <div style={{ marginBottom: "0.5rem" }}>请点击列表内容以开始校正。</div>
         <div
           style={{
             fontSize: "0.8rem",
             border: "1px solid #eee",
             borderRadius: 8,
+            height: "calc(100% - 2rem)",
             padding: 2,
             overflowX: "hidden",
             overflowY: "scroll",
-            height: "calc(100% - 1rem)",
           }}>
           {listLoading ? (
             <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
           ) : (
             pendingCases.map((cs) => (
-              <div
-                key={cs.requestId}
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  setSelectedRequestId(cs.requestId);
-                }}>
-                <p>
-                  <span style={{ backgroundColor: "#ffdd00" }}>
-                    #{cs.requestId.substring(0, 8)}
-                  </span>
-                </p>
-                <div>{cs.uploadTime.substring(0, 10)}</div>
-                <div>{cs.imageCount} 张图片</div>
-                <div>已修改 {cs.revisionCount} 次 </div>
-                <Divider style={{ margin: 5 }} />
-              </div>
+              <>
+                <div
+                  key={cs.requestId}
+                  style={{ cursor: "pointer", display: "flex", padding: "12px 5px" }}
+                  onClick={() => {
+                    setSelectedRequestId(cs.requestId);
+                  }}
+                  className="resp-expert__container-list-item">
+                  <p>
+                    <span style={{ backgroundColor: "#ffdd00" }}>
+                      #{cs.requestId.substring(0, 8)}
+                    </span>
+                  </p>
+                  <div>&nbsp;&nbsp;{cs.uploadTime.substring(0, 10)}</div>
+                  <div>&nbsp;&nbsp;{cs.imageCount} 张图片</div>
+                  <div>&nbsp;&nbsp;已修改 {cs.revisionCount} 次 </div>
+                </div>
+                <Divider style={{ margin: 0 }} />
+              </>
             ))
           )}
         </div>
