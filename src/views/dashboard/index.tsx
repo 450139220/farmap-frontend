@@ -27,48 +27,49 @@ export default function Map() {
   // Get farm select informations from local user storage
   const localUserStore = permanence.user.useUserStore()!;
   const farmOptions = localUserStore?.farms ?? useUserStore((s) => s.farms);
-  const [farm, setSelectFarm] = useState<FarmSelectType["value"]>(
-    farmOptions[0]?.id ?? -1,
-  );
+  const [farm, setSelectFarm] = useState<FarmSelectType["value"]>(farmOptions[0]?.id ?? -1);
 
   // Fetch the first farm content and store
   const token = permanence.token.useToken();
   const setFarmStore = useFarmStore((s) => s.setFarm);
   const setLocalFarmStore = permanence.farm.setFarmStore;
   useEffect(() => {
-    req
-      .get<{ data: FarmStoreState }>(`/user/get-farm?farmId=${farm}`, {
-        Authorization: `Bearer ${token}`,
-      })
-      .then((resp) => {
-        setFarmStore(resp.data);
-        // Store to local storage
-        setLocalFarmStore(resp.data);
-      })
-      .catch(() => {
-        // console.log(e);
-      });
+    fetchFarm(farm);
   }, []);
 
   // Update the selected farm store
   const changeFarmStore: (newId: number) => void = (newId) => {
     setSelectFarm(newId);
-    req
-      .get<{ data: FarmStoreState }>(`/user/get-farm?farmId=${newId}`, {
-        Authorization: `Bearer ${token}`,
-      })
-      .then((resp) => {
-        setFarmStore(resp.data);
-        // Store to local storage
-        setLocalFarmStore(resp.data);
-      })
-      .catch(() => {
-        // console.log(e);
-      });
+    fetchFarm(newId);
+  };
+
+  // Mode visibility
+  const [farmModes, setFarmModes] = useState<ModeSelectType["value"][]>(["none"]);
+  const fetchFarm: (id: number) => Promise<void> = async (id: number) => {
+    const resp = await req.get<{ data: FarmStoreState }>(`/user/get-farm?farmId=${id}`, {
+      Authorization: `Bearer ${token}`,
+    });
+
+    setFarmStore(resp.data);
+    // Store to local storage
+    setLocalFarmStore(resp.data);
+    // Set visible farm modes
+    const hasCrop = resp.data.crops.length > 0;
+    const hasLocation = resp.data.locations.length > 0;
+    const visibles: ModeSelectType["value"][] = [];
+    if (hasCrop) visibles.push("crop");
+    if (hasLocation) visibles.push("farm");
+    // NOTE: always push a monitor to visibles
+    visibles.push("monitor");
+    // Push none to visibles when no content
+    if (!visibles.length) visibles.push("none");
+
+    setFarmModes(visibles);
+    setMode(visibles[0]);
   };
 
   // THe mode & info select states
-  const [mode, setMode] = useState<ModeSelectType["value"]>("crop");
+  const [mode, setMode] = useState<ModeSelectType["value"]>("none");
   const [info, setInfo] = useState<InfoSelectType["value"]>("yield");
 
   // Slider
@@ -125,13 +126,10 @@ export default function Map() {
         styles={{ body: { height: "calc(100% - 60px)" } }}>
         <Flex gap="0.5rem" vertical style={{ height: "100%" }}>
           <Flex gap="0.5rem" style={{ width: "100%" }}>
-            <FarmSelect
-              value={farm}
-              options={farmOptions}
-              onChange={changeFarmStore}
-            />
+            <FarmSelect value={farm} options={farmOptions} onChange={changeFarmStore} />
             <ModeSelect
               value={mode}
+              modes={farmModes}
               onChange={(newMode) => {
                 setMode(newMode);
               }}
