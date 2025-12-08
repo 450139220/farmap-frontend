@@ -76,12 +76,12 @@ function Login() {
 
   return (
     <Layout style={{ height: "100vh" }}>
-      <Header style={{ color: "#eee", fontSize: "1.8rem", textAlign: "center" }}>
+      <Header style={{ color: "#eee", textAlign: "center" }} className="resp-login__header">
         <span>FarMap 农业数字地图服务平台</span>
       </Header>
       <Content>
         <Flex align="center" justify="center" style={{ height: "100%" }}>
-          <Card title="用户登录" variant="borderless" style={{ width: 500 }}>
+          <Card title="用户登录" variant="borderless" className="resp-login__panel">
             <Form
               name="basic"
               labelCol={{ span: 8 }}

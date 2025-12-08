@@ -68,6 +68,13 @@ button {
   height: 100vh;
 }
 
+.resp-login__header {
+  font-size: 1.8rem;
+}
+.resp-login__panel {
+  width: 500;
+}
+
 .resp-dashborad__monitor-preview {
   width: 500px;
   height: 400px;
@@ -113,6 +120,14 @@ button {
 @media (max-width: 1000px) {
   .resp-layout {
     height: 100%;
+  }
+
+  .resp-login__header {
+    font-size: 1rem;
+  }
+  .resp-login__panel {
+    width: 100%;
+    margin: 0 1rem;
   }
 
   .resp-layout_slider {
