@@ -64,7 +64,7 @@ export default function Map() {
       const hasLocation = resp.data.locations.length > 0;
       const visibles: ModeSelectType["value"][] = [];
       if (hasCrop) visibles.push("crop");
-      if (hasLocation) visibles.push("farm");
+      if (hasLocation) visibles.push("monitor");
       // NOTE: always push a monitor to visibles
       visibles.push("monitor");
       // Push none to visibles when no content
@@ -152,7 +152,7 @@ export default function Map() {
             />
             <InfoSelect
               value={info}
-              disabled={mode === "farm" || fetchFarmLoading}
+              disabled={mode !== "crop" || fetchFarmLoading}
               onChange={(newInfo) => {
                 setInfo(newInfo);
               }}

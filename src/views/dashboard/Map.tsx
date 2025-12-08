@@ -105,7 +105,7 @@ export default function MapContainer(props: MapProps) {
   // Monitors
   const [videoUrl, setVideoUrl] = useState("");
   const drawMonitor = (amap: AMap.Map) => {
-    amap.clearMap();
+    // amap.clearMap();
     // PERF: request for monitor list
     monitorList.forEach((m) => {
       const content = `<div style="background-color: blue; width: 10px; height: 10px; border-radius: 50%"></div>`;
@@ -127,11 +127,10 @@ export default function MapContainer(props: MapProps) {
   useEffect(() => {
     if (!amap) return;
 
-    if (props.modeKey === "farm") {
-      drawPolygon(amap);
-    } else if (props.modeKey === "crop") {
+    if (props.modeKey === "crop") {
       drawMarkers(amap, props.crops);
     } else if (props.modeKey === "monitor") {
+      drawPolygon(amap);
       drawMonitor(amap);
     }
 
