@@ -13,6 +13,7 @@ type SliderPrivateProps = {
   };
 };
 export type SliderProps = {
+  disabled: boolean;
   value: {
     left: number;
     right: number;
@@ -99,6 +100,7 @@ function Slider(props: SliderProps) {
   // switch upper dot when click
   const upperDot = useRef<"left" | "right">("left");
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (props.disabled) return;
     // find current dot target
     const target = e.target as HTMLDivElement;
     currentTarget.current = target;
@@ -112,7 +114,7 @@ function Slider(props: SliderProps) {
   };
 
   return (
-    <div style={{ marginTop: "1rem" }}>
+    <div>
       <div className={style.slider__container} ref={sliderContainer}>
         <div
           className={style.slider__background}
@@ -125,6 +127,7 @@ function Slider(props: SliderProps) {
 
         <div
           className={style.slider__dot}
+          data-disabled={props.disabled}
           data-type="left"
           data-value={((v) => (Number.isNaN(v) ? 0 : v))(
             !props.decimal
@@ -135,10 +138,12 @@ function Slider(props: SliderProps) {
           style={{
             left: `${position.left}%`,
             zIndex: `${upperDot.current === "left" ? 1 : 0}`,
+            cursor: props.disabled ? "not-allowed" : "pointer",
           }}
           onPointerDown={handlePointerDown}></div>
         <div
           className={style.slider__dot}
+          data-disabled={props.disabled}
           data-type="right"
           data-value={((v) => (Number.isNaN(v) ? 0 : v))(
             !props.decimal
@@ -149,6 +154,7 @@ function Slider(props: SliderProps) {
           style={{
             left: `${position.right}%`,
             zIndex: `${upperDot.current === "right" ? 1 : 0}`,
+            cursor: props.disabled ? "not-allowed" : "pointer",
           }}
           onPointerDown={handlePointerDown}></div>
       </div>

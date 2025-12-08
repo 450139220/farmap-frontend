@@ -82,7 +82,7 @@ export default function Map() {
   const [info, setInfo] = useState<InfoSelectType["value"]>("yield");
 
   // Slider
-  const [slider, setSlider] = useState<Omit<SliderProps, "onChangeEnd">>({
+  const [slider, setSlider] = useState<Omit<SliderProps, "onChangeEnd" | "disabled">>({
     value: {
       left: 10,
       right: 90,
@@ -152,7 +152,7 @@ export default function Map() {
             />
             <InfoSelect
               value={info}
-              disabled={mode === "farm"}
+              disabled={mode === "farm" || fetchFarmLoading}
               onChange={(newInfo) => {
                 setInfo(newInfo);
               }}
@@ -175,8 +175,13 @@ export default function Map() {
             <MacCommandOutlined />
             &nbsp;&nbsp;调整分布
           </>
-        }>
-        <Slider {...slider} onChangeEnd={sliderChange} />
+        }
+        styles={{ body: { padding: "0 24px" } }}>
+        <Slider
+          {...slider}
+          onChangeEnd={sliderChange}
+          disabled={fetchFarmLoading || mode !== "crop"}
+        />
       </Card>
     </Flex>
   );

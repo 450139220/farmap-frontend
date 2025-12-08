@@ -22,7 +22,7 @@ export type MapProps = {
   farmLocations: FarmStoreState["locations"];
   infoKey: keyof FarmStoreState["crops"][number];
   modeKey: ModeSelectType["value"];
-  slider: Omit<SliderProps, "onChangeEnd">;
+  slider: Omit<SliderProps, "onChangeEnd" | "disabled">;
 };
 
 export default function MapContainer(props: MapProps) {
@@ -110,7 +110,6 @@ export default function MapContainer(props: MapProps) {
     monitorList.forEach((m) => {
       const content = `<div style="background-color: blue; width: 10px; height: 10px; border-radius: 50%"></div>`;
       const position = new AMap.LngLat(Number(m.longitude), Number(m.latitude));
-      console.log(position);
       const marker = new AMap.Marker({
         content,
         position,
