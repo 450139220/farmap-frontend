@@ -12,11 +12,7 @@ import COS from "cos-js-sdk-v5";
 
 import { permanence } from "@/utils/permanence";
 import { req } from "@/utils/reqeust";
-import {
-  CloudSyncOutlined,
-  PaperClipOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { CloudSyncOutlined, PaperClipOutlined, PlusOutlined } from "@ant-design/icons";
 const token = permanence.token.useToken();
 
 export const getBase64 = (file: File): Promise<string> =>
@@ -58,9 +54,7 @@ export default function Upload(props: Props) {
   const handleChange: UploadProps["onChange"] = ({ fileList: newList }) => {
     const files = newList
       .map((f) => f.originFileObj)
-      .filter(
-        (f) => f && FILE_TYPES.includes(f.type) && f.size < FILE_SIZE,
-      ) as UploadFile[];
+      .filter((f) => f && FILE_TYPES.includes(f.type) && f.size < FILE_SIZE) as UploadFile[];
     // console.log(files[0] instanceof File);
     setFileList((prev) => [...new Set(prev.concat(files))]);
   };
@@ -73,9 +67,7 @@ export default function Upload(props: Props) {
   const uploadFiles = () => {
     if (fileList.length === 0) return;
 
-    const cosFiles: COS.UploadFileParams[] = (
-      fileList as unknown as File[]
-    ).map((f) => ({
+    const cosFiles: COS.UploadFileParams[] = (fileList as unknown as File[]).map((f) => ({
       Bucket: "halo-prod-1317766785",
       Region: "ap-chongqing",
       Key: `/farmap/usercall-${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDay()}${new Date().getHours()}-${f.name}`,
@@ -112,21 +104,17 @@ export default function Upload(props: Props) {
           });
           // Upload to ai for analyzing
           try {
-            const aiResp = await req.post<
-              { imageUrls: string[] },
-              LLModelResponse
-            >(
+            const aiResp = await req.post<{ imageUrls: string[] }, LLModelResponse>(
               "/ai-model/analyze",
               {
-                // imageUrls: ossResult,
-                imageUrls: [
-                  "https://halo-prod-1317766785.cos.ap-chongqing.myqcloud.com/farmap/1.jpg",
-                ],
+                imageUrls: ossResult,
+                // imageUrls: [
+                //   "https://halo-prod-1317766785.cos.ap-chongqing.myqcloud.com/farmap/1.jpg",
+                // ],
               },
               {
                 Authorization: `Bearer ${token}`,
-                "X-Api-Key":
-                  "sk-Hjh9EBFtQ64WK9niBxBBknJkosxMKLFEdvlVXXaIAqCxVxWI",
+                "X-Api-Key": "sk-Hjh9EBFtQ64WK9niBxBBknJkosxMKLFEdvlVXXaIAqCxVxWI",
               },
             );
             console.log(aiResp);
@@ -160,9 +148,7 @@ export default function Upload(props: Props) {
     <>
       <div style={{ marginBottom: "1rem" }}>
         建议上传 3-5 张作物照片，且大小不超过 10MB 每张。
-        <span style={{ color: "var(--warning)" }}>
-          超出限制的图片将会被丢弃。
-        </span>
+        <span style={{ color: "var(--warning)" }}>超出限制的图片将会被丢弃。</span>
       </div>
       <UploadAntd
         listType="picture"
