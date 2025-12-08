@@ -52,11 +52,7 @@ export default function MapContainer(props: MapProps) {
       crops.forEach((c) => {
         // Calculate color of markers
         const color = getPercentageColor(
-          (((c[
-            props.infoKey as keyof FarmStoreState["crops"][number]
-          ] as number) -
-            min) /
-            range) *
+          (((c[props.infoKey as keyof FarmStoreState["crops"][number]] as number) - min) / range) *
             100,
         );
         const content = `<div style="background-color: ${color}; width: 7px; height: 7px; border-radius: 50%"></div>`;
@@ -76,9 +72,7 @@ export default function MapContainer(props: MapProps) {
     (amap: AMap.Map) => {
       amap.clearMap();
 
-      const pathArr = [
-        [props.farmLocations.map((l) => [l.longitude, l.latitude])],
-      ];
+      const pathArr = [[props.farmLocations.map((l) => [l.longitude, l.latitude])]];
       const polygon = new (AMap.Polygon as any)({
         path: pathArr,
         fillColor: "#ccebc5", //多边形填充颜色
@@ -127,10 +121,7 @@ export default function MapContainer(props: MapProps) {
 
       amap.add(marker);
     });
-    amap.setCenter([
-      Number(monitorList[0].longitude),
-      Number(monitorList[0].latitude),
-    ]);
+    amap.setCenter([Number(monitorList[0].longitude), Number(monitorList[0].latitude)]);
     amap.setZoom(10);
   };
 
@@ -181,9 +172,7 @@ export default function MapContainer(props: MapProps) {
           data: {
             data: { previewUrl: string; playbackUrl: string };
           };
-        }>(
-          `/monitor/preview?accessToken=${accessToken}&deviceSerial=${deviceSerial}`,
-        );
+        }>(`/monitor/preview?accessToken=${accessToken}&deviceSerial=${deviceSerial}`);
         // Set preview url to the iframe
         setVideoUrl(resp.data.data.previewUrl);
       } catch {
@@ -211,6 +200,7 @@ export default function MapContainer(props: MapProps) {
             </>
           }
           style={{
+            zIndex: 1000,
             position: "fixed",
             width: 500,
             height: 400,

@@ -2,10 +2,9 @@
 - [ ] * admin
 
 ## next
-- [ ] parse `jsonData`
-- [ ] implement revision input (manual & audio)
-- [ ] upload revision
-- [ ] * put monitor to map
+- [ ] remove map mode when the farm dosen't have that info
+- [ ] make monitor float window resizable & draggable
+- [ ] set monitor window to top layer
+- [ ] modify font size
 
 # To
-- [ ] audio input for experts

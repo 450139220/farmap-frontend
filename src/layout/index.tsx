@@ -38,13 +38,13 @@ export default function Layout() {
   } = theme.useToken();
   // Router
   type MenuItem = Required<MenuProps>["items"][number];
-  const menuItems: MenuItem[] = ALL_ROUTES.filter((r) =>
-    r.handle.roles.includes(role),
-  ).map((r) => ({
-    key: r.handle.key,
-    label: <NavLink to={r.path!}>{r.handle.name}</NavLink>,
-    icon: <r.handle.Icon />,
-  }));
+  const menuItems: MenuItem[] = ALL_ROUTES.filter((r) => r.handle.roles.includes(role)).map(
+    (r) => ({
+      key: r.handle.key,
+      label: <NavLink to={r.path!}>{r.handle.name}</NavLink>,
+      icon: <r.handle.Icon />,
+    }),
+  );
 
   return (
     <LayoutAntd style={{ height: "100vh" }}>
@@ -64,7 +64,7 @@ export default function Layout() {
         <Menu
           theme="dark"
           mode="inline"
-          selectedKeys={[location.pathname]}
+          selectedKeys={["/" + location.pathname.split("/").at(-1)]}
           items={menuItems}
         />
       </Sider>
@@ -78,11 +78,7 @@ export default function Layout() {
             }}>
             <div>
               <span>您好，{username} 用户！</span>
-              <Avatar
-                size={32}
-                icon={<UserOutlined />}
-                style={{ cursor: "pointer" }}
-              />
+              <Avatar size={32} icon={<UserOutlined />} style={{ cursor: "pointer" }} />
               <Button style={{ marginLeft: "1rem" }} onClick={handleLogout}>
                 退出登陆
               </Button>

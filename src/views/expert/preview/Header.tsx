@@ -17,6 +17,7 @@ export default function Header(props: Props) {
         }}>
         {props.requestId}
       </div>
+      {/*
       <div
         style={{
           fontSize: "0.6rem",
@@ -29,6 +30,7 @@ export default function Header(props: Props) {
         }}>
         推理模型：{props.modelVersion}
       </div>
+        */}
     </>
   );
 }
