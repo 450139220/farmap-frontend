@@ -1,4 +1,5 @@
 import { Carousel, Divider, Flex, Image as ImageAntd } from "antd";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
   urls: string;
@@ -7,12 +8,19 @@ export default function Image(props: Props) {
   const urls = props.urls.split(",");
   const images = urls.length === 0 ? [] : urls;
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [imageWidth, setImageWidth] = useState(0);
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const width = containerRef.current.getBoundingClientRect().width;
+    setImageWidth(width * 0.7);
+  }, []);
+
   return (
-    <Flex vertical style={{ flexGrow: 1, maxWidth: "45%" }}>
-      <Carousel arrows infinite>
+    <Flex vertical style={{ flexGrow: 1, maxWidth: "45%", width: "100%" }} ref={containerRef}>
+      <Carousel arrows infinite={false} style={{ width: imageWidth }}>
         {images.map(
-          (img) =>
-            img !== "" && <ImageAntd width="70%" alt="作物图像" src={img} />,
+          (img) => img !== "" && <ImageAntd alt="作物图像" width={imageWidth} src={img} />,
         )}
       </Carousel>
       <div style={{ width: "70%" }}>
