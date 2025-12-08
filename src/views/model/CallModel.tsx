@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Card, Flex, type StepsProps } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { BarsOutlined, UploadOutlined } from "@ant-design/icons";
 import Upload from "./analyze/Upload";
 import Progress from "./analyze/Progress";
 
@@ -26,16 +26,31 @@ export default function CallModel(props: Props) {
         }
         styles={{ body: { height: "calc(100% - 60px)" } }}>
         <Upload
-          onProgress={(currProgress, status) => {
-            setCurrentStep(currProgress);
+          onProgress={(curr, status) => {
+            setCurrentStep(curr);
             setStepStatus(status);
+
+            // Loading
+            props.onSubmit();
+            if (status === "error") {
+              props.onSubmitEnd();
+              return;
+            }
+
+            if (curr < 3) props.onSubmit();
+            else props.onSubmitEnd();
           }}
           onFinish={props.onFinish}
-          onSubmit={props.onSubmit}
-          onSubmitEnd={props.onSubmitEnd}
         />
       </Card>
-      <Card title={<>&nbsp;&nbsp;推理进度</>} style={{ flexGrow: 1 }}>
+      <Card
+        title={
+          <>
+            <BarsOutlined />
+            &nbsp;&nbsp;推理进度
+          </>
+        }
+        style={{ flexGrow: 1 }}>
         <Progress currentStep={currentStep} stepStatus={stepStatus} />
       </Card>
     </Flex>

@@ -35,8 +35,13 @@ export default function index() {
             &nbsp;&nbsp;推理结果
           </>
         }
-        style={{ flexGrow: 1 }}
-        styles={{ body: { maxHeight: 300, overflowY: "scroll" } }}>
+        style={{ height: "calc(50% + 0.5rem)" }}
+        styles={{
+          body: {
+            height: "calc(100% - 60px)",
+            overflowY: "scroll",
+          },
+        }}>
         {resultLoading ? (
           <Loader2 className="w-6 h-6 ml-2 text-blue-500 animate-spin" />
         ) : (

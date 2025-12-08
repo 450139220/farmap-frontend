@@ -12,7 +12,7 @@ import COS from "cos-js-sdk-v5";
 
 import { permanence } from "@/utils/permanence";
 import { req } from "@/utils/reqeust";
-import { CloudSyncOutlined, PaperClipOutlined, PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, PaperClipOutlined, PlusOutlined } from "@ant-design/icons";
 const token = permanence.token.useToken();
 
 export const getBase64 = (file: File): Promise<string> =>
@@ -31,8 +31,6 @@ interface LLModelResponse {
 interface Props {
   onProgress: (currProgress: number, status: StepsProps["status"]) => void;
   onFinish: (res: string, type: "normal" | "error") => void;
-  onSubmit: () => void;
-  onSubmitEnd: () => void;
 }
 export default function Upload(props: Props) {
   // Constants
@@ -72,7 +70,6 @@ export default function Upload(props: Props) {
     // Step to upload images & disable select files
     props.onProgress(1, "process");
     setButtonDisabled(true);
-    props.onSubmit();
 
     try {
       const cosFiles: COS.UploadFileParams[] = (fileList as unknown as File[]).map((f) => ({
@@ -148,7 +145,6 @@ export default function Upload(props: Props) {
       console.log("Upload failed", err);
     } finally {
       setButtonDisabled(false);
-      props.onSubmitEnd();
     }
   };
 
@@ -187,7 +183,7 @@ export default function Upload(props: Props) {
                 &nbsp;&nbsp;
                 {file.name}
               </span>
-              <CloudSyncOutlined
+              <CloseOutlined
                 onClick={() => {
                   removeFile(file);
                 }}

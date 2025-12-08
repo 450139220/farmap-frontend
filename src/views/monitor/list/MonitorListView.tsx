@@ -1,7 +1,7 @@
 import { req } from "@/utils/reqeust";
 import { monitorList } from "./monitorList";
 import { useMemo, useState } from "react";
-import { Divider, Flex } from "antd";
+import { Flex } from "antd";
 
 interface VideoRequestResponse {
   data: {
@@ -16,15 +16,9 @@ interface Props {
 export default function MonitorListView(props: Props) {
   // PERF: actually each user has his own monitors
   const [selected, setSelected] = useState<number>(-1);
-  const selectedMonitorName = useMemo(
-    () => monitorList[selected]?.name,
-    [selected],
-  );
+  const selectedMonitorName = useMemo(() => monitorList[selected]?.name, [selected]);
 
-  const handleSelect = async (
-    id: number,
-    deviceSerial: string,
-  ): Promise<void> => {
+  const handleSelect = async (id: number, deviceSerial: string): Promise<void> => {
     try {
       const resp = await req.get<VideoRequestResponse>(
         `/monitor/preview?accessToken=${props.accessToken}&deviceSerial=${deviceSerial}`,
@@ -41,7 +35,7 @@ export default function MonitorListView(props: Props) {
 
   return (
     <div style={{ height: "100%" }}>
-      <Flex gap="0.5rem">
+      <Flex gap="0.5rem" style={{ marginBottom: "0.5rem" }}>
         <h4 style={{ padding: 0, margin: 0 }}>当前选中摄像头</h4>
         <span
           style={{
@@ -52,7 +46,6 @@ export default function MonitorListView(props: Props) {
           {selectedMonitorName ?? "暂未选择"}
         </span>
       </Flex>
-      <Divider />
       <section
         style={{
           height: "calc(100% - 40px)",

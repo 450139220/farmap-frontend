@@ -8,7 +8,7 @@ interface Props {
 export default function Progress(props: Props) {
   const stepItems = [
     { title: "接收图片", content: "请手动选择图片并点击上传。" },
-    { title: "上传图片", content: "将图片上传到服务器中。" },
+    { title: "上传图片", content: "将图片上传到服务器中..." },
     { title: "模型推理", content: "推理中..." },
     { title: "展示结果", content: "模型推理完成，请查看推理结果。" },
   ];

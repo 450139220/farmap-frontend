@@ -30,9 +30,7 @@ export default function PredictPic() {
       <Divider />
 
       <div style={{ height: "calc(100% - 205px)" }}>
-        <h4 style={{ padding: 0, margin: 0, marginBottom: "1rem" }}>
-          推理结果
-        </h4>
+        <h4 style={{ padding: 0, margin: 0, marginBottom: "1rem" }}>推理结果</h4>
         <div style={{ height: "100%", overflowY: "scroll" }}>
           {loading ? (
             <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
