@@ -3,6 +3,7 @@ import { permanence } from "@/utils/permanence";
 import { req } from "@/utils/reqeust";
 import { Flex, Form, Layout, Input, Card, Button } from "antd";
 import type { FormProps } from "antd";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -37,11 +38,15 @@ function Login() {
   const setToken = permanence.token.setToken;
   const setUserStore = permanence.user.setUserStore;
 
+  // Loading
+  const [loading, setLoading] = useState(false);
+
   // Error message for user
   const [msg, setMsg] = useState<string>("");
 
   const onFinish: FormProps<LoginType>["onFinish"] = async (values) => {
     try {
+      setLoading(true);
       const resp = await req.post<UserLoginRequest, UserLoginResult>("/user/login", {
         username: values.username!,
         password: values.password!,
@@ -61,9 +66,11 @@ function Login() {
 
       // Reset error message
       setMsg("");
-    } catch (e) {
+    } catch {
       // const msg = Request.getErrorMsg(e);
       setMsg("用户或密码错误");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,9 +104,12 @@ function Login() {
               </Form.Item>
 
               <Form.Item label={null}>
-                <Button type="primary" htmlType="submit">
-                  Submit
-                </Button>
+                <Flex gap="0.5rem" align="center">
+                  <Button type="primary" htmlType="submit" disabled={loading}>
+                    登录
+                  </Button>
+                  {loading && <Loader2 className="w-6 h-6 ml-2 text-blue-500 animate-spin" />}
+                </Flex>
               </Form.Item>
             </Form>
             {msg.length !== 0 && <div style={{ textAlign: "center", color: "#dd0000" }}>{msg}</div>}

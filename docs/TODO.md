@@ -3,10 +3,11 @@
 
 ## next
 - [x] remove map mode when the farm dosen't have that info
-- [ ] add loading in map
-- [ ] make monitor float window resizable & draggable
-- [x] set monitor window to top layer
-- [ ] modify font size
+- [x] add loading in map
 - [ ] add loading in login
+- [x] set monitor window to top layer
+- [ ] make monitor float window resizable & draggable
+- [ ] responsible layout
+- [ ] * modify font size
 
 # To
