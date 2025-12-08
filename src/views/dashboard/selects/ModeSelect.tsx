@@ -1,6 +1,7 @@
 import { Flex, Select } from "antd";
+import { useEffect, useState } from "react";
 
-type ModeType = "crop" | "farm" | "monitor";
+type ModeType = "crop" | "farm" | "monitor" | "none";
 export type ModeSelectType = {
   value: ModeType;
   label: string;
@@ -8,30 +9,32 @@ export type ModeSelectType = {
 
 interface Props {
   value: ModeType;
+  modes: ModeType[];
   onChange: (newMode: ModeType) => void;
 }
 export default function ModeSelect(props: Props) {
   const options: ModeSelectType[] = [
-    {
-      value: "crop",
-      label: "作物详情",
-    },
-    {
-      value: "farm",
-      label: "园区总览",
-    },
-    {
-      value: "monitor",
-      label: "监控预览",
-    },
+    { value: "none", label: "没有数据" },
+    { value: "crop", label: "作物详情" },
+    { value: "farm", label: "园区总览" },
+    { value: "monitor", label: "监控预览" },
   ];
+
+  // Set visible modes after fecthing data
+  const [visibleOptions, setVisibleOptions] = useState<ModeSelectType[]>(options);
+  useEffect(() => {
+    setVisibleOptions(() => options.filter((op) => props.modes.includes(op.value)));
+  }, [props.modes]);
+  console.log(props.value);
+
   return (
     <Flex gap="0.5rem" align="center" style={{ flexGrow: 1 }}>
       <span> | 地图模式</span>
       <Select
         style={{ flexGrow: 1 }}
         defaultValue={props.value}
-        options={options}
+        value={props.value}
+        options={visibleOptions}
         onChange={(mode) => {
           props.onChange(mode);
         }}
