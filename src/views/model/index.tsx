@@ -3,6 +3,7 @@ import CallModel from "./CallModel";
 import ModelResult from "./ModelResult";
 import { useState } from "react";
 import { TrademarkOutlined } from "@ant-design/icons";
+import { Loader2 } from "lucide-react";
 
 export default function index() {
   const [result, setResult] = useState<string>("请输入图片进行模型推理。");
@@ -13,9 +14,20 @@ export default function index() {
     setResultType(type);
   };
 
+  // Loading ai model result
+  const [resultLoading, setResultLoaing] = useState(false);
+
   return (
     <Flex gap="0.5rem" vertical style={{ height: "100%" }}>
-      <CallModel onFinish={handleAnalyzeResult} />
+      <CallModel
+        onFinish={handleAnalyzeResult}
+        onSubmit={() => {
+          setResultLoaing(true);
+        }}
+        onSubmitEnd={() => {
+          setResultLoaing(false);
+        }}
+      />
       <Card
         title={
           <>
@@ -25,7 +37,11 @@ export default function index() {
         }
         style={{ flexGrow: 1 }}
         styles={{ body: { maxHeight: 300, overflowY: "scroll" } }}>
-        <ModelResult text={result} type={resultType} />
+        {resultLoading ? (
+          <Loader2 className="w-6 h-6 ml-2 text-blue-500 animate-spin" />
+        ) : (
+          <ModelResult text={result} type={resultType} />
+        )}
       </Card>
     </Flex>
   );

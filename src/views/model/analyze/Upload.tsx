@@ -31,6 +31,8 @@ interface LLModelResponse {
 interface Props {
   onProgress: (currProgress: number, status: StepsProps["status"]) => void;
   onFinish: (res: string, type: "normal" | "error") => void;
+  onSubmit: () => void;
+  onSubmitEnd: () => void;
 }
 export default function Upload(props: Props) {
   // Constants
@@ -64,83 +66,89 @@ export default function Upload(props: Props) {
 
   // Upload and run ai
   const [isDisabled, setIsDisabled] = useState(false);
-  const uploadFiles = () => {
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const uploadFiles = async () => {
     if (fileList.length === 0) return;
-
-    const cosFiles: COS.UploadFileParams[] = (fileList as unknown as File[]).map((f) => ({
-      Bucket: "halo-prod-1317766785",
-      Region: "ap-chongqing",
-      Key: `/farmap/usercall-${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDay()}${new Date().getHours()}-${f.name}`,
-      Body: f,
-    }));
+    // Step to upload images & disable select files
+    props.onProgress(1, "process");
+    setButtonDisabled(true);
+    props.onSubmit();
 
     try {
-      navigator.geolocation.getCurrentPosition(
-        async () => {
-          // const { latitude, longitude } = position.coords;
-          const ossResult: string[] = [];
-          // console.log(latitude, longitude);
-          // Upload file to OSS
-          setIsDisabled(true);
-          const secret = await req.get<{ SecretId: string; SecretKey: string }>(
-            "https://map.archivemodel.cn/farmap_keys/cos.json",
-          );
-          const cos = new COS(secret);
-          await cos.uploadFiles({
-            files: cosFiles,
-            SliceSize: 1024 * 1024 * 10,
-            // onProgress: (info) => {
-            //   console.log(info);
-            // },
-            onFileFinish: (err, data) => {
-              ossResult.push("https://" + data.Location);
-              setFileList([]);
-              if (err) {
-                props.onProgress(1, "error");
-                throw err;
-              }
-              props.onProgress(2, "process");
-            },
-          });
-          // Upload to ai for analyzing
-          try {
-            const aiResp = await req.post<{ imageUrls: string[] }, LLModelResponse>(
-              "/ai-model/analyze",
-              {
-                imageUrls: ossResult,
-                // imageUrls: [
-                //   "https://halo-prod-1317766785.cos.ap-chongqing.myqcloud.com/farmap/1.jpg",
-                // ],
-              },
-              {
-                Authorization: `Bearer ${token}`,
-                "X-Api-Key": "sk-Hjh9EBFtQ64WK9niBxBBknJkosxMKLFEdvlVXXaIAqCxVxWI",
-              },
-            );
-            console.log(aiResp);
-            if (!aiResp.data) {
-              props.onProgress(2, "error");
-              props.onFinish(aiResp.msg!, "error");
-              throw new Error("请求失败");
-            }
-            props.onProgress(3, "process");
-            props.onFinish(aiResp.data, "normal");
-          } finally {
-            ossResult.length = 0;
-            setIsDisabled(false);
-          }
-        },
-        (error) => {
-          console.log("erro", error);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0,
-        },
+      const cosFiles: COS.UploadFileParams[] = (fileList as unknown as File[]).map((f) => ({
+        Bucket: "halo-prod-1317766785",
+        Region: "ap-chongqing",
+        Key: `/farmap/usercall-${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDay()}${new Date().getHours()}-${f.name}`,
+        Body: f,
+      }));
+
+      // const { latitude, longitude } = position.coords;
+      const ossResult: string[] = [];
+      // console.log(latitude, longitude);
+      // Upload file to OSS
+      setIsDisabled(true);
+      const secret = await req.get<{ SecretId: string; SecretKey: string }>(
+        "https://map.archivemodel.cn/farmap_keys/cos.json",
       );
+      const cos = new COS(secret);
+      await cos.uploadFiles({
+        files: cosFiles,
+        SliceSize: 1024 * 1024 * 10,
+        // onProgress: (info) => {
+        //   console.log(info);
+        // },
+        onFileFinish: (err, data) => {
+          ossResult.push("https://" + data.Location);
+          setFileList([]);
+          // TODO: add loading
+          if (err) {
+            props.onProgress(1, "error");
+            throw err;
+          }
+          props.onProgress(2, "process");
+        },
+      });
+      // Upload to ai for analyzing
+      try {
+        const aiResp = await req.post<{ imageUrls: string[] }, LLModelResponse>(
+          "/ai-model/analyze",
+          {
+            imageUrls: ossResult,
+          },
+          {
+            Authorization: `Bearer ${token}`,
+            "X-Api-Key": "sk-Hjh9EBFtQ64WK9niBxBBknJkosxMKLFEdvlVXXaIAqCxVxWI",
+          },
+        );
+        if (!aiResp.data) {
+          props.onProgress(2, "error");
+          props.onFinish(aiResp.msg!, "error");
+          throw new Error("请求失败");
+        }
+        props.onProgress(3, "process");
+        props.onFinish(aiResp.data, "normal");
+      } finally {
+        ossResult.length = 0;
+        setIsDisabled(false);
+      }
+      // navigator.geolocation.getCurrentPosition(
+      //   async () => {
+      //
+      //   },
+      //   (error) => {
+      //     console.log("erro", error);
+      //   },
+      //   {
+      //     enableHighAccuracy: true,
+      //     timeout: 5000,
+      //     maximumAge: 0,
+      //   },
+      // );
     } catch (err) {
       console.log("Upload failed", err);
+    } finally {
+      setButtonDisabled(false);
+      props.onSubmitEnd();
     }
   };
 
@@ -218,7 +226,7 @@ export default function Upload(props: Props) {
         type="primary"
         style={{ marginTop: "1rem" }}
         onClick={uploadFiles}
-        disabled={fileList.length === 0}>
+        disabled={buttonDisabled}>
         上传作物并处理
       </Button>
     </>

@@ -6,6 +6,8 @@ import Upload from "./analyze/Upload";
 import Progress from "./analyze/Progress";
 
 interface Props {
+  onSubmit: () => void;
+  onSubmitEnd: () => void;
   onFinish: (res: string, type: "normal" | "error") => void;
 }
 export default function CallModel(props: Props) {
@@ -29,6 +31,8 @@ export default function CallModel(props: Props) {
             setStepStatus(status);
           }}
           onFinish={props.onFinish}
+          onSubmit={props.onSubmit}
+          onSubmitEnd={props.onSubmitEnd}
         />
       </Card>
       <Card title={<>&nbsp;&nbsp;推理进度</>} style={{ flexGrow: 1 }}>
