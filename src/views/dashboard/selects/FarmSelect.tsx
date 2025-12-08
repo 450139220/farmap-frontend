@@ -10,6 +10,7 @@ export type FarmSelectType = {
 interface Props {
   value: number;
   options: FarmPreviewType[];
+  disabled: boolean;
   onChange: (newId: number) => void;
 }
 export default function FarmSelect(props: Props) {
@@ -21,6 +22,7 @@ export default function FarmSelect(props: Props) {
     <Flex gap="0.5rem" align="center" style={{ flexGrow: 1 }}>
       <span>当前农场</span>
       <Select
+        disabled={props.disabled}
         style={{ flexGrow: 1 }}
         defaultValue={props.value}
         options={farmOptions}

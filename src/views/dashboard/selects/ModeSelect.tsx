@@ -10,6 +10,7 @@ export type ModeSelectType = {
 interface Props {
   value: ModeType;
   modes: ModeType[];
+  disabled: boolean;
   onChange: (newMode: ModeType) => void;
 }
 export default function ModeSelect(props: Props) {
@@ -25,12 +26,12 @@ export default function ModeSelect(props: Props) {
   useEffect(() => {
     setVisibleOptions(() => options.filter((op) => props.modes.includes(op.value)));
   }, [props.modes]);
-  console.log(props.value);
 
   return (
     <Flex gap="0.5rem" align="center" style={{ flexGrow: 1 }}>
       <span> | 地图模式</span>
       <Select
+        disabled={props.disabled}
         style={{ flexGrow: 1 }}
         defaultValue={props.value}
         value={props.value}

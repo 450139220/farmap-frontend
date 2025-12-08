@@ -14,6 +14,7 @@ import { permanence } from "@/utils/permanence";
 import { useFarmStore, type Crop, type FarmStoreState } from "@/store/farm";
 import { req } from "@/utils/reqeust";
 import { useUserStore } from "@/store/user";
+import { Loader2 } from "lucide-react";
 
 export default function Map() {
   // Pass farm status to map
@@ -45,27 +46,35 @@ export default function Map() {
 
   // Mode visibility
   const [farmModes, setFarmModes] = useState<ModeSelectType["value"][]>(["none"]);
+
+  // Loading
+  const [fetchFarmLoading, setFetchFarmLoading] = useState(false);
   const fetchFarm: (id: number) => Promise<void> = async (id: number) => {
-    const resp = await req.get<{ data: FarmStoreState }>(`/user/get-farm?farmId=${id}`, {
-      Authorization: `Bearer ${token}`,
-    });
+    try {
+      setFetchFarmLoading(true);
+      const resp = await req.get<{ data: FarmStoreState }>(`/user/get-farm?farmId=${id}`, {
+        Authorization: `Bearer ${token}`,
+      });
 
-    setFarmStore(resp.data);
-    // Store to local storage
-    setLocalFarmStore(resp.data);
-    // Set visible farm modes
-    const hasCrop = resp.data.crops.length > 0;
-    const hasLocation = resp.data.locations.length > 0;
-    const visibles: ModeSelectType["value"][] = [];
-    if (hasCrop) visibles.push("crop");
-    if (hasLocation) visibles.push("farm");
-    // NOTE: always push a monitor to visibles
-    visibles.push("monitor");
-    // Push none to visibles when no content
-    if (!visibles.length) visibles.push("none");
+      setFarmStore(resp.data);
+      // Store to local storage
+      setLocalFarmStore(resp.data);
+      // Set visible farm modes
+      const hasCrop = resp.data.crops.length > 0;
+      const hasLocation = resp.data.locations.length > 0;
+      const visibles: ModeSelectType["value"][] = [];
+      if (hasCrop) visibles.push("crop");
+      if (hasLocation) visibles.push("farm");
+      // NOTE: always push a monitor to visibles
+      visibles.push("monitor");
+      // Push none to visibles when no content
+      if (!visibles.length) visibles.push("none");
 
-    setFarmModes(visibles);
-    setMode(visibles[0]);
+      setFarmModes(visibles);
+      setMode(visibles[0]);
+    } finally {
+      setFetchFarmLoading(false);
+    }
   };
 
   // THe mode & info select states
@@ -117,19 +126,26 @@ export default function Map() {
     <Flex vertical gap="0.5rem" style={{ height: "100%" }}>
       <Card
         title={
-          <>
+          <Flex align="center">
             <GlobalOutlined />
             &nbsp;&nbsp;地图详情
-          </>
+            {fetchFarmLoading && <Loader2 className="w-6 h-6 ml-2 text-blue-500 animate-spin" />}
+          </Flex>
         }
         style={{ height: "100%" }}
         styles={{ body: { height: "calc(100% - 60px)" } }}>
         <Flex gap="0.5rem" vertical style={{ height: "100%" }}>
           <Flex gap="0.5rem" style={{ width: "100%" }}>
-            <FarmSelect value={farm} options={farmOptions} onChange={changeFarmStore} />
+            <FarmSelect
+              value={farm}
+              options={farmOptions}
+              disabled={fetchFarmLoading}
+              onChange={changeFarmStore}
+            />
             <ModeSelect
               value={mode}
               modes={farmModes}
+              disabled={fetchFarmLoading}
               onChange={(newMode) => {
                 setMode(newMode);
               }}
