@@ -103,9 +103,8 @@ export default function Expert() {
             <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
           ) : (
             pendingCases.map((cs) => (
-              <>
+              <div key={cs.requestId}>
                 <div
-                  key={cs.requestId}
                   style={{ cursor: "pointer", display: "flex", padding: "12px 5px" }}
                   onClick={() => {
                     setSelectedRequestId(cs.requestId);
@@ -121,7 +120,7 @@ export default function Expert() {
                   <div>&nbsp;&nbsp;已修改 {cs.revisionCount} 次 </div>
                 </div>
                 <Divider style={{ margin: 0 }} />
-              </>
+              </div>
             ))
           )}
         </div>

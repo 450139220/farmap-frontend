@@ -15,16 +15,14 @@ export default function Image(props: Props) {
     const width =
       window.innerWidth < 1000
         ? window.innerWidth - 64
-        : containerRef.current.getBoundingClientRect().width;
+        : containerRef.current.getBoundingClientRect().width * 0.7;
     setImageWidth(width);
   }, []);
 
   return (
-    <Flex vertical style={{ flexGrow: 1, width: "100%" }} ref={containerRef}>
-      <Carousel arrows infinite={false} style={{ width: imageWidth }}>
-        {images.map(
-          (img) => img !== "" && <ImageAntd alt="作物图像" width={imageWidth} src={img} />,
-        )}
+    <Flex vertical style={{ flexGrow: 1, width: imageWidth }} ref={containerRef}>
+      <Carousel arrows infinite={false} style={{ width: "100%" }}>
+        {images.map((img) => img !== "" && <ImageAntd alt="作物图像" width="100%" src={img} />)}
       </Carousel>
       <Divider />
       <div style={{ width: "100%" }}>
