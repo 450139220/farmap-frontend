@@ -206,3 +206,10 @@ button {
     overflow-y: unset;
   }
 }
+
+.window.dragging {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}

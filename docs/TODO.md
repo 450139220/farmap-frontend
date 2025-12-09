@@ -7,7 +7,7 @@
 - [x] add loading in login
 - [x] set monitor window to top layer
 - [ ] make monitor float window resizable & draggable
-- [ ] responsible layout
+- [x] responsible layout
 - [ ] * modify font size
 
 # To

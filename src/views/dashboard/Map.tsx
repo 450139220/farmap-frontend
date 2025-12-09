@@ -12,8 +12,9 @@ import { monitorList } from "../monitor/list/monitorList";
 import VideoPlayer from "../monitor/VideoPlayer";
 import { permanence } from "@/utils/permanence";
 import { req } from "@/utils/reqeust";
-import { Card } from "antd";
+import { Flex } from "antd";
 import { CloseCircleOutlined } from "@ant-design/icons";
+import Window from "@/components/Window";
 
 export type MapProps = {
   center: [number, number];
@@ -180,14 +181,14 @@ export default function MapContainer(props: MapProps) {
     [accessToken],
   );
 
-  // PERF: make the monitor panel draggable
+  // Draggable monitor card
   return (
     <>
       <div id="map-container" style={{ flexGrow: 1, borderRadius: 8, minHeight: 300 }}></div>
       {videoUrl.length > 0 && (
-        <Card
+        <Window
           title={
-            <>
+            <Flex justify="space-between">
               <span>监控预览</span>
               <CloseCircleOutlined
                 style={{ color: "#dd0000", marginLeft: 5 }}
@@ -195,16 +196,14 @@ export default function MapContainer(props: MapProps) {
                   setVideoUrl("");
                 }}
               />
-            </>
+            </Flex>
           }
           style={{
             zIndex: 1000,
             position: "fixed",
-          }}
-          styles={{ body: { height: "calc(100% - 60px)" } }}
-          className="resp-dashborad__monitor-preview">
-          <VideoPlayer videoUrl={videoUrl} style={{}} />
-        </Card>
+          }}>
+          <VideoPlayer videoUrl={videoUrl} />
+        </Window>
       )}
     </>
   );
