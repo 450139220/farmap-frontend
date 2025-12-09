@@ -134,15 +134,18 @@ export default function Window(props: Props) {
         {props.title}
       </header>
       <Divider style={{ margin: 6 }} />
-      {isHeaderDrag.current && (
+      {(isHeaderDrag.current || isDraggingRef.current) && (
         <section
           style={{
             position: "absolute",
             height: "calc(100% - 64px)",
             width: "calc(100% - 24px)",
+            zIndex: 10,
           }}></section>
       )}
-      <section style={{ height: "calc(100% - 38px)" }}>{props.children}</section>
+      <section style={{ height: "calc(100% - 38px)", position: "relative", zIndex: 0 }}>
+        {props.children}
+      </section>
 
       {/* Resize border */}
       <div
