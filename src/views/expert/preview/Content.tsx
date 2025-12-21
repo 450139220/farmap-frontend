@@ -7,10 +7,12 @@ import { RevisionForm } from "../revision/RevisionForm";
 
 export default function Content({
   jsonData,
+  unSubmittable,
   submitLoading,
   submitResult,
   onSubmit,
   onParseEnd,
+  element,
 }: PlantAnalysisEditorProps) {
   const [parsedData, setParsedData] = useState<PlantData | null>(null);
   const [parseError, setParseError] = useState<string | null>(null);
@@ -93,28 +95,32 @@ export default function Content({
 
   // --- Scenario: Success (Editable) ---
   return (
-    <div className="resp-expert__revision-record">
-      <div className="flex items-center gap-3 text-emerald-600">
+    <div className="resp-expert__revision-record" style={{ height: "100%" }}>
+      <div className="flex items-center gap-3 text-emerald-600 grow">
         <CheckCircle2 className="w-6 h-6" />
         <h2 className="text-lg font-bold">识别结果</h2>
       </div>
       <Divider style={{ margin: 5 }} />
-      <div style={{}}>
-        <RevisionForm data={parsedData} path={[]} onUpdate={handleFieldUpdate} />
+      <div style={{ height: "100%" }}>
+        <RevisionForm data={parsedData} path={[]} onUpdate={handleFieldUpdate} element={element} />
       </div>
-      <Button
-        type="primary"
-        disabled={submitLoading}
-        style={{ marginTop: 10 }}
-        onClick={() => {
-          handleSubmit();
-        }}>
-        提交修改
-      </Button>
-      {submitResult && submitResult.length > 0 && (
-        <span className="text-blue-600" style={{ marginLeft: 10 }}>
-          {submitResult}
-        </span>
+      {!unSubmittable && (
+        <>
+          <Button
+            type="primary"
+            disabled={submitLoading}
+            style={{ marginTop: 10 }}
+            onClick={() => {
+              handleSubmit();
+            }}>
+            提交修改
+          </Button>
+          {submitResult && submitResult.length > 0 && (
+            <span className="text-blue-600" style={{ marginLeft: 10 }}>
+              {submitResult}
+            </span>
+          )}
+        </>
       )}
     </div>
   );

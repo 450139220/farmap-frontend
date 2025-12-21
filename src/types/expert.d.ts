@@ -121,6 +121,7 @@ export interface ComprehensiveAdvice {
 }
 
 export interface AnalysisResult {
+  element: "input" | "view";
   树种识别: TreeIdentification;
   图像质量诊断: ImageQualityDiagnosis;
   当前生长阶段: string;
@@ -149,6 +150,8 @@ export interface PlantData {
 
 export interface PlantAnalysisEditorProps {
   jsonData: string;
+  unSubmittable?: boolean;
+  element: "input" | "view";
   submitLoading: boolean;
   submitResult: string;
   onSubmit: (newJsonString: string) => void;

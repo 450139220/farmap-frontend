@@ -9,7 +9,7 @@ interface Props {
 export default function Window(props: Props) {
   // Layout properties
   const [top, setTop] = useState(200);
-  const [left, setLeft] = useState(300);
+  const [left, setLeft] = useState(10);
   const [width, setWidth] = useState(400);
   const [height, setHeight] = useState(300);
 

@@ -117,6 +117,10 @@ button {
   overflow-y: scroll;
 }
 
+.resp-expert__history-content {
+  height: calc(100vh - 16rem);
+}
+
 @media (max-width: 1000px) {
   .resp-layout {
     height: 100%;
@@ -204,6 +208,11 @@ button {
   .resp-expert__revision-record {
     overflow-x: unset;
     overflow-y: unset;
+  }
+
+  .resp-expert__history-content {
+    flex-direction: column;
+    height: 100%;
   }
 }
 

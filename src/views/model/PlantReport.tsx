@@ -153,14 +153,11 @@ const PlantReport: React.FC<PlantReportProps> = ({ jsonString }) => {
               <Microscope size={12} /> 置信度: {plant_validation.confidence.toFixed(2)}
             </span>
           </div>
-          {/*
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            {result.树种识别.种类}
             <span className="text-lg font-normal text-gray-500">
-              ({result.当前生长阶段})
+              当前生长阶段：<strong className="text-black">{result.当前生长阶段}</strong>
             </span>
           </h1>
-            */}
         </div>
 
         <div className="flex items-center gap-4 w-full md:w-auto justify-end">

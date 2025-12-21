@@ -7,6 +7,7 @@ import {
   CloudOutlined,
   CompassOutlined,
   DashboardOutlined,
+  HistoryOutlined,
   SlidersOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
@@ -130,6 +131,21 @@ export const ALL_ROUTES: RouteObject[] = [
       roles: ["expert", "admin"],
     },
   },
+  // {
+  //   path: "/expert-history",
+  //   element: (
+  //     <ProtectedRoute
+  //       roles={["expert", "admin"]}
+  //       Component={lazy(() => import("@/views/expert/children/history"))}
+  //     />
+  //   ),
+  //   handle: {
+  //     key: "/expert-history",
+  //     name: "修改历史",
+  //     Icon: HistoryOutlined,
+  //     roles: ["expert", "admin"],
+  //   },
+  // },
   {
     path: "admin",
     element: <ProtectedRoute roles={["admin"]} Component={lazy(() => import("@/views/admin"))} />,

@@ -85,6 +85,7 @@ export default function DetailPrevew(props: Props) {
             <Flex vertical justify="space-between" style={{ height: "calc(100% - 50px)" }}>
               <Content
                 jsonData={jsonData}
+                element="input"
                 submitLoading={submistLoading}
                 submitResult={submitResult}
                 onSubmit={async (j) => {
