@@ -101,11 +101,11 @@ export default function Content({
         <h2 className="text-lg font-bold">识别结果</h2>
       </div>
       <Divider style={{ margin: 5 }} />
-      <div style={{ height: "100%" }}>
+      <div>
         <RevisionForm data={parsedData} path={[]} onUpdate={handleFieldUpdate} element={element} />
       </div>
       {!unSubmittable && (
-        <>
+        <div>
           <Button
             type="primary"
             disabled={submitLoading}
@@ -120,7 +120,7 @@ export default function Content({
               {submitResult}
             </span>
           )}
-        </>
+        </div>
       )}
     </div>
   );

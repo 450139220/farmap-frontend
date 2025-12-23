@@ -134,7 +134,7 @@ export default function index() {
                     label: `[专家id：${h.expertId}]-${h.revisionId}`,
                   }))}></Select>
                 <Flex
-                  style={{ marginTop: "1rem" }}
+                  style={{ marginTop: "1rem", width: "100%" }}
                   gap="1rem"
                   className="resp-expert__history-content">
                   <Image urls={detail.userRequestInfo.imageUrls} />

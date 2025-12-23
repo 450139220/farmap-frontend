@@ -86,6 +86,7 @@ export default function DetailPrevew(props: Props) {
               <Content
                 jsonData={jsonData}
                 element="input"
+                unSubmittable={false}
                 submitLoading={submistLoading}
                 submitResult={submitResult}
                 onSubmit={async (j) => {

@@ -6,7 +6,7 @@ import path from "node:path";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "/farmapsite/",
+  // base: "/farmapsite/",
   server: {
     open: true,
     // usable in local area network
